@@ -1,0 +1,51 @@
+<template>
+  <q-page padding>
+    <q-toolbar>
+      <q-toolbar-title>
+        <div class="text-h6">Lesson Planner</div>
+        <div class="text-caption text-secondary">
+          Create, edit, and publish lessons for the good humankind.
+        </div>
+      </q-toolbar-title>
+      <q-btn @click="resetPage" label="reset" color="warning" />
+      <lesson-planner-specs />
+    </q-toolbar>
+
+    <div class="q-pa-md row q-gutter-md">
+      <div class="col-4">
+        <lesson-plan-selector-list />
+      </div>
+      <div class="col">
+        <lesson-plan-details v-if="planner.selectedLesson" />
+        <q-chip v-else>
+          <q-avatar size="lg">
+            <img src="/icons/favicon-128x128.png" />
+          </q-avatar>
+          Choose a lesson
+        </q-chip>
+      </div>
+    </div>
+  </q-page>
+</template>
+
+<script setup>
+import { onMounted } from 'vue'
+import LessonPlannerSpecs from './LessonPlannerSpecs.vue'
+import LessonPlanSelectorList from './LessonPlanSelectorList.vue'
+import LessonPlanDetails from './LessonPlanDetails.vue'
+import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
+import samples from './sample-lesson-plans.js'
+
+const planner = useLessonPlannerStore()
+
+function resetPage() {
+  planner.$reset()
+  planner.loadLessonPlans(samples)
+}
+
+onMounted(() => {
+  planner.loadLessonPlans(samples)
+})
+</script>
+
+<style lang="scss" scoped></style>
