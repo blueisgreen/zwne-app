@@ -1,41 +1,30 @@
-# Zanzis World App (zwapp)
+# Zanzibar World of Elemental Power App (zwapp!!)
 
-Your interface to Zanzibar's World of Nuclear Power
+Welcome to the codeline for Zanzi's World of Nuclear Power. This app is build using:
 
-## Install the dependencies
-```bash
-yarn
-# or
-npm install
-```
+- NodeJS
+- Quasar on VueJS
+- AWS Amplify
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-```bash
-quasar dev
-```
+## WIP
 
+Starting over by porting the latest code into a new project. We will get things back in shape before long.
 
-### Lint the files
-```bash
-yarn lint
-# or
-npm run lint
-```
+## Starting Punchlist
 
+- Basic features
+  - User authentication: Get sign up, sign in, sign out working.
+  - Account management: Profile updates, usage history.
+  - Basic lesson authoring: allow authorized users to create and publish lessons about nuclear power.
+  - Course management: connect lessons together in meaningful ways.
+  - Lesson engagement: Take lessons, and leave comments.
+- Other
+  - Unit tests
+  - System tests
+  - Try i18n (Spanish, Japanese?)
+  - Build for mobile (cordova)
+  - Build for desktop (electron)
+  - Hosting on AWS
+  - alpha, prod environments
 
-### Format the files
-```bash
-yarn format
-# or
-npm run format
-```
-
-
-
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+Then we'll see what's next.

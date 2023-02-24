@@ -1,8 +1,8 @@
 {
   "name": "zwapp",
   "version": "0.0.1",
-  "description": "Your interface to Zanzibar's World of Nuclear Power",
-  "productName": "Zanzi's World App",
+  "description": "Fabulous interface to Zanzibar's World of Nuclear Power",
+  "productName": "Zanzi's World of Nuclear Power App",
   "author": "Dave Mount <davemount@gmail.com>",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
-    "axios": "^0.21.1",
+    "axios": "^1.3.4",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
