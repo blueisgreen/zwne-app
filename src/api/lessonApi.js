@@ -31,3 +31,9 @@ export function getLessonPlans(success = true) {
     }
   })
 }
+
+export function getLessonContent() {
+  return new Promise(function (resolve, reject) {
+    resolve(sampleContent)
+  })
+}

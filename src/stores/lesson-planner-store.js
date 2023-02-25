@@ -28,7 +28,7 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
     lessonOptionIds: [],
     selectedPlanId: null,
     selectedPlanChanges: null,
-    activeContentDraft: null, // FIXME: put this on the page instead
+    activeContentDraft: null,
   }),
 
   getters: {
@@ -37,6 +37,15 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
     },
     selectedLesson() {
       return this.selectedPlanId ? this.lessonPlans[this.selectedPlanId] : null
+    },
+    isDraftDirty() {
+      return (
+        this.isSelected &&
+        this.activeContentDraft != this.selectedLesson.content
+      )
+    },
+    isSelected() {
+      return this.selectedPlanId != null
     },
   },
 
@@ -104,9 +113,14 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
       plan.subtitle = this.selectedPlanChanges.subtitle
       this.clearPlanEdits()
     },
-    saveContentChanges(latest) {
+    editSelectedLessonContent() {
+      if (this.isSelected) {
+        this.activeContentDraft = this.selectedLesson.content
+      }
+    },
+    saveContentChanges() {
       // TODO: use API to persist
-      this.selectedLesson.content = latest
+      this.selectedLesson.content = this.activeContentDraft
     },
   },
 })

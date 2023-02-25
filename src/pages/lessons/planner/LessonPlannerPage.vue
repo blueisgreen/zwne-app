@@ -2,7 +2,7 @@
   <q-page padding>
     <q-toolbar>
       <q-toolbar-title>
-        <div class="text-h6">Lesson Planner</div>
+        <div class="text-h4">Lesson Planner</div>
         <div class="text-caption text-secondary">
           Create, edit, and publish lessons for the good humankind.
         </div>
