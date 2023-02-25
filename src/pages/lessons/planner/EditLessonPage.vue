@@ -11,8 +11,9 @@
     </q-toolbar>
 
     <q-tabs v-model="tabModel" no-caps dense class="bg-grey-2 text-primary">
-      <q-tab name="preview" label="Preview" />
       <q-tab name="edit" label="Edit" />
+      <q-tab name="images" label="Images" />
+      <q-tab name="preview" label="Preview" />
       <q-tab name="html" label="HTML View" />
       <q-route-tab
         :to="{ name: 'lesson-planner' }"
@@ -25,6 +26,9 @@
     <q-tab-panels v-model="tabModel">
       <q-tab-panel name="edit">
         <lesson-composer />
+      </q-tab-panel>
+      <q-tab-panel name="images">
+        <div class="text-h6">Manage images for lessons</div>
       </q-tab-panel>
       <q-tab-panel name="preview">
         <div class="text-h6">Preview</div>
@@ -57,7 +61,7 @@ import LessonComposer from './LessonComposer.vue'
 import LessonEditorSpecs from './LessonEditorSpecs.vue'
 
 const planner = useLessonPlannerStore()
-const tabModel = ref('preview')
+const tabModel = ref('edit')
 
 function handleSave() {
   planner.saveContentChanges()
