@@ -19,42 +19,15 @@
           handler: saveWork,
           disable: !lesson.isDraftDirty,
         },
+        image: {
+          tip: 'Insert an image link',
+          icon: 'image',
+          handler: addImage,
+        },
       }"
       :toolbar="[
-        [
-          {
-            label: $q.lang.editor.align,
-            icon: $q.iconSet.editor.align,
-            fixedLabel: true,
-            list: 'only-icons',
-            options: ['left', 'center', 'right', 'justify'],
-          },
-        ],
         ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],
-        ['hr', 'link', 'custom_btn'],
         [
-          {
-            label: $q.lang.editor.formatting,
-            icon: $q.iconSet.editor.formatting,
-            list: 'no-icons',
-            options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'],
-          },
-          {
-            label: $q.lang.editor.fontSize,
-            icon: $q.iconSet.editor.fontSize,
-            fixedLabel: true,
-            fixedIcon: true,
-            list: 'no-icons',
-            options: [
-              'size-1',
-              'size-2',
-              'size-3',
-              'size-4',
-              'size-5',
-              'size-6',
-              'size-7',
-            ],
-          },
           {
             label: $q.lang.editor.defaultFont,
             icon: $q.iconSet.editor.font,
@@ -71,12 +44,40 @@
               'verdana',
             ],
           },
+          {
+            icon: 'text_format',
+            list: 'no-icons',
+            options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'],
+          },
+          {
+            icon: 'format_size',
+            fixedLabel: true,
+            fixedIcon: true,
+            list: 'no-icons',
+            options: [
+              'size-1',
+              'size-2',
+              'size-3',
+              'size-4',
+              'size-5',
+              'size-6',
+              'size-7',
+            ],
+          },
           'removeFormat',
         ],
+        [
+          {
+            label: $q.lang.editor.align,
+            icon: $q.iconSet.editor.align,
+            fixedLabel: true,
+            list: 'only-icons',
+            options: ['left', 'center', 'right', 'justify'],
+          },
+        ],
         ['quote', 'unordered', 'ordered', 'outdent', 'indent'],
-
-        ['undo', 'redo'],
-        ['save', 'viewsource'],
+        ['hr', 'link', 'image'],
+        ['undo', 'redo', 'save'],
       ]"
       :fonts="{
         arial: 'Arial',
@@ -98,6 +99,9 @@ import { useQuasar } from 'quasar'
 const lesson = useLessonPlannerStore()
 const $q = useQuasar()
 
+function addImage() {
+  alert('Not implemented')
+}
 function saveWork() {
   lesson.saveContentChanges()
 }
