@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { getLessonPlans } from '../api/lessonApi'
 import { generateRandomKey } from 'src/components/modelHelper'
 
 /**
@@ -55,10 +56,15 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
     },
     async fetchLessonPlans() {
       // TODO: implement using API
-      // try {
-      //   const plans = await api.getLessonPlans()
-      //   this.loadLessonPlans(plans)
-      // } catch (err) {}
+      try {
+        console.log('fu')
+        const plans = await getLessonPlans()
+        if (plans) {
+          this.loadLessonPlans(plans)
+        }
+      } catch (err) {
+        alert(err)
+      }
     },
     fetchLessonContent(id) {
       // TODO: use API to get content
