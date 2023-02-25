@@ -57,7 +57,6 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
     async fetchLessonPlans() {
       // TODO: implement using API
       try {
-        console.log('fu')
         const plans = await getLessonPlans()
         if (plans) {
           this.loadLessonPlans(plans)

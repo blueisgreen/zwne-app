@@ -22,10 +22,9 @@ const sample = [
   },
 ]
 
-export function getLessonPlans(fail = false) {
+export function getLessonPlans(success = true) {
   return new Promise(function (resolve, reject) {
-    if (!fail) {
-      console.log('successful fetch')
+    if (success) {
       resolve(sample)
     } else {
       reject('Error')
