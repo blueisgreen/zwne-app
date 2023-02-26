@@ -32,8 +32,8 @@ export function getLessonPlans(success = true) {
   })
 }
 
-export function getLessonContent() {
+export function getLessonContent(lessonId) {
   return new Promise(function (resolve, reject) {
-    resolve(sampleContent)
+    resolve('<p>A little something to get things started.</p>')
   })
 }

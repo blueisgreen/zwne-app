@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-pa-md">
     <q-btn
       label="Save"
       color="primary"
@@ -8,8 +8,10 @@
     />
     <q-editor
       v-model="lesson.activeContentDraft"
+      max-height="400px"
       toolbar-rounded
       toolbar-push
+      toolbar-bg="light-blue-2"
       placeholder="Enlightenment goes here..."
       :definitions="{
         save: {
@@ -24,13 +26,18 @@
           icon: 'image',
           handler: addImage,
         },
+        subscript: {
+          icon: 'subscript',
+        },
+        superscript: {
+          icon: 'superscript',
+        },
       }"
       :toolbar="[
         ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],
         [
           {
             label: $q.lang.editor.defaultFont,
-            icon: $q.iconSet.editor.font,
             fixedIcon: true,
             list: 'no-icons',
             options: [

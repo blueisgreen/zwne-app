@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getLessonPlans } from '../api/lessonApi'
+import { getLessonPlans, getLessonContent } from '../api/lessonApi'
 import { generateRandomKey } from 'src/components/modelHelper'
 
 /**
@@ -28,7 +28,7 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
     lessonOptionIds: [],
     selectedPlanId: null,
     selectedPlanChanges: null,
-    activeContentDraft: null,
+    activeContentDraft: '',
   }),
 
   getters: {
@@ -46,6 +46,11 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
     },
     isSelected() {
       return this.selectedPlanId != null
+    },
+    hasLesson: (state) => {
+      return (lessonId) => {
+        return state.lessonPlans[lessonId] != null
+      }
     },
   },
 
@@ -74,11 +79,24 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
         alert(err)
       }
     },
-    fetchLessonContent(id) {
+    async fetchLessonContent(id) {
       // TODO: use API to get content
-      if (!this.lessonPlans[id].content) {
-        this.loadLessonContent(id, "<p>Let's get this party started.</p>")
+      if (!this.hasLesson(id)) {
+        await this.fetchLessonPlans()
       }
+      if (!this.lessonPlans[id].content) {
+        try {
+          const content = await getLessonContent(id)
+          this.loadLessonContent(id, content)
+        } catch (err) {
+          alert(err)
+        }
+      }
+    },
+    async prepLessonForEdit(lessonId) {
+      await this.fetchLessonContent(lessonId)
+      this.selectLesson(lessonId)
+      this.activeContentDraft = this.selectedLesson.content
     },
     selectLesson(id) {
       this.selectedPlanId = id
@@ -112,11 +130,6 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
       plan.title = this.selectedPlanChanges.title
       plan.subtitle = this.selectedPlanChanges.subtitle
       this.clearPlanEdits()
-    },
-    editSelectedLessonContent() {
-      if (this.isSelected) {
-        this.activeContentDraft = this.selectedLesson.content
-      }
     },
     saveContentChanges() {
       // TODO: use API to persist

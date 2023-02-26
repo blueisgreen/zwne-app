@@ -12,6 +12,7 @@
 
     <q-tabs v-model="tabModel" no-caps dense class="bg-grey-2 text-primary">
       <q-tab name="edit" label="Edit" />
+      <q-tab name="build" label="Build" />
       <q-tab name="images" label="Images" />
       <q-tab name="preview" label="Preview" />
       <q-tab name="html" label="HTML View" />
@@ -26,6 +27,9 @@
     <q-tab-panels v-model="tabModel">
       <q-tab-panel name="edit">
         <lesson-composer />
+      </q-tab-panel>
+      <q-tab-panel name="build">
+        <lesson-builder />
       </q-tab-panel>
       <q-tab-panel name="images">
         <div class="text-h6">Manage images for lessons</div>
@@ -54,24 +58,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
 import LessonComposer from './LessonComposer.vue'
+import LessonBuilder from './LessonBuilder.vue'
 import LessonEditorSpecs from './LessonEditorSpecs.vue'
 
 const planner = useLessonPlannerStore()
 const tabModel = ref('edit')
 
-function handleSave() {
-  planner.saveContentChanges()
-}
-
-onMounted(() => {
+onBeforeMount(() => {
   const lessonId = useRoute().params.id
-  planner.fetchLessonContent(lessonId)
-  planner.selectLesson(lessonId)
-  planner.editSelectedLessonContent()
+  planner.prepLessonForEdit(lessonId)
 })
 </script>
 
