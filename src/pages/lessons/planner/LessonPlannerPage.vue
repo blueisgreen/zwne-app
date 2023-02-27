@@ -2,7 +2,7 @@
   <q-page padding>
     <q-toolbar>
       <q-toolbar-title>
-        <div class="text-h6">Lesson Planner</div>
+        <div class="text-h4">Lesson Planner</div>
         <div class="text-caption text-secondary">
           Create, edit, and publish lessons for the good humankind.
         </div>
@@ -34,17 +34,16 @@ import LessonPlannerSpecs from './LessonPlannerSpecs.vue'
 import LessonPlanSelectorList from './LessonPlanSelectorList.vue'
 import LessonPlanDetails from './LessonPlanDetails.vue'
 import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
-import samples from './sample-lesson-plans.js'
 
 const planner = useLessonPlannerStore()
 
-function resetPage() {
+async function resetPage() {
   planner.$reset()
-  planner.loadLessonPlans(samples)
+  await planner.fetchLessonPlans()
 }
 
-onMounted(() => {
-  planner.loadLessonPlans(samples)
+onMounted(async () => {
+  await planner.fetchLessonPlans()
 })
 </script>
 

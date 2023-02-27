@@ -49,7 +49,7 @@ export default defineComponent({
     },
     maxHeight: {
       type: String,
-      default: '400px',
+      default: '250px',
     },
     bareBones: Boolean, // alignment, bold, italic, save
     fontOptions: Boolean, // variety of fonts, text sizes
