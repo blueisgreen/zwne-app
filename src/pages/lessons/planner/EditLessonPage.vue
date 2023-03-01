@@ -64,7 +64,7 @@ import LessonEditorSpecs from './LessonEditorSpecs.vue'
 
 const $q = useQuasar()
 const planner = useLessonPlannerStore()
-const tabModel = ref('edit')
+const tabModel = ref('build')
 
 onBeforeMount(() => {
   const lessonId = useRoute().params.id
