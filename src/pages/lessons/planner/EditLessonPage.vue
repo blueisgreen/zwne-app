@@ -10,7 +10,7 @@
       <lesson-editor-specs />
     </q-toolbar>
 
-    <q-tabs v-model="tabModel" no-caps dense class="bg-grey-2 text-primary">
+    <q-tabs v-model="tabModel" class="bg-blue-1 text-primary" dense no-caps>
       <q-tab name="edit" label="Edit" />
       <q-tab name="build" label="Build" />
       <q-tab name="images" label="Images" />
@@ -37,20 +37,33 @@
       <q-tab-panel name="preview">
         <div class="text-h6">Preview</div>
         <q-card>
-          <q-card-section class="text-h6">
+          <q-card-section>
             <div class="text-h6">{{ planner.selectedLesson.title }}</div>
             <div class="text-caption text-secondary">
               {{ planner.selectedLesson.subtitle }}
             </div></q-card-section
           >
           <q-card-section>
-            <span v-html="planner.activeContentDraft" /> </q-card-section
-        ></q-card>
+            <span v-html="planner.activeContentDraft" />
+            <!-- <q-editor
+              class="full-height"
+              :model-value="planner.activeContentDraft"
+              readonly
+              flat
+              min-height="300px"
+              :toolbar="[]"
+            /> -->
+          </q-card-section>
+        </q-card>
       </q-tab-panel>
       <q-tab-panel name="html">
         <div class="text-h6">HTML View</div>
         <q-card>
-          <q-card-section>{{ planner.activeContentDraft }}</q-card-section>
+          <q-card-section>
+            <pre style="white-space: pre-line">{{
+              planner.activeContentDraft
+            }}</pre>
+          </q-card-section>
         </q-card>
       </q-tab-panel>
     </q-tab-panels>
@@ -58,13 +71,15 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useQuasar } from 'quasar'
 import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
 import LessonComposer from './LessonComposer.vue'
 import LessonBuilder from './LessonBuilder.vue'
 import LessonEditorSpecs from './LessonEditorSpecs.vue'
 
+const $q = useQuasar()
 const planner = useLessonPlannerStore()
 const tabModel = ref('edit')
 
@@ -72,6 +87,8 @@ onBeforeMount(() => {
   const lessonId = useRoute().params.id
   planner.prepLessonForEdit(lessonId)
 })
+
+onMounted(() => {})
 </script>
 
 <style lang="scss" scoped></style>
