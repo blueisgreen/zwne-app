@@ -32,29 +32,10 @@
         <lesson-builder />
       </q-tab-panel>
       <q-tab-panel name="images">
-        <div class="text-h6">Manage images for lessons</div>
+        <image-manager />
       </q-tab-panel>
       <q-tab-panel name="preview">
-        <div class="text-h6">Preview</div>
-        <q-card>
-          <q-card-section>
-            <div class="text-h6">{{ planner.selectedLesson.title }}</div>
-            <div class="text-caption text-secondary">
-              {{ planner.selectedLesson.subtitle }}
-            </div></q-card-section
-          >
-          <q-card-section>
-            <span v-html="planner.activeContentDraft" />
-            <!-- <q-editor
-              class="full-height"
-              :model-value="planner.activeContentDraft"
-              readonly
-              flat
-              min-height="300px"
-              :toolbar="[]"
-            /> -->
-          </q-card-section>
-        </q-card>
+        <lesson-preview />
       </q-tab-panel>
       <q-tab-panel name="html">
         <div class="text-h6">HTML View</div>
@@ -77,6 +58,8 @@ import { useQuasar } from 'quasar'
 import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
 import LessonComposer from './LessonComposer.vue'
 import LessonBuilder from './LessonBuilder.vue'
+import ImageManager from './ImageManager.vue'
+import LessonPreview from './LessonPreview.vue'
 import LessonEditorSpecs from './LessonEditorSpecs.vue'
 
 const $q = useQuasar()
