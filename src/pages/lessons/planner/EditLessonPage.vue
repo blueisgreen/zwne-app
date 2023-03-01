@@ -13,6 +13,7 @@
     <q-tabs v-model="tabModel" class="bg-blue-1 text-primary" dense no-caps>
       <q-tab name="edit" label="Edit" />
       <q-tab name="build" label="Build" />
+      <q-tab name="demo" label="Demo" />
       <q-tab name="images" label="Images" />
       <q-tab name="preview" label="Preview" />
       <q-tab name="html" label="HTML View" />
@@ -30,6 +31,9 @@
       </q-tab-panel>
       <q-tab-panel name="build">
         <lesson-builder />
+      </q-tab-panel>
+      <q-tab-panel name="demo">
+        <lesson-builder-demo />
       </q-tab-panel>
       <q-tab-panel name="images">
         <image-manager />
@@ -58,6 +62,7 @@ import { useQuasar } from 'quasar'
 import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
 import LessonComposer from './LessonComposer.vue'
 import LessonBuilder from './LessonBuilder.vue'
+import LessonBuilderDemo from './LessonBuilderDemo.vue'
 import ImageManager from './ImageManager.vue'
 import LessonPreview from './LessonPreview.vue'
 import LessonEditorSpecs from './LessonEditorSpecs.vue'

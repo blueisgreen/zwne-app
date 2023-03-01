@@ -1,9 +1,13 @@
 <template>
-  <tip-tap />
+  <tip-tap-editor v-model="planner.activeContentDraft" />
 </template>
 
 <script setup>
-import TipTap from 'components/TipTap.vue'
+import { ref } from 'vue'
+import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
+import TipTapEditor from 'components/TipTapEditor.vue'
+
+const planner = useLessonPlannerStore()
 </script>
 
 <style lang="scss" scoped></style>
