@@ -109,6 +109,12 @@
       />
 
       <q-separator vertical spaced />
+
+      <q-btn icon="link" v-bind="getAvailableButtonStyle()" />
+      <q-btn icon="image" v-bind="getAvailableButtonStyle()" />
+      <q-btn icon="fa-brands fa-youtube" v-bind="getAvailableButtonStyle()" />
+
+      <q-separator vertical spaced />
       <q-space />
 
       <q-btn
@@ -123,6 +129,11 @@
         icon="redo"
         v-bind="getButtonStyle('redo')"
       />
+      <q-btn
+        @click="handleSave"
+        icon="save"
+        v-bind="getAvailableButtonStyle()"
+      />
     </q-toolbar>
     <div class="frame">
       <editor-content :editor="editor" />
@@ -134,6 +145,12 @@
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
+import Superscript from '@tiptap/extension-superscript'
+import Subscript from '@tiptap/extension-subscript'
+import TextAlign from '@tiptap/extension-text-align'
+import FontFamily from '@tiptap/extension-font-family'
+import Image from '@tiptap/extension-image'
+import Link from '@tiptap/extension-link'
 
 export default {
   components: {
@@ -147,7 +164,7 @@ export default {
     },
   },
 
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'save'],
 
   data() {
     return {
@@ -179,6 +196,9 @@ export default {
         dense: true,
       }
     },
+    handleSave() {
+      this.$emit('save')
+    },
   },
 
   watch: {
@@ -195,7 +215,16 @@ export default {
 
   mounted() {
     this.editor = new Editor({
-      extensions: [StarterKit, Underline],
+      extensions: [
+        StarterKit,
+        Underline,
+        Superscript,
+        Subscript,
+        TextAlign,
+        Image,
+        Link,
+        FontFamily,
+      ],
       content: this.modelValue,
       onUpdate: () => {
         this.$emit('update:modelValue', this.editor.getHTML())
