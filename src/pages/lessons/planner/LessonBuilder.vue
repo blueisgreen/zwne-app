@@ -3,7 +3,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
 import TipTapEditor from 'components/TipTapEditor.vue'
 
