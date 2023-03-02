@@ -69,53 +69,48 @@
         @click="editor.chain().focus().setParagraph().run()"
         no-caps
         v-bind="getButtonStyle('paragraph')"
-        >Paragraph</q-btn
-      >
+        label="P"
+      />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
         :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
         v-bind="getButtonStyle('heading', { level: 1 })"
-      >
-        h1
-      </q-btn>
+        label="h1"
+      />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
         :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
         v-bind="getButtonStyle('heading', { level: 2 })"
-      >
-        h2
-      </q-btn>
+        label="h2"
+      />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
         :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }"
         v-bind="getButtonStyle('heading', { level: 3 })"
-      >
-        h3
-      </q-btn>
+        label="h3"
+      />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
         :class="{ 'is-active': editor.isActive('heading', { level: 4 }) }"
         v-bind="getButtonStyle('heading', { level: 4 })"
-      >
-        h4
-      </q-btn>
+        label="h4"
+      />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
         :class="{ 'is-active': editor.isActive('heading', { level: 5 }) }"
         v-bind="getButtonStyle('heading', { level: 5 })"
-      >
-        h5
-      </q-btn>
+        label="h5"
+      />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
         :class="{ 'is-active': editor.isActive('heading', { level: 6 }) }"
         v-bind="getButtonStyle('heading', { level: 6 })"
-      >
-        h6
-      </q-btn>
+        label="h6"
+      />
 
       <q-separator vertical spaced />
       <q-space />
+
       <q-btn
         @click="editor.chain().focus().undo().run()"
         :disabled="!editor.can().chain().focus().undo().run()"
