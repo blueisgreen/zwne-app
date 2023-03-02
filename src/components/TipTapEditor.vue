@@ -26,6 +26,18 @@
         v-bind="getButtonStyle('underline')"
       />
       <q-btn
+        @click="editor.chain().focus().toggleCode().run()"
+        :disabled="!editor.can().chain().focus().toggleCode().run()"
+        icon="code"
+        v-bind="getButtonStyle('code')"
+      />
+      <q-btn
+        @click="editor.chain().focus().unsetAllMarks().run()"
+        icon="format_clear"
+        v-bind="getAvailableButtonStyle()"
+      />
+      <q-separator vertical spaced />
+      <q-btn
         @click="editor.chain().focus().toggleBulletList().run()"
         icon="format_list_bulleted"
         v-bind="getButtonStyle('bulletList')"
@@ -36,14 +48,23 @@
         v-bind="getButtonStyle('orderedList')"
       />
       <q-btn
-        @click="editor.chain().focus().unsetAllMarks().run()"
-        icon="format_clear"
+        @click="editor.chain().focus().toggleBlockquote().run()"
+        icon="format_quote"
+        v-bind="getButtonStyle('blockquote')"
+      />
+      <q-btn
+        @click="editor.chain().focus().setHardBreak().run()"
+        v-bind="getAvailableButtonStyle()"
+        label="BR"
+      />
+      <q-btn
+        @click="editor.chain().focus().setHorizontalRule().run()"
+        icon="horizontal_rule"
         v-bind="getAvailableButtonStyle()"
       />
-      <!-- TODO: understand what this does, is it useful in our context?
-      <button @click="editor.chain().focus().clearNodes().run()">
-        clear nodes
-      </button> -->
+
+      <q-separator vertical spaced />
+
       <q-btn
         @click="editor.chain().focus().setParagraph().run()"
         no-caps
@@ -92,27 +113,9 @@
       >
         h6
       </q-btn>
-      <q-btn
-        @click="editor.chain().focus().setHardBreak().run()"
-        v-bind="getAvailableButtonStyle()"
-        label="BR"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleCode().run()"
-        :disabled="!editor.can().chain().focus().toggleCode().run()"
-        icon="code"
-        v-bind="getButtonStyle('code')"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleBlockquote().run()"
-        icon="format_quote"
-        v-bind="getButtonStyle('blockquote')"
-      />
-      <q-btn
-        @click="editor.chain().focus().setHorizontalRule().run()"
-        icon="horizontal_rule"
-        v-bind="getAvailableButtonStyle()"
-      />
+
+      <q-separator vertical spaced />
+      <q-space />
       <q-btn
         @click="editor.chain().focus().undo().run()"
         :disabled="!editor.can().chain().focus().undo().run()"

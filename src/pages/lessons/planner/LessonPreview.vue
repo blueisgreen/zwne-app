@@ -9,14 +9,6 @@
     >
     <q-card-section>
       <span v-html="planner.activeContentDraft" />
-      <q-editor
-        class="full-height"
-        :model-value="planner.activeContentDraft"
-        readonly
-        flat
-        min-height="300px"
-        :toolbar="[]"
-      />
     </q-card-section>
   </q-card>
 </template>
