@@ -34,6 +34,6 @@ export function getLessonPlans(success = true) {
 
 export function getLessonContent(lessonId) {
   return new Promise(function (resolve, reject) {
-    resolve('<p>A little something to get things started.</p>')
+    resolve('<p>Replace me with pithy explanations.</p>')
   })
 }

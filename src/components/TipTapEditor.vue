@@ -4,48 +4,35 @@
       <q-btn
         @click="editor.chain().focus().toggleBold().run()"
         :disabled="!editor.can().chain().focus().toggleBold().run()"
-        :color="getButtonColor('bold')"
-        :text-color="getTextColor('bold')"
         icon="format_bold"
-        dense
-        size="sm"
+        v-bind="getButtonStyle('bold')"
       />
       <q-btn
         @click="editor.chain().focus().toggleItalic().run()"
         :disabled="!editor.can().chain().focus().toggleItalic().run()"
-        :color="getButtonColor('italic')"
-        :text-color="getTextColor('italic')"
         icon="format_italic"
-        dense
-        size="sm"
+        v-bind="getButtonStyle('italic')"
       />
       <q-btn
         @click="editor.chain().focus().toggleStrike().run()"
         :disabled="!editor.can().chain().focus().toggleStrike().run()"
-        :color="getButtonColor('strike')"
-        :text-color="getTextColor('strike')"
         icon="strikethrough_s"
-        dense
-        size="sm"
+        v-bind="getButtonStyle('strike')"
       />
       <q-btn
         @click="editor.chain().focus().toggleBulletList().run()"
-        :color="getButtonColor('bulletList')"
-        :text-color="getTextColor('bulletList')"
         icon="format_list_bulleted"
-        dense
-        size="sm"
+        v-bind="getButtonStyle('bulletList')"
       />
       <q-btn
         @click="editor.chain().focus().toggleOrderedList().run()"
-        :color="getButtonColor('orderedList')"
-        :text-color="getTextColor('orderedList')"
         icon="format_list_numbered"
-        dense
-        size="sm"
+        v-bind="getButtonStyle('orderedList')"
       />
     </q-toolbar>
-    <editor-content :editor="editor" />
+    <div class="frame">
+      <editor-content :editor="editor" />
+    </div>
   </div>
 </template>
 
@@ -80,13 +67,14 @@ export default {
   },
 
   methods: {
-    getButtonColor(name) {
-      return this.editor.isActive(name) ? this.color.hilite : this.color.base
-    },
-    getTextColor(name) {
-      return this.editor.isActive('bold')
-        ? this.color.txtHilite
-        : this.color.txtBase
+    getButtonStyle(name) {
+      const isActive = this.editor.isActive(name)
+      return {
+        color: isActive ? this.color.hilite : this.color.base,
+        textColor: isActive ? this.color.txtHilite : this.color.txtBase,
+        size: 'sm',
+        dense: true,
+      }
     },
   },
 
@@ -119,20 +107,22 @@ export default {
 </script>
 <style lang="scss">
 .toolbar {
-  border: 5px groove burlywood;
+  background-color: $yellow-1;
+  border: 1px solid $grey-4;
+  border-bottom: none;
   button {
     border: 1px solid grey;
     margin: 2px;
   }
 }
 .frame {
-  border: 5px groove burlywood;
-  padding: 1em;
+  border: 1px solid $grey-4;
+  padding: 0.5em;
+  max-height: 100%;
 }
 .ProseMirror {
   > * + * {
     margin-top: 0.75em;
-    padding: 0.5em;
   }
 
   ul,
