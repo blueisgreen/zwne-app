@@ -20,6 +20,12 @@
         v-bind="getButtonStyle('strike')"
       />
       <q-btn
+        @click="editor.chain().focus().toggleUnderline().run()"
+        :disabled="!editor.can().chain().focus().toggleUnderline().run()"
+        icon="format_underlined"
+        v-bind="getButtonStyle('underline')"
+      />
+      <q-btn
         @click="editor.chain().focus().toggleBulletList().run()"
         icon="format_list_bulleted"
         v-bind="getButtonStyle('bulletList')"
@@ -29,6 +35,96 @@
         icon="format_list_numbered"
         v-bind="getButtonStyle('orderedList')"
       />
+      <q-btn
+        @click="editor.chain().focus().unsetAllMarks().run()"
+        icon="format_clear"
+        v-bind="getAvailableButtonStyle()"
+      />
+      <!-- TODO: understand what this does, is it useful in our context?
+      <button @click="editor.chain().focus().clearNodes().run()">
+        clear nodes
+      </button> -->
+      <q-btn
+        @click="editor.chain().focus().setParagraph().run()"
+        no-caps
+        v-bind="getButtonStyle('paragraph')"
+        >Paragraph</q-btn
+      >
+      <q-btn
+        @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
+        :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
+        v-bind="getButtonStyle('heading', { level: 1 })"
+      >
+        h1
+      </q-btn>
+      <q-btn
+        @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
+        :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
+        v-bind="getButtonStyle('heading', { level: 2 })"
+      >
+        h2
+      </q-btn>
+      <q-btn
+        @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
+        :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }"
+        v-bind="getButtonStyle('heading', { level: 3 })"
+      >
+        h3
+      </q-btn>
+      <q-btn
+        @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
+        :class="{ 'is-active': editor.isActive('heading', { level: 4 }) }"
+        v-bind="getButtonStyle('heading', { level: 4 })"
+      >
+        h4
+      </q-btn>
+      <q-btn
+        @click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
+        :class="{ 'is-active': editor.isActive('heading', { level: 5 }) }"
+        v-bind="getButtonStyle('heading', { level: 5 })"
+      >
+        h5
+      </q-btn>
+      <q-btn
+        @click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
+        :class="{ 'is-active': editor.isActive('heading', { level: 6 }) }"
+        v-bind="getButtonStyle('heading', { level: 6 })"
+      >
+        h6
+      </q-btn>
+      <q-btn
+        @click="editor.chain().focus().setHardBreak().run()"
+        v-bind="getAvailableButtonStyle()"
+        label="BR"
+      />
+      <q-btn
+        @click="editor.chain().focus().toggleCode().run()"
+        :disabled="!editor.can().chain().focus().toggleCode().run()"
+        icon="code"
+        v-bind="getButtonStyle('code')"
+      />
+      <q-btn
+        @click="editor.chain().focus().toggleBlockquote().run()"
+        icon="format_quote"
+        v-bind="getButtonStyle('blockquote')"
+      />
+      <q-btn
+        @click="editor.chain().focus().setHorizontalRule().run()"
+        icon="horizontal_rule"
+        v-bind="getAvailableButtonStyle()"
+      />
+      <q-btn
+        @click="editor.chain().focus().undo().run()"
+        :disabled="!editor.can().chain().focus().undo().run()"
+        icon="undo"
+        v-bind="getButtonStyle('undo')"
+      />
+      <q-btn
+        @click="editor.chain().focus().redo().run()"
+        :disabled="!editor.can().chain().focus().redo().run()"
+        icon="redo"
+        v-bind="getButtonStyle('redo')"
+      />
     </q-toolbar>
     <div class="frame">
       <editor-content :editor="editor" />
@@ -37,8 +133,9 @@
 </template>
 
 <script>
-import StarterKit from '@tiptap/starter-kit'
 import { Editor, EditorContent } from '@tiptap/vue-3'
+import StarterKit from '@tiptap/starter-kit'
+import Underline from '@tiptap/extension-underline'
 
 export default {
   components: {
@@ -67,11 +164,19 @@ export default {
   },
 
   methods: {
-    getButtonStyle(name) {
-      const isActive = this.editor.isActive(name)
+    getButtonStyle(name, options) {
+      const isActive = this.editor.isActive(name, options)
       return {
         color: isActive ? this.color.hilite : this.color.base,
         textColor: isActive ? this.color.txtHilite : this.color.txtBase,
+        size: 'sm',
+        dense: true,
+      }
+    },
+    getAvailableButtonStyle() {
+      return {
+        color: this.color.base,
+        textColor: this.color.txtBase,
         size: 'sm',
         dense: true,
       }
@@ -92,7 +197,7 @@ export default {
 
   mounted() {
     this.editor = new Editor({
-      extensions: [StarterKit],
+      extensions: [StarterKit, Underline],
       content: this.modelValue,
       onUpdate: () => {
         this.$emit('update:modelValue', this.editor.getHTML())
