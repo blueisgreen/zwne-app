@@ -110,7 +110,23 @@
 
       <q-separator vertical spaced />
 
-      <q-btn icon="link" v-bind="getAvailableButtonStyle()" />
+      <q-btn
+        @click="openLinkDialog"
+        icon="link"
+        v-bind="getButtonStyle('link')"
+      />
+      <button
+        @click="setLink"
+        :class="{ 'is-active': editor.isActive('link') }"
+      >
+        setLink
+      </button>
+      <button
+        @click="editor.chain().focus().unsetLink().run()"
+        :disabled="!editor.isActive('link')"
+      >
+        unsetLink
+      </button>
       <q-btn icon="image" v-bind="getAvailableButtonStyle()" />
       <q-btn icon="fa-brands fa-youtube" v-bind="getAvailableButtonStyle()" />
 
@@ -139,6 +155,35 @@
       <editor-content :editor="editor" />
     </div>
   </div>
+
+  <q-dialog v-model="linkDialog" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Link Details</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input
+          dense
+          v-model="linkInput.url"
+          label="URL"
+          autofocus
+          @keyup.enter="prompt = false"
+        />
+        <q-input
+          dense
+          v-model="linkInput.target"
+          label="target"
+          @keyup.enter="prompt = false"
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat label="Add address" @click="updateLink()" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -149,8 +194,8 @@ import Superscript from '@tiptap/extension-superscript'
 import Subscript from '@tiptap/extension-subscript'
 import TextAlign from '@tiptap/extension-text-align'
 import FontFamily from '@tiptap/extension-font-family'
-import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
+import Image from '@tiptap/extension-image'
 
 export default {
   components: {
@@ -169,16 +214,28 @@ export default {
   data() {
     return {
       editor: null,
+      linkDialog: false,
       color: {
         base: 'primary',
         txtBase: 'white',
         hilite: 'blue-2',
         txtHilite: 'black',
       },
+      defaultLinkProps: {
+        url: 'https://',
+        target: '_blank',
+      },
+      linkInput: {},
     }
   },
 
   methods: {
+    getDefaultLinkProps() {
+      return {
+        url: 'https://',
+        target: '_blank',
+      }
+    },
     getButtonStyle(name, options) {
       const isActive = this.editor.isActive(name, options)
       return {
@@ -195,6 +252,41 @@ export default {
         size: 'sm',
         dense: true,
       }
+    },
+    openLinkDialog() {
+      this.linkInput = this.getDefaultLinkProps()
+      const previousUrl = this.editor.getAttributes('link').href
+      if (previousUrl) {
+        this.linkInput.url = previousUrl
+      }
+      this.linkDialog = true
+    },
+    updateLink() {
+      alert('update with ' + JSON.stringify(this.linkInput))
+    },
+    setLink() {
+      const previousUrl = this.editor.getAttributes('link').href
+      const url = window.prompt('URL', previousUrl)
+
+      // cancelled
+      if (url === null) {
+        return
+      }
+
+      // empty
+      if (url === '') {
+        this.editor.chain().focus().extendMarkRange('link').unsetLink().run()
+
+        return
+      }
+
+      // update link
+      this.editor
+        .chain()
+        .focus()
+        .extendMarkRange('link')
+        .setLink({ href: url })
+        .run()
     },
     handleSave() {
       this.$emit('save')
@@ -221,8 +313,10 @@ export default {
         Superscript,
         Subscript,
         TextAlign,
+        Link.configure({
+          openOnClick: false,
+        }),
         Image,
-        Link,
         FontFamily,
       ],
       content: this.modelValue,
