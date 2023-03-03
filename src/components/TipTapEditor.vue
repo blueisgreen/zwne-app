@@ -69,40 +69,75 @@
 
           <q-btn
             @click="editor.chain().focus().setParagraph().run()"
-            no-caps
             v-bind="getButtonStyle('paragraph')"
-            label="P"
+            label="p"
           />
-          <q-btn
-            @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-            v-bind="getButtonStyle('heading', { level: 1 })"
-            label="h1"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-            v-bind="getButtonStyle('heading', { level: 2 })"
-            label="h2"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-            v-bind="getButtonStyle('heading', { level: 3 })"
-            label="h3"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
-            v-bind="getButtonStyle('heading', { level: 4 })"
-            label="h4"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
-            v-bind="getButtonStyle('heading', { level: 5 })"
-            label="h5"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
-            v-bind="getButtonStyle('heading', { level: 6 })"
-            label="h6"
-          />
+          <q-btn-dropdown label="H1-6" v-bind="availableButtonStyle" no-caps>
+            <q-list>
+              <q-item
+                v-for="heading in headings"
+                :key="heading.level"
+                clickable
+                dense
+                :active="editor.isActive('heading', { level: heading.level })"
+                v-close-popup
+                @click="
+                  () =>
+                    editor
+                      .chain()
+                      .focus()
+                      .toggleHeading({ level: heading.level })
+                      .run()
+                "
+              >
+                <q-item-section>
+                  <q-item-label>{{ heading.label }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <q-btn-dropdown label="Align" v-bind="availableButtonStyle" no-caps>
+            <q-list>
+              <q-item
+                v-for="alignment in alignments"
+                :key="alignment.value"
+                clickable
+                dense
+                :active="editor.isActive({ textAlign: alignment.value })"
+                v-close-popup
+                @click="
+                  () =>
+                    editor.chain().focus().setTextAlign(alignment.value).run()
+                "
+              >
+                <q-item-section>
+                  <q-item-label>
+                    <q-icon :name="alignment.icon" />
+                    {{ alignment.label }}
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <q-btn-dropdown label="Font" v-bind="availableButtonStyle" no-caps>
+            <q-list>
+              <q-item
+                v-for="font in fonts"
+                :key="font.value"
+                clickable
+                dense
+                :active="
+                  editor.isActive('textStyle', { fontFamily: font.value })
+                "
+                v-close-popup
+                @click="() => onFontFamilySelect(font.value)"
+              >
+                <q-item-section>
+                  <q-item-label>{{ font.label }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
 
           <q-separator vertical spaced />
 
@@ -111,12 +146,13 @@
             icon="link"
             v-bind="getButtonStyle('link')"
           />
+          <!-- Conserve space. Redundant with opening link and clearing URL. Useability issue?
           <q-btn
             @click="editor.chain().focus().unsetLink().run()"
             :disabled="!editor.isActive('link')"
             icon="link_off"
             v-bind="getButtonStyle('link')"
-          />
+          /> -->
           <q-btn
             @click="openImageDialog"
             icon="image"
@@ -125,35 +161,6 @@
           <q-btn
             @click="handleYouTubeClick"
             icon="fa-brands fa-youtube"
-            v-bind="availableButtonStyle"
-          />
-
-          <q-separator vertical spaced />
-
-          <q-btn
-            @click="editor.chain().focus().setTextAlign('left').run()"
-            icon="format_align_left"
-            v-bind="getButtonStyle({ textAlign: 'left' })"
-          />
-          <q-btn
-            @click="editor.chain().focus().setTextAlign('center').run()"
-            icon="format_align_center"
-            v-bind="getButtonStyle({ textAlign: 'center' })"
-          />
-          <q-btn
-            @click="editor.chain().focus().setTextAlign('right').run()"
-            icon="format_align_right"
-            v-bind="getButtonStyle({ textAlign: 'right' })"
-          />
-          <q-btn
-            @click="editor.chain().focus().setTextAlign('justify').run()"
-            icon="format_align_justify"
-            v-bind="getButtonStyle({ textAlign: 'justify' })"
-          />
-          <q-btn
-            @click="editor.chain().focus().unsetTextAlign().run()"
-            no-caps
-            label="unalign"
             v-bind="availableButtonStyle"
           />
 
@@ -177,148 +184,6 @@
             icon="save"
             v-bind="availableButtonStyle"
           />
-        </q-toolbar>
-
-        <q-toolbar class="toolbar">
-          <q-btn
-            @click="editor.chain().focus().setFontFamily('serif').run()"
-            v-bind="getButtonStyle('textStyle', { fontFamily: 'serif' })"
-            label="serif"
-            no-caps
-          />
-          <q-btn
-            @click="
-              editor.chain().focus().setFontFamily('Georgia, serif').run()
-            "
-            v-bind="
-              getButtonStyle('textStyle', { fontFamily: 'Georgia, serif' })
-            "
-            label="Georgia"
-            no-caps
-          />
-          <q-btn
-            @click="editor.chain().focus().setFontFamily('sans-serif').run()"
-            v-bind="getButtonStyle('textStyle', { fontFamily: 'sans-serif' })"
-            label="sans-serif"
-            no-caps
-          />
-          <q-btn
-            @click="
-              editor.chain().focus().setFontFamily('Optima, sans-serif').run()
-            "
-            v-bind="
-              getButtonStyle('textStyle', { fontFamily: 'Optima, sans-serif' })
-            "
-            label="Optima"
-            no-caps
-          />
-          <q-btn
-            @click="
-              editor.chain().focus().setFontFamily('Verdana, sans-serif').run()
-            "
-            v-bind="
-              getButtonStyle('textStyle', { fontFamily: 'Verdana, sans-serif' })
-            "
-            label="Verdana"
-            no-caps
-          />
-          <q-btn
-            @click="editor.chain().focus().setFontFamily('monospace').run()"
-            v-bind="getButtonStyle('textStyle', { fontFamily: 'monospace' })"
-            label="monospace"
-            no-caps
-          />
-          <q-btn
-            @click="
-              editor
-                .chain()
-                .focus()
-                .setFontFamily('Courier New, monospace')
-                .run()
-            "
-            v-bind="
-              getButtonStyle('textStyle', {
-                fontFamily: 'Courier New, monospace',
-              })
-            "
-            label="Courier New"
-            no-caps
-          />
-          <q-btn
-            @click="editor.chain().focus().setFontFamily('cursive').run()"
-            v-bind="getButtonStyle('textStyle', { fontFamily: 'cursive' })"
-            label="cursive"
-            no-caps
-          />
-          <q-btn
-            @click="
-              editor
-                .chain()
-                .focus()
-                .setFontFamily('Bradley Hand, cursive')
-                .run()
-            "
-            v-bind="
-              getButtonStyle('textStyle', {
-                fontFamily: 'Bradley Hand, cursive',
-              })
-            "
-            label="Bradley Hand"
-            no-caps
-          />
-          <q-btn
-            @click="editor.chain().focus().setFontFamily('fantasy').run()"
-            v-bind="getButtonStyle('textStyle', { fontFamily: 'fantasy' })"
-            label="fantasy"
-            no-caps
-          />
-          <q-btn
-            @click="
-              editor.chain().focus().setFontFamily('Luminari, fantasy').run()
-            "
-            v-bind="
-              getButtonStyle('textStyle', { fontFamily: 'Luminari, fantasy' })
-            "
-            label="Luminari"
-            no-caps
-          />
-          <q-btn
-            @click="editor.chain().focus().unsetFontFamily().run()"
-            label="remove font family"
-            v-bind="availableButtonStyle"
-            no-caps
-          />
-
-          <q-separator vertical spaced />
-        </q-toolbar>
-
-        <q-toolbar class="toolbar">
-          <div class="q-pa-md">
-            <q-btn-dropdown
-              color="primary"
-              label="Font Family"
-              v-bind="availableButtonStyle"
-              no-caps
-            >
-              <q-list>
-                <q-item
-                  v-for="font in fonts"
-                  :key="font.value"
-                  clickable
-                  dense
-                  :active="
-                    editor.isActive('textStyle', { fontFamily: font.value })
-                  "
-                  v-close-popup
-                  @click="() => onFontFamilySelect(font.value)"
-                >
-                  <q-item-section>
-                    <q-item-label>{{ font.label }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-btn-dropdown>
-          </div>
         </q-toolbar>
       </div>
     </div>
@@ -437,6 +302,8 @@ import {
   color,
   fonts,
   availableButtonStyle,
+  headings,
+  alignments,
 } from './TipTapTools/toolbarStyleHelpers'
 
 export default {
@@ -458,7 +325,8 @@ export default {
       editor: null,
       color,
       fonts,
-      styleButton: null,
+      headings,
+      alignments,
       availableButtonStyle,
       linkDialog: false,
       linkInput: {},

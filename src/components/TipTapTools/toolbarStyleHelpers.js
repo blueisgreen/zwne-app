@@ -1,5 +1,3 @@
-export { availableButtonStyle, color, fonts }
-
 // FIXME: figure out a way to do this
 // const init = (editor) => {
 //   return {
@@ -15,11 +13,17 @@ export { availableButtonStyle, color, fonts }
 //   }
 // }
 
+// const color = {
+//   base: 'primary',
+//   txtBase: 'white',
+//   hilite: 'blue-2',
+//   txtHilite: 'black',
+// }
 const color = {
-  base: 'primary',
-  txtBase: 'white',
-  hilite: 'blue-2',
-  txtHilite: 'black',
+  base: 'blue-2',
+  txtBase: 'black',
+  hilite: 'primary',
+  txtHilite: 'white',
 }
 
 const availableButtonStyle = {
@@ -75,3 +79,21 @@ const fonts = [
     value: 'Luminari, fantasy',
   },
 ]
+
+const headings = [
+  { label: 'H1', level: 1 },
+  { label: 'H2', level: 2 },
+  { label: 'H3', level: 3 },
+  { label: 'H4', level: 4 },
+  { label: 'H5', level: 5 },
+  { label: 'H6', level: 6 },
+]
+
+const alignments = [
+  { label: 'left', icon: 'format_align_left', value: 'left' },
+  { label: 'center', icon: 'format_align_center', value: 'center' },
+  { label: 'right', icon: 'format_align_right', value: 'right' },
+  { label: 'justify', icon: 'format_align_justify', value: 'justify' },
+]
+
+export { availableButtonStyle, color, fonts, headings, alignments }
