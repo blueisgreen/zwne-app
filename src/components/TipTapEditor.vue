@@ -73,37 +73,31 @@
       />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
         v-bind="getButtonStyle('heading', { level: 1 })"
         label="h1"
       />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
         v-bind="getButtonStyle('heading', { level: 2 })"
         label="h2"
       />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }"
         v-bind="getButtonStyle('heading', { level: 3 })"
         label="h3"
       />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 4 }) }"
         v-bind="getButtonStyle('heading', { level: 4 })"
         label="h4"
       />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 5 }) }"
         v-bind="getButtonStyle('heading', { level: 5 })"
         label="h5"
       />
       <q-btn
         @click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
-        :class="{ 'is-active': editor.isActive('heading', { level: 6 }) }"
         v-bind="getButtonStyle('heading', { level: 6 })"
         label="h6"
       />
@@ -115,20 +109,22 @@
         icon="link"
         v-bind="getButtonStyle('link')"
       />
-      <button
-        @click="setLink"
-        :class="{ 'is-active': editor.isActive('link') }"
-      >
-        setLink
-      </button>
-      <button
+      <q-btn
         @click="editor.chain().focus().unsetLink().run()"
         :disabled="!editor.isActive('link')"
-      >
-        unsetLink
-      </button>
-      <q-btn icon="image" v-bind="getAvailableButtonStyle()" />
-      <q-btn icon="fa-brands fa-youtube" v-bind="getAvailableButtonStyle()" />
+        icon="link_off"
+        v-bind="getButtonStyle('link')"
+      />
+      <q-btn
+        @click="openImageDialog"
+        icon="image"
+        v-bind="getAvailableButtonStyle()"
+      />
+      <q-btn
+        @click="handleYouTubeClick"
+        icon="fa-brands fa-youtube"
+        v-bind="getAvailableButtonStyle()"
+      />
 
       <q-separator vertical spaced />
       <q-space />
@@ -165,7 +161,8 @@
       <q-card-section class="q-pt-none">
         <q-input
           dense
-          v-model="linkInput.url"
+          type="url"
+          v-model="linkInput.href"
           label="URL"
           autofocus
           @keyup.enter="prompt = false"
@@ -179,8 +176,71 @@
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup />
-        <q-btn flat label="Add address" @click="updateLink()" v-close-popup />
+        <q-btn flat label="Cancel" no-caps v-close-popup />
+        <q-btn
+          flat
+          label="Update Link"
+          no-caps
+          @click="updateLink()"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="imageDialog" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Image Details</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input
+          dense
+          type="url"
+          v-model="imageInput.src"
+          label="URL"
+          autofocus
+          @keyup.enter="prompt = false"
+        />
+        <q-input
+          dense
+          v-model="imageInput.alt"
+          label="Alt text"
+          @keyup.enter="prompt = false"
+        />
+        <q-input
+          dense
+          v-model="imageInput.title"
+          label="Title"
+          @keyup.enter="prompt = false"
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" no-caps v-close-popup />
+        <q-btn
+          flat
+          label="Update Image"
+          no-caps
+          @click="updateImage()"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="youTubeDialog">
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">YouTube is not supported</div>
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        Someday when we have some videos to share, we will add YouTube support.
+        For now, it's on the long list of nice-to-haves.
+      </q-card-section>
+      <q-card-actions align="right">
+        <q-btn flat label="OK" color="primary" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -214,26 +274,32 @@ export default {
   data() {
     return {
       editor: null,
-      linkDialog: false,
       color: {
         base: 'primary',
         txtBase: 'white',
         hilite: 'blue-2',
         txtHilite: 'black',
       },
-      defaultLinkProps: {
-        url: 'https://',
-        target: '_blank',
-      },
+      linkDialog: false,
       linkInput: {},
+      imageDialog: false,
+      imageInput: {},
+      youTubeDialog: false,
     }
   },
 
   methods: {
     getDefaultLinkProps() {
       return {
-        url: 'https://',
+        href: 'https://',
         target: '_blank',
+      }
+    },
+    getDefaultImageProps() {
+      return {
+        src: 'https://cdn.zanzisworld.com/',
+        alt: '',
+        title: '',
       }
     },
     getButtonStyle(name, options) {
@@ -257,36 +323,31 @@ export default {
       this.linkInput = this.getDefaultLinkProps()
       const previousUrl = this.editor.getAttributes('link').href
       if (previousUrl) {
-        this.linkInput.url = previousUrl
+        this.linkInput.href = previousUrl
       }
       this.linkDialog = true
     },
     updateLink() {
-      alert('update with ' + JSON.stringify(this.linkInput))
-    },
-    setLink() {
-      const previousUrl = this.editor.getAttributes('link').href
-      const url = window.prompt('URL', previousUrl)
-
-      // cancelled
-      if (url === null) {
-        return
-      }
-
-      // empty
-      if (url === '') {
+      if (this.linkInput.href === '') {
         this.editor.chain().focus().extendMarkRange('link').unsetLink().run()
-
         return
       }
-
-      // update link
       this.editor
         .chain()
         .focus()
         .extendMarkRange('link')
-        .setLink({ href: url })
+        .setLink(this.linkInput)
         .run()
+    },
+    openImageDialog() {
+      this.imageInput = this.getDefaultImageProps()
+      this.imageDialog = true
+    },
+    updateImage() {
+      this.editor.chain().focus().setImage(this.imageInput).run()
+    },
+    handleYouTubeClick() {
+      this.youTubeDialog = true
     },
     handleSave() {
       this.$emit('save')
@@ -331,6 +392,7 @@ export default {
   },
 }
 </script>
+
 <style lang="scss">
 .toolbar {
   background-color: $yellow-1;
