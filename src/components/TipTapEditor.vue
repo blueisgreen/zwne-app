@@ -1,152 +1,198 @@
 <template>
   <div v-if="editor">
-    <q-toolbar class="toolbar">
-      <q-btn
-        @click="editor.chain().focus().toggleBold().run()"
-        :disabled="!editor.can().chain().focus().toggleBold().run()"
-        icon="format_bold"
-        v-bind="getButtonStyle('bold')"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleItalic().run()"
-        :disabled="!editor.can().chain().focus().toggleItalic().run()"
-        icon="format_italic"
-        v-bind="getButtonStyle('italic')"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleStrike().run()"
-        :disabled="!editor.can().chain().focus().toggleStrike().run()"
-        icon="strikethrough_s"
-        v-bind="getButtonStyle('strike')"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleUnderline().run()"
-        :disabled="!editor.can().chain().focus().toggleUnderline().run()"
-        icon="format_underlined"
-        v-bind="getButtonStyle('underline')"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleCode().run()"
-        :disabled="!editor.can().chain().focus().toggleCode().run()"
-        icon="code"
-        v-bind="getButtonStyle('code')"
-      />
-      <q-btn
-        @click="editor.chain().focus().unsetAllMarks().run()"
-        icon="format_clear"
-        v-bind="getAvailableButtonStyle()"
-      />
-      <q-separator vertical spaced />
-      <q-btn
-        @click="editor.chain().focus().toggleBulletList().run()"
-        icon="format_list_bulleted"
-        v-bind="getButtonStyle('bulletList')"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleOrderedList().run()"
-        icon="format_list_numbered"
-        v-bind="getButtonStyle('orderedList')"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleBlockquote().run()"
-        icon="format_quote"
-        v-bind="getButtonStyle('blockquote')"
-      />
-      <q-btn
-        @click="editor.chain().focus().setHardBreak().run()"
-        v-bind="getAvailableButtonStyle()"
-        label="BR"
-      />
-      <q-btn
-        @click="editor.chain().focus().setHorizontalRule().run()"
-        icon="horizontal_rule"
-        v-bind="getAvailableButtonStyle()"
-      />
+    <div class="q-pa-md q-gutter-y-sm">
+      <div class="bg-orange text-white">
+        <q-toolbar class="toolbar">
+          <q-btn
+            @click="editor.chain().focus().toggleBold().run()"
+            :disabled="!editor.can().chain().focus().toggleBold().run()"
+            icon="format_bold"
+            v-bind="getButtonStyle('bold')"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleItalic().run()"
+            :disabled="!editor.can().chain().focus().toggleItalic().run()"
+            icon="format_italic"
+            v-bind="getButtonStyle('italic')"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleStrike().run()"
+            :disabled="!editor.can().chain().focus().toggleStrike().run()"
+            icon="strikethrough_s"
+            v-bind="getButtonStyle('strike')"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleUnderline().run()"
+            :disabled="!editor.can().chain().focus().toggleUnderline().run()"
+            icon="format_underlined"
+            v-bind="getButtonStyle('underline')"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleCode().run()"
+            :disabled="!editor.can().chain().focus().toggleCode().run()"
+            icon="code"
+            v-bind="getButtonStyle('code')"
+          />
+          <q-btn
+            @click="editor.chain().focus().unsetAllMarks().run()"
+            icon="format_clear"
+            v-bind="getAvailableButtonStyle()"
+          />
+          <q-separator vertical spaced />
+          <q-btn
+            @click="editor.chain().focus().toggleBulletList().run()"
+            icon="format_list_bulleted"
+            v-bind="getButtonStyle('bulletList')"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleOrderedList().run()"
+            icon="format_list_numbered"
+            v-bind="getButtonStyle('orderedList')"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleBlockquote().run()"
+            icon="format_quote"
+            v-bind="getButtonStyle('blockquote')"
+          />
+          <q-btn
+            @click="editor.chain().focus().setHardBreak().run()"
+            v-bind="getAvailableButtonStyle()"
+            label="BR"
+          />
+          <q-btn
+            @click="editor.chain().focus().setHorizontalRule().run()"
+            icon="horizontal_rule"
+            v-bind="getAvailableButtonStyle()"
+          />
 
-      <q-separator vertical spaced />
+          <q-separator vertical spaced />
 
-      <q-btn
-        @click="editor.chain().focus().setParagraph().run()"
-        no-caps
-        v-bind="getButtonStyle('paragraph')"
-        label="P"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-        v-bind="getButtonStyle('heading', { level: 1 })"
-        label="h1"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-        v-bind="getButtonStyle('heading', { level: 2 })"
-        label="h2"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-        v-bind="getButtonStyle('heading', { level: 3 })"
-        label="h3"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
-        v-bind="getButtonStyle('heading', { level: 4 })"
-        label="h4"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
-        v-bind="getButtonStyle('heading', { level: 5 })"
-        label="h5"
-      />
-      <q-btn
-        @click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
-        v-bind="getButtonStyle('heading', { level: 6 })"
-        label="h6"
-      />
+          <q-btn
+            @click="editor.chain().focus().setParagraph().run()"
+            no-caps
+            v-bind="getButtonStyle('paragraph')"
+            label="P"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
+            v-bind="getButtonStyle('heading', { level: 1 })"
+            label="h1"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
+            v-bind="getButtonStyle('heading', { level: 2 })"
+            label="h2"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
+            v-bind="getButtonStyle('heading', { level: 3 })"
+            label="h3"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
+            v-bind="getButtonStyle('heading', { level: 4 })"
+            label="h4"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
+            v-bind="getButtonStyle('heading', { level: 5 })"
+            label="h5"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
+            v-bind="getButtonStyle('heading', { level: 6 })"
+            label="h6"
+          />
 
-      <q-separator vertical spaced />
+          <q-separator vertical spaced />
 
-      <q-btn
-        @click="openLinkDialog"
-        icon="link"
-        v-bind="getButtonStyle('link')"
-      />
-      <q-btn
-        @click="editor.chain().focus().unsetLink().run()"
-        :disabled="!editor.isActive('link')"
-        icon="link_off"
-        v-bind="getButtonStyle('link')"
-      />
-      <q-btn
-        @click="openImageDialog"
-        icon="image"
-        v-bind="getAvailableButtonStyle()"
-      />
-      <q-btn
-        @click="handleYouTubeClick"
-        icon="fa-brands fa-youtube"
-        v-bind="getAvailableButtonStyle()"
-      />
+          <q-btn
+            @click="openLinkDialog"
+            icon="link"
+            v-bind="getButtonStyle('link')"
+          />
+          <q-btn
+            @click="editor.chain().focus().unsetLink().run()"
+            :disabled="!editor.isActive('link')"
+            icon="link_off"
+            v-bind="getButtonStyle('link')"
+          />
+          <q-btn
+            @click="openImageDialog"
+            icon="image"
+            v-bind="getAvailableButtonStyle()"
+          />
+          <q-btn
+            @click="handleYouTubeClick"
+            icon="fa-brands fa-youtube"
+            v-bind="getAvailableButtonStyle()"
+          />
 
-      <q-separator vertical spaced />
-      <q-space />
+          <q-separator vertical spaced />
+          <q-space />
 
-      <q-btn
-        @click="editor.chain().focus().undo().run()"
-        :disabled="!editor.can().chain().focus().undo().run()"
-        icon="undo"
-        v-bind="getButtonStyle('undo')"
-      />
-      <q-btn
-        @click="editor.chain().focus().redo().run()"
-        :disabled="!editor.can().chain().focus().redo().run()"
-        icon="redo"
-        v-bind="getButtonStyle('redo')"
-      />
-      <q-btn
-        @click="handleSave"
-        icon="save"
-        v-bind="getAvailableButtonStyle()"
-      />
-    </q-toolbar>
+          <q-btn
+            @click="editor.chain().focus().undo().run()"
+            :disabled="!editor.can().chain().focus().undo().run()"
+            icon="undo"
+            v-bind="getButtonStyle('undo')"
+          />
+          <q-btn
+            @click="editor.chain().focus().redo().run()"
+            :disabled="!editor.can().chain().focus().redo().run()"
+            icon="redo"
+            v-bind="getButtonStyle('redo')"
+          />
+          <q-btn
+            @click="handleSave"
+            icon="save"
+            v-bind="getAvailableButtonStyle()"
+          />
+        </q-toolbar>
+
+        <q-toolbar class="toolbar">
+          <q-btn
+            @click="editor.chain().focus().setFontFamily('serif').run()"
+            v-bind="getButtonStyle('textStyle', { fontFamily: 'serif' })"
+            label="serif"
+            no-caps
+          />
+          <q-btn
+            @click="editor.chain().focus().setFontFamily('sans-serif').run()"
+            v-bind="getButtonStyle('textStyle', { fontFamily: 'sans-serif' })"
+            label="sans-serif"
+            no-caps
+          />
+          <q-btn
+            @click="editor.chain().focus().setFontFamily('monospace').run()"
+            v-bind="getButtonStyle('textStyle', { fontFamily: 'monospace' })"
+            label="monospace"
+            no-caps
+          />
+          <q-btn
+            @click="editor.chain().focus().setFontFamily('cursive').run()"
+            v-bind="getButtonStyle('textStyle', { fontFamily: 'cursive' })"
+            label="cursive"
+            no-caps
+          />
+          <q-btn
+            @click="editor.chain().focus().setFontFamily('fantasy').run()"
+            v-bind="getButtonStyle('textStyle', { fontFamily: 'fantasy' })"
+            label="fantasy"
+            no-caps
+          />
+          <q-btn
+            @click="editor.chain().focus().unsetFontFamily().run()"
+            label="remove font family"
+            v-bind="getAvailableButtonStyle()"
+            no-caps
+          />
+
+          <q-separator vertical spaced />
+        </q-toolbar>
+      </div>
+    </div>
+
     <div class="frame">
       <editor-content :editor="editor" />
     </div>
@@ -253,6 +299,8 @@ import Underline from '@tiptap/extension-underline'
 import Superscript from '@tiptap/extension-superscript'
 import Subscript from '@tiptap/extension-subscript'
 import TextAlign from '@tiptap/extension-text-align'
+import Text from '@tiptap/extension-text'
+import TextStyle from '@tiptap/extension-text-style'
 import FontFamily from '@tiptap/extension-font-family'
 import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
@@ -378,6 +426,7 @@ export default {
           openOnClick: false,
         }),
         Image,
+        TextStyle,
         FontFamily,
       ],
       content: this.modelValue,
