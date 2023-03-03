@@ -1,6 +1,6 @@
 <template>
   <div v-if="editor">
-    <div class="q-pa-md q-gutter-y-sm">
+    <div class="q-pt-md q-gutter-y-sm">
       <div class="bg-orange text-white">
         <q-toolbar class="toolbar">
           <q-btn
@@ -125,6 +125,35 @@
           <q-btn
             @click="handleYouTubeClick"
             icon="fa-brands fa-youtube"
+            v-bind="getAvailableButtonStyle()"
+          />
+
+          <q-separator vertical spaced />
+
+          <q-btn
+            @click="editor.chain().focus().setTextAlign('left').run()"
+            icon="format_align_left"
+            v-bind="getButtonStyle({ textAlign: 'left' })"
+          />
+          <q-btn
+            @click="editor.chain().focus().setTextAlign('center').run()"
+            icon="format_align_center"
+            v-bind="getButtonStyle({ textAlign: 'center' })"
+          />
+          <q-btn
+            @click="editor.chain().focus().setTextAlign('right').run()"
+            icon="format_align_right"
+            v-bind="getButtonStyle({ textAlign: 'right' })"
+          />
+          <q-btn
+            @click="editor.chain().focus().setTextAlign('justify').run()"
+            icon="format_align_justify"
+            v-bind="getButtonStyle({ textAlign: 'justify' })"
+          />
+          <q-btn
+            @click="editor.chain().focus().unsetTextAlign().run()"
+            no-caps
+            label="unalign"
             v-bind="getAvailableButtonStyle()"
           />
 
@@ -371,7 +400,6 @@ import Underline from '@tiptap/extension-underline'
 import Superscript from '@tiptap/extension-superscript'
 import Subscript from '@tiptap/extension-subscript'
 import TextAlign from '@tiptap/extension-text-align'
-import Text from '@tiptap/extension-text'
 import TextStyle from '@tiptap/extension-text-style'
 import FontFamily from '@tiptap/extension-font-family'
 import Link from '@tiptap/extension-link'
@@ -493,7 +521,9 @@ export default {
         Underline,
         Superscript,
         Subscript,
-        TextAlign,
+        TextAlign.configure({
+          types: ['heading', 'paragraph'],
+        }),
         Link.configure({
           openOnClick: false,
         }),
