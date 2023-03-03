@@ -36,7 +36,7 @@
           <q-btn
             @click="editor.chain().focus().unsetAllMarks().run()"
             icon="format_clear"
-            v-bind="getAvailableButtonStyle()"
+            v-bind="availableButtonStyle"
           />
           <q-separator vertical spaced />
           <q-btn
@@ -56,13 +56,13 @@
           />
           <q-btn
             @click="editor.chain().focus().setHardBreak().run()"
-            v-bind="getAvailableButtonStyle()"
+            v-bind="availableButtonStyle"
             label="BR"
           />
           <q-btn
             @click="editor.chain().focus().setHorizontalRule().run()"
             icon="horizontal_rule"
-            v-bind="getAvailableButtonStyle()"
+            v-bind="availableButtonStyle"
           />
 
           <q-separator vertical spaced />
@@ -120,12 +120,12 @@
           <q-btn
             @click="openImageDialog"
             icon="image"
-            v-bind="getAvailableButtonStyle()"
+            v-bind="availableButtonStyle"
           />
           <q-btn
             @click="handleYouTubeClick"
             icon="fa-brands fa-youtube"
-            v-bind="getAvailableButtonStyle()"
+            v-bind="availableButtonStyle"
           />
 
           <q-separator vertical spaced />
@@ -154,7 +154,7 @@
             @click="editor.chain().focus().unsetTextAlign().run()"
             no-caps
             label="unalign"
-            v-bind="getAvailableButtonStyle()"
+            v-bind="availableButtonStyle"
           />
 
           <q-separator vertical spaced />
@@ -175,7 +175,7 @@
           <q-btn
             @click="handleSave"
             icon="save"
-            v-bind="getAvailableButtonStyle()"
+            v-bind="availableButtonStyle"
           />
         </q-toolbar>
 
@@ -285,11 +285,40 @@
           <q-btn
             @click="editor.chain().focus().unsetFontFamily().run()"
             label="remove font family"
-            v-bind="getAvailableButtonStyle()"
+            v-bind="availableButtonStyle"
             no-caps
           />
 
           <q-separator vertical spaced />
+        </q-toolbar>
+
+        <q-toolbar class="toolbar">
+          <div class="q-pa-md">
+            <q-btn-dropdown
+              color="primary"
+              label="Font Family"
+              v-bind="availableButtonStyle"
+              no-caps
+            >
+              <q-list>
+                <q-item
+                  v-for="font in fonts"
+                  :key="font.value"
+                  clickable
+                  dense
+                  :active="
+                    editor.isActive('textStyle', { fontFamily: font.value })
+                  "
+                  v-close-popup
+                  @click="() => onFontFamilySelect(font.value)"
+                >
+                  <q-item-section>
+                    <q-item-label>{{ font.label }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
+          </div>
         </q-toolbar>
       </div>
     </div>
@@ -404,6 +433,11 @@ import TextStyle from '@tiptap/extension-text-style'
 import FontFamily from '@tiptap/extension-font-family'
 import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
+import {
+  color,
+  fonts,
+  availableButtonStyle,
+} from './TipTapTools/toolbarStyleHelpers'
 
 export default {
   components: {
@@ -422,12 +456,10 @@ export default {
   data() {
     return {
       editor: null,
-      color: {
-        base: 'primary',
-        txtBase: 'white',
-        hilite: 'blue-2',
-        txtHilite: 'black',
-      },
+      color,
+      fonts,
+      styleButton: null,
+      availableButtonStyle,
       linkDialog: false,
       linkInput: {},
       imageDialog: false,
@@ -459,13 +491,8 @@ export default {
         dense: true,
       }
     },
-    getAvailableButtonStyle() {
-      return {
-        color: this.color.base,
-        textColor: this.color.txtBase,
-        size: 'sm',
-        dense: true,
-      }
+    onFontFamilySelect(fontValue) {
+      this.editor.chain().focus().setFontFamily(fontValue).run()
     },
     openLinkDialog() {
       this.linkInput = this.getDefaultLinkProps()
