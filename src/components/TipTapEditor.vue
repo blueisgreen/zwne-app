@@ -28,6 +28,16 @@
             v-bind="getButtonStyle('underline')"
           />
           <q-btn
+            @click="editor.chain().focus().toggleSubscript().run()"
+            icon="subscript"
+            v-bind="getButtonStyle('subscript')"
+          />
+          <q-btn
+            @click="editor.chain().focus().toggleSuperscript().run()"
+            icon="superscript"
+            v-bind="getButtonStyle('superscript')"
+          />
+          <q-btn
             @click="editor.chain().focus().toggleCode().run()"
             :disabled="!editor.can().chain().focus().toggleCode().run()"
             icon="code"
@@ -146,13 +156,6 @@
             icon="link"
             v-bind="getButtonStyle('link')"
           />
-          <!-- Conserve space. Redundant with opening link and clearing URL. Useability issue?
-          <q-btn
-            @click="editor.chain().focus().unsetLink().run()"
-            :disabled="!editor.isActive('link')"
-            icon="link_off"
-            v-bind="getButtonStyle('link')"
-          /> -->
           <q-btn
             @click="openImageDialog"
             icon="image"
