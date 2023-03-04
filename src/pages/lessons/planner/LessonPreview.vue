@@ -8,7 +8,7 @@
       </div></q-card-section
     >
     <q-card-section>
-      <span v-html="planner.activeContentDraft" />
+      <span class="preview-style" v-html="planner.activeContentDraft" />
     </q-card-section>
   </q-card>
 </template>
@@ -19,4 +19,8 @@ import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
 const planner = useLessonPlannerStore()
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.preview-style {
+  padding: 3em;
+}
+</style>

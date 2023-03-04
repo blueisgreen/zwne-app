@@ -58,7 +58,18 @@
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Categories</div>
-          <div class="col">{{ cats }}</div>
+          <div class="col">
+            <q-select
+              v-model="planner.selectedPlanChanges.categories"
+              :options="availableCats"
+              multiple
+              emit-value
+              clearable
+              outlined
+              options-dense
+              dense
+            />
+          </div>
         </div>
       </q-card-section>
 
@@ -100,7 +111,15 @@ import { date } from 'quasar'
 import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
 
 const planner = useLessonPlannerStore()
-// const editOn = ref(false) // TODO: default true when new lesson - use store for flag
+const updatedCats = ref([])
+const availableCats = [
+  { label: 'engineering', value: 'engineering' },
+  { label: 'fun', value: 'fun' },
+  { label: 'nuclear power plants', value: 'nuclear_power_plants' },
+  { label: 'perspective', value: 'perspective' },
+  { label: 'safety', value: 'safety' },
+  { label: 'science', value: 'science' },
+]
 const cats = computed(() => {
   return planner.selectedLesson.categories.join(', ')
 })
@@ -115,6 +134,7 @@ function editDetails() {
   planner.editSelectedDetails()
 }
 function handleSave() {
+  console.log('saving plan details')
   planner.savePlanChanges()
 }
 function handleCancel() {

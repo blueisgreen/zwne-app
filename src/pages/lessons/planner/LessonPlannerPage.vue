@@ -19,7 +19,7 @@
         <lesson-plan-details v-if="planner.selectedLesson" />
         <q-chip v-else>
           <q-avatar size="lg">
-            <img src="/icons/favicon-128x128.png" />
+            <img :src="Zanzibar" />
           </q-avatar>
           Choose a lesson
         </q-chip>
@@ -34,6 +34,7 @@ import LessonPlannerSpecs from './LessonPlannerSpecs.vue'
 import LessonPlanSelectorList from './LessonPlanSelectorList.vue'
 import LessonPlanDetails from './LessonPlanDetails.vue'
 import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
+import Zanzibar from 'assets/Zanzibar.svg'
 
 const planner = useLessonPlannerStore()
 
