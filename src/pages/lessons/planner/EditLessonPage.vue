@@ -12,10 +12,8 @@
 
     <q-tabs v-model="tabModel" class="bg-blue-1 text-primary" dense no-caps>
       <q-tab name="edit" label="Edit" />
-      <q-tab name="build" label="Build" />
-      <q-tab name="images" label="Images" />
       <q-tab name="preview" label="Preview" />
-      <q-tab name="html" label="HTML View" />
+      <q-tab name="html" label="HTML" />
       <q-route-tab
         :to="{ name: 'lesson-planner' }"
         label="Back to Planner"
@@ -26,38 +24,13 @@
 
     <q-tab-panels v-model="tabModel">
       <q-tab-panel name="edit">
-        <lesson-composer />
-      </q-tab-panel>
-      <q-tab-panel name="build">
         <lesson-builder />
       </q-tab-panel>
-      <q-tab-panel name="images">
-        <div class="text-h6">Manage images for lessons</div>
-      </q-tab-panel>
       <q-tab-panel name="preview">
-        <div class="text-h6">Preview</div>
-        <q-card>
-          <q-card-section>
-            <div class="text-h6">{{ planner.selectedLesson.title }}</div>
-            <div class="text-caption text-secondary">
-              {{ planner.selectedLesson.subtitle }}
-            </div></q-card-section
-          >
-          <q-card-section>
-            <span v-html="planner.activeContentDraft" />
-            <!-- <q-editor
-              class="full-height"
-              :model-value="planner.activeContentDraft"
-              readonly
-              flat
-              min-height="300px"
-              :toolbar="[]"
-            /> -->
-          </q-card-section>
-        </q-card>
+        <lesson-preview />
       </q-tab-panel>
       <q-tab-panel name="html">
-        <div class="text-h6">HTML View</div>
+        <div class="text-h6">HTML</div>
         <q-card>
           <q-card-section>
             <pre style="white-space: pre-line">{{
@@ -75,8 +48,8 @@ import { ref, onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
-import LessonComposer from './LessonComposer.vue'
 import LessonBuilder from './LessonBuilder.vue'
+import LessonPreview from './LessonPreview.vue'
 import LessonEditorSpecs from './LessonEditorSpecs.vue'
 
 const $q = useQuasar()
