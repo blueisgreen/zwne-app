@@ -130,7 +130,11 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
       plan.title = this.selectedPlanChanges.title
       plan.subtitle = this.selectedPlanChanges.subtitle
       plan.categories = this.selectedPlanChanges.categories
-      plan.updatedAt = new Date()
+      const now = new Date()
+      if (!plan.createdAt) {
+        plan.createdAt = now
+      }
+      plan.updatedAt = now
       this.clearPlanEdits()
     },
     saveContentChanges() {

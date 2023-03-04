@@ -113,10 +113,12 @@ import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
 const planner = useLessonPlannerStore()
 const updatedCats = ref([])
 const availableCats = [
-  { label: 'science', value: 'science' },
-  { label: 'power plants', value: 'power_plants' },
+  { label: 'engineering', value: 'engineering' },
   { label: 'fun', value: 'fun' },
-  { label: 'perspective', value: 'opinion' },
+  { label: 'nuclear power plants', value: 'nuclear_power_plants' },
+  { label: 'perspective', value: 'perspective' },
+  { label: 'safety', value: 'safety' },
+  { label: 'science', value: 'science' },
 ]
 const cats = computed(() => {
   return planner.selectedLesson.categories.join(', ')
