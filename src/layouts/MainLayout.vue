@@ -10,9 +10,11 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-        <q-avatar size="lg">
-          <img src="/icons/favicon-128x128.png" />
-        </q-avatar>
+        <q-btn :to="{ name: 'home' }" dense flat>
+          <q-avatar size="lg">
+            <img :src="Zanzibar" alt="Zanzibar, Nuclear Hero" />
+          </q-avatar>
+        </q-btn>
         <q-toolbar-title> Zanzibar's World of Nuclear Energy </q-toolbar-title>
         <div>
           on Quasar <q-badge>v{{ $q.version }}</q-badge>
@@ -37,15 +39,43 @@
 
     <common-footer />
   </q-layout>
+  <q-dialog v-model="aboutAuth">
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">Sign Up / Sign In</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <p>
+          Thanks for trying to sign up. Although this feature is not yet
+          available, the day will come when you can join Zanzi's World and enjoy
+          life to the fullest.
+        </p>
+        <p>
+          While you wait, check out
+          <a href="https://zanzisworld.substack.com/" target="_blank">
+            The Making of... blog on Substack </a
+          >.
+        </p>
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="OK" color="primary" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import FullNavigation from 'layouts/FullNavigation.vue'
 import CommonFooter from 'layouts/CommonFooter.vue'
+import Zanzibar from 'assets/Zanzibar.svg'
 
+const aboutAuth = ref(false)
 const signedIn = ref(false)
 const toggleSignedIn = () => {
+  aboutAuth.value = true
   signedIn.value = !signedIn.value
 }
 const leftDrawerOpen = ref(false)
