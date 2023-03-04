@@ -8,7 +8,7 @@ const sample = [
     categories: ['physics'],
     createdAt: now,
     updatedAt: now,
-    publishedAt: now,
+    publishedAt: null,
   },
   {
     id: 'pwr1',
@@ -18,7 +18,7 @@ const sample = [
     categories: ['physics'],
     createdAt: now,
     updatedAt: now,
-    publishedAt: now,
+    publishedAt: null,
   },
 ]
 
