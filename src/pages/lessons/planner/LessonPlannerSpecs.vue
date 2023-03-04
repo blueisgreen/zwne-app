@@ -5,12 +5,12 @@
       <q-card-section>
         <div class="text-h6">Specs</div>
         <ul>
-          <li>See editable lessons</li>
-          <li>Create new lesson</li>
-          <li>Edit a draft lesson</li>
+          <li><q-icon name="check" /> See editable lessons</li>
+          <li><q-icon name="check" /> Create new lesson</li>
+          <li><q-icon name="check" /> Edit a draft lesson</li>
+          <li>Change lesson status: publish, unpublish, archive</li>
           <li>Start a revision on any published lesson</li>
           <li>Apply metadata: catagories, etc.</li>
-          <li>Change lesson status</li>
           <li>Set up lesson groups and paths (i.e., courses)</li>
           <li>View usage stats</li>
         </ul>
