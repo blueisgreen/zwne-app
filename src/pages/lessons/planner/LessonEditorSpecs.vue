@@ -14,12 +14,15 @@
             Editor specs:
             <ul>
               <li><q-icon name="check" /> Basic formatting</li>
-              <li>3 fonts styles: serif, sans-serif, mono-spaced</li>
+              <li>
+                <q-icon name="check" />3 fonts styles: serif, sans-serif,
+                mono-spaced
+              </li>
               <li>Equation/math support</li>
-              <li>Add/Edit links</li>
-              <li>Add images</li>
+              <li><q-icon name="check" />Add/Edit links</li>
+              <li><q-icon name="check" />Add images</li>
               <li>Upload images</li>
-              <li>Auto-save enabled (toggleable)</li>
+              <li>Auto-save enabled</li>
             </ul>
           </li>
         </ul>
