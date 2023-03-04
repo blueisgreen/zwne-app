@@ -101,7 +101,9 @@
                 "
               >
                 <q-item-section>
-                  <q-item-label>{{ heading.label }}</q-item-label>
+                  <q-item-label :class="'text-h' + heading.level">{{
+                    heading.label
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -143,7 +145,9 @@
                 @click="() => onFontFamilySelect(font.value)"
               >
                 <q-item-section>
-                  <q-item-label>{{ font.label }}</q-item-label>
+                  <q-item-label :style="{ fontFamily: font.value }">{{
+                    font.label
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
