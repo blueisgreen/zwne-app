@@ -8,9 +8,10 @@
         Explore the world of nuclear power, the most effective source of energy
         to help us thrive.
       </div>
-      <q-img :src="Zanzibar" width="50%" />
+      <q-img :src="Zanzibar" width="50%" alt="Zanzibar, Nuclear Hero" />
       <div class="q-py-sm">
-        I am Zanzibar. Let me show you everything we know about nuclear power.
+        I am Zanzibar. You can call me Zanzi. Let me show you everything we know
+        about nuclear power.
       </div>
     </div>
   </q-page>

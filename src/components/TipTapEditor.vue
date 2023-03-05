@@ -1,203 +1,192 @@
 <template>
   <div v-if="editor">
-    <div class="q-pt-md q-gutter-y-sm">
-      <div class="bg-orange text-white">
-        <q-toolbar class="toolbar">
-          <q-btn
-            @click="editor.chain().focus().toggleBold().run()"
-            :disabled="!editor.can().chain().focus().toggleBold().run()"
-            icon="format_bold"
-            v-bind="getButtonStyle('bold')"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleItalic().run()"
-            :disabled="!editor.can().chain().focus().toggleItalic().run()"
-            icon="format_italic"
-            v-bind="getButtonStyle('italic')"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleStrike().run()"
-            :disabled="!editor.can().chain().focus().toggleStrike().run()"
-            icon="strikethrough_s"
-            v-bind="getButtonStyle('strike')"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleUnderline().run()"
-            :disabled="!editor.can().chain().focus().toggleUnderline().run()"
-            icon="format_underlined"
-            v-bind="getButtonStyle('underline')"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleSubscript().run()"
-            icon="subscript"
-            v-bind="getButtonStyle('subscript')"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleSuperscript().run()"
-            icon="superscript"
-            v-bind="getButtonStyle('superscript')"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleCode().run()"
-            :disabled="!editor.can().chain().focus().toggleCode().run()"
-            icon="code"
-            v-bind="getButtonStyle('code')"
-          />
-          <q-btn
-            @click="editor.chain().focus().unsetAllMarks().run()"
-            icon="format_clear"
-            v-bind="availableButtonStyle"
-          />
-          <q-separator vertical spaced />
-          <q-btn
-            @click="editor.chain().focus().toggleBulletList().run()"
-            icon="format_list_bulleted"
-            v-bind="getButtonStyle('bulletList')"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleOrderedList().run()"
-            icon="format_list_numbered"
-            v-bind="getButtonStyle('orderedList')"
-          />
-          <q-btn
-            @click="editor.chain().focus().toggleBlockquote().run()"
-            icon="format_quote"
-            v-bind="getButtonStyle('blockquote')"
-          />
-          <q-btn
-            @click="editor.chain().focus().setHardBreak().run()"
-            v-bind="availableButtonStyle"
-            label="BR"
-          />
-          <q-btn
-            @click="editor.chain().focus().setHorizontalRule().run()"
-            icon="horizontal_rule"
-            v-bind="availableButtonStyle"
-          />
+    <q-toolbar class="toolbar-style">
+      <q-btn
+        @click="editor.chain().focus().toggleBold().run()"
+        :disabled="!editor.can().chain().focus().toggleBold().run()"
+        icon="format_bold"
+        v-bind="getButtonStyle('bold')"
+      />
+      <q-btn
+        @click="editor.chain().focus().toggleItalic().run()"
+        :disabled="!editor.can().chain().focus().toggleItalic().run()"
+        icon="format_italic"
+        v-bind="getButtonStyle('italic')"
+      />
+      <q-btn
+        @click="editor.chain().focus().toggleStrike().run()"
+        :disabled="!editor.can().chain().focus().toggleStrike().run()"
+        icon="strikethrough_s"
+        v-bind="getButtonStyle('strike')"
+      />
+      <q-btn
+        @click="editor.chain().focus().toggleUnderline().run()"
+        :disabled="!editor.can().chain().focus().toggleUnderline().run()"
+        icon="format_underlined"
+        v-bind="getButtonStyle('underline')"
+      />
+      <q-btn
+        @click="editor.chain().focus().toggleSubscript().run()"
+        icon="subscript"
+        v-bind="getButtonStyle('subscript')"
+      />
+      <q-btn
+        @click="editor.chain().focus().toggleSuperscript().run()"
+        icon="superscript"
+        v-bind="getButtonStyle('superscript')"
+      />
+      <q-btn
+        @click="editor.chain().focus().toggleCode().run()"
+        :disabled="!editor.can().chain().focus().toggleCode().run()"
+        icon="code"
+        v-bind="getButtonStyle('code')"
+      />
+      <q-btn
+        @click="editor.chain().focus().unsetAllMarks().run()"
+        icon="format_clear"
+        v-bind="availableButtonStyle"
+      />
+      <q-separator vertical spaced />
+      <q-btn
+        @click="editor.chain().focus().toggleBulletList().run()"
+        icon="format_list_bulleted"
+        v-bind="getButtonStyle('bulletList')"
+      />
+      <q-btn
+        @click="editor.chain().focus().toggleOrderedList().run()"
+        icon="format_list_numbered"
+        v-bind="getButtonStyle('orderedList')"
+      />
+      <q-btn
+        @click="editor.chain().focus().toggleBlockquote().run()"
+        icon="format_quote"
+        v-bind="getButtonStyle('blockquote')"
+      />
+      <q-btn
+        @click="editor.chain().focus().setHardBreak().run()"
+        v-bind="availableButtonStyle"
+        label="BR"
+      />
+      <q-btn
+        @click="editor.chain().focus().setHorizontalRule().run()"
+        icon="horizontal_rule"
+        v-bind="availableButtonStyle"
+      />
 
-          <q-separator vertical spaced />
+      <q-separator vertical spaced />
 
-          <q-btn
-            @click="editor.chain().focus().setParagraph().run()"
-            v-bind="getButtonStyle('paragraph')"
-            label="p"
-          />
-          <q-btn-dropdown label="H1-6" v-bind="availableButtonStyle" no-caps>
-            <q-list>
-              <q-item
-                v-for="heading in headings"
-                :key="heading.level"
-                clickable
-                dense
-                :active="editor.isActive('heading', { level: heading.level })"
-                v-close-popup
-                @click="
-                  () =>
-                    editor
-                      .chain()
-                      .focus()
-                      .toggleHeading({ level: heading.level })
-                      .run()
-                "
-              >
-                <q-item-section>
-                  <q-item-label :class="'text-h' + heading.level">{{
-                    heading.label
-                  }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-          <q-btn-dropdown label="Align" v-bind="availableButtonStyle" no-caps>
-            <q-list>
-              <q-item
-                v-for="alignment in alignments"
-                :key="alignment.value"
-                clickable
-                dense
-                :active="editor.isActive({ textAlign: alignment.value })"
-                v-close-popup
-                @click="
-                  () =>
-                    editor.chain().focus().setTextAlign(alignment.value).run()
-                "
-              >
-                <q-item-section>
-                  <q-item-label>
-                    <q-icon :name="alignment.icon" />
-                    {{ alignment.label }}
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-          <q-btn-dropdown label="Font" v-bind="availableButtonStyle" no-caps>
-            <q-list>
-              <q-item
-                v-for="font in fonts"
-                :key="font.value"
-                clickable
-                dense
-                :active="
-                  editor.isActive('textStyle', { fontFamily: font.value })
-                "
-                v-close-popup
-                @click="() => onFontFamilySelect(font.value)"
-              >
-                <q-item-section>
-                  <q-item-label :style="{ fontFamily: font.value }">{{
-                    font.label
-                  }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
+      <q-btn
+        @click="editor.chain().focus().setParagraph().run()"
+        v-bind="getButtonStyle('paragraph')"
+        label="p"
+      />
+      <q-btn-dropdown label="H1-6" v-bind="availableButtonStyle" no-caps>
+        <q-list>
+          <q-item
+            v-for="heading in headings"
+            :key="heading.level"
+            clickable
+            dense
+            :active="editor.isActive('heading', { level: heading.level })"
+            v-close-popup
+            @click="
+              () =>
+                editor
+                  .chain()
+                  .focus()
+                  .toggleHeading({ level: heading.level })
+                  .run()
+            "
+          >
+            <q-item-section>
+              <q-item-label :class="'text-h' + heading.level">{{
+                heading.label
+              }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
+      <q-btn-dropdown label="Align" v-bind="availableButtonStyle" no-caps>
+        <q-list>
+          <q-item
+            v-for="alignment in alignments"
+            :key="alignment.value"
+            clickable
+            dense
+            :active="editor.isActive({ textAlign: alignment.value })"
+            v-close-popup
+            @click="
+              () => editor.chain().focus().setTextAlign(alignment.value).run()
+            "
+          >
+            <q-item-section>
+              <q-item-label>
+                <q-icon :name="alignment.icon" />
+                {{ alignment.label }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
+      <q-btn-dropdown label="Font" v-bind="availableButtonStyle" no-caps>
+        <q-list>
+          <q-item
+            v-for="font in fonts"
+            :key="font.value"
+            clickable
+            dense
+            :active="editor.isActive('textStyle', { fontFamily: font.value })"
+            v-close-popup
+            @click="() => onFontFamilySelect(font.value)"
+          >
+            <q-item-section>
+              <q-item-label :style="{ fontFamily: font.value }">{{
+                font.label
+              }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
 
-          <q-separator vertical spaced />
+      <q-separator vertical spaced />
 
-          <q-btn
-            @click="openLinkDialog"
-            icon="link"
-            v-bind="getButtonStyle('link')"
-          />
-          <q-btn
-            @click="openImageDialog"
-            icon="image"
-            v-bind="availableButtonStyle"
-          />
-          <q-btn
-            @click="handleYouTubeClick"
-            icon="fa-brands fa-youtube"
-            v-bind="availableButtonStyle"
-          />
+      <q-btn
+        @click="openLinkDialog"
+        icon="link"
+        v-bind="getButtonStyle('link')"
+      />
+      <q-btn
+        @click="openImageDialog"
+        icon="image"
+        v-bind="availableButtonStyle"
+      />
+      <q-btn
+        @click="handleYouTubeClick"
+        icon="fa-brands fa-youtube"
+        v-bind="availableButtonStyle"
+      />
 
-          <q-separator vertical spaced />
-          <q-space />
+      <q-separator vertical spaced />
+      <q-space />
 
-          <q-btn
-            @click="editor.chain().focus().undo().run()"
-            :disabled="!editor.can().chain().focus().undo().run()"
-            icon="undo"
-            v-bind="getButtonStyle('undo')"
-          />
-          <q-btn
-            @click="editor.chain().focus().redo().run()"
-            :disabled="!editor.can().chain().focus().redo().run()"
-            icon="redo"
-            v-bind="getButtonStyle('redo')"
-          />
-          <q-btn
-            @click="handleSave"
-            icon="save"
-            v-bind="availableButtonStyle"
-          />
-        </q-toolbar>
-      </div>
-    </div>
+      <q-btn
+        @click="editor.chain().focus().undo().run()"
+        :disabled="!editor.can().chain().focus().undo().run()"
+        icon="undo"
+        v-bind="getButtonStyle('undo')"
+      />
+      <q-btn
+        @click="editor.chain().focus().redo().run()"
+        :disabled="!editor.can().chain().focus().redo().run()"
+        icon="redo"
+        v-bind="getButtonStyle('redo')"
+      />
+      <q-btn @click="handleSave" icon="save" v-bind="availableButtonStyle" />
+    </q-toolbar>
+  </div>
 
-    <div class="frame">
-      <editor-content :editor="editor" />
-    </div>
+  <div class="frame">
+    <editor-content :editor="editor" />
   </div>
 
   <q-dialog v-model="linkDialog" persistent>
@@ -447,13 +436,13 @@ export default {
 </script>
 
 <style lang="scss">
-.toolbar {
-  background-color: $yellow-1;
+.toolbar-style {
   border: 1px solid $grey-4;
   border-bottom: none;
+  background-color: $grey-2;
+
   button {
-    border: 1px solid grey;
-    margin: 2px;
+    margin-right: 0.5em;
   }
 }
 .frame {
