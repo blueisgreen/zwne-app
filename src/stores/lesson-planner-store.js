@@ -1,5 +1,9 @@
 import { defineStore } from 'pinia'
-import { getLessonPlans, getLessonContent } from '../api/lessonApi'
+import {
+  getLessonPlans,
+  getLessonContent,
+  simulateApiCall,
+} from '../api/lessonApi'
 import { generateRandomKey } from 'src/components/modelHelper'
 
 /**
@@ -97,6 +101,59 @@ export const useLessonPlannerStore = defineStore('lesson-planner', {
       await this.fetchLessonContent(lessonId)
       this.selectLesson(lessonId)
       this.activeContentDraft = this.selectedLesson.content
+    },
+    async publishSelectedLesson() {
+      // TODO: use API to get content
+      if (this.isSelected) {
+        await simulateApiCall(() => {
+          const now = new Date()
+          this.selectedLesson.publishedAt = now
+          this.selectedLesson.updatedAt = now
+        })
+      }
+    },
+    async retractPublishedSelectedLesson() {
+      // TODO: use API to get content
+      if (this.isSelected) {
+        await simulateApiCall(() => {
+          const now = new Date()
+          this.selectedLesson.publishedAt = null
+          this.selectedLesson.updatedAt = now
+        })
+      }
+    },
+    async revisePublishedSelectedLesson() {
+      // TODO: use API to get content
+      if (this.isSelected) {
+        await simulateApiCall(() => {
+          const now = new Date()
+          this.selectedLesson.publishedAt = null
+          this.selectedLesson.createdAt = now
+          this.selectedLesson.updatedAt = now
+          this.selectedLesson.version++
+        })
+      }
+    },
+    async archiveSelectedLesson() {
+      // TODO: use API to get content
+      if (this.isSelected) {
+        await simulateApiCall(() => {
+          const now = new Date()
+          this.selectedLesson.archivedAt = now
+          this.selectedLesson.publishedAt = null
+          this.selectedLesson.updatedAt = now
+        })
+      }
+    },
+    async reviveSelectedLesson() {
+      // TODO: use API to get content
+      if (this.isSelected) {
+        await simulateApiCall(() => {
+          const now = new Date()
+          this.selectedLesson.archivedAt = null
+          this.selectedLesson.updatedAt = now
+        })
+      }
     },
     selectLesson(id) {
       this.selectedPlanId = id
