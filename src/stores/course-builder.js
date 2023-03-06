@@ -72,7 +72,7 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       return state.lessonPlans.map((planId) => state.lessonPlanIndex[planId])
     },
     lessonPlan: (state) => {
-      return (lessonPlanId) => {
+      return (lessonId) => {
         return state.lessonPlanIndex[lessonId]
       }
     },
