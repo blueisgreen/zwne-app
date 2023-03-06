@@ -33,7 +33,7 @@ import { onMounted } from 'vue'
 import LessonPlannerSpecs from './LessonPlannerSpecs.vue'
 import LessonPlanSelectorList from './LessonPlanSelectorList.vue'
 import LessonPlanDetails from './LessonPlanDetails.vue'
-import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
+import { useLessonPlannerStore } from 'src/stores/lesson-planner.js'
 import Zanzibar from 'assets/Zanzibar.svg'
 
 const planner = useLessonPlannerStore()

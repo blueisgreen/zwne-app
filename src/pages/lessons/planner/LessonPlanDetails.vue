@@ -31,10 +31,6 @@
           <div class="col">{{ planner.selectedLesson.subtitle }}</div>
         </div>
         <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Version</div>
-          <div class="col">{{ planner.selectedLesson.version }}</div>
-        </div>
-        <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Category</div>
           <div class="col">{{ cats }}</div>
         </div>
@@ -61,16 +57,6 @@
           </div>
         </div>
         <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Version</div>
-          <div class="col">
-            <q-input
-              v-model="planner.selectedPlanChanges.version"
-              outlined
-              dense
-            />
-          </div>
-        </div>
-        <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Categories</div>
           <div class="col">
             <q-select
@@ -86,6 +72,8 @@
           </div>
         </div>
       </q-card-section>
+
+      <q-separator />
 
       <q-card-actions align="around">
         <q-btn
@@ -138,6 +126,10 @@
           <div class="col">{{ planner.selectedLesson.id }}</div>
         </div>
         <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Version</div>
+          <div class="col">{{ planner.selectedLesson.version }}</div>
+        </div>
+        <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Created</div>
           <div class="col">
             {{ simpleDateTime(planner.selectedLesson.createdAt, 'unsaved') }}
@@ -185,7 +177,7 @@
 <script setup>
 import { computed } from 'vue'
 import { date } from 'quasar'
-import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
+import { useLessonPlannerStore } from 'src/stores/lesson-planner.js'
 
 const planner = useLessonPlannerStore()
 const availableCats = [
@@ -197,29 +189,39 @@ const availableCats = [
   { label: 'science', value: 'science' },
 ]
 const cats = computed(() => {
-  return planner.selectedLesson.categories.join(', ')
+  return planner.isSelected ? planner.selectedLesson.categories.join(', ') : ''
 })
 const editOn = computed(() => {
   return planner.selectedPlanChanges != null
 })
 
-// lesson state
+// lesson state - probably belongs in store
 const canPublish = computed(() => {
   return (
-    !planner.selectedLesson.publishedAt && !planner.selectedLesson.archivedAt
+    planner.isSelected &&
+    !planner.selectedLesson.publishedAt &&
+    !planner.selectedLesson.archivedAt
   )
 })
 const canRetract = computed(() => {
-  return !canPublish.value && !planner.selectedLesson.archivedAt
+  return (
+    planner.isSelected &&
+    !canPublish.value &&
+    !planner.selectedLesson.archivedAt
+  )
 })
 const canRevise = computed(() => {
-  return !canPublish.value && !planner.selectedLesson.archivedAt
+  return (
+    planner.isSelected &&
+    !canPublish.value &&
+    !planner.selectedLesson.archivedAt
+  )
 })
 const canArchive = computed(() => {
-  return !planner.selectedLesson.archivedAt
+  return planner.isSelected && !planner.selectedLesson.archivedAt
 })
 const canRevive = computed(() => {
-  return planner.selectedLesson.archivedAt
+  return planner.isSelected && planner.selectedLesson.archivedAt
 })
 
 function simpleDateTime(ts, nullLabel = '') {

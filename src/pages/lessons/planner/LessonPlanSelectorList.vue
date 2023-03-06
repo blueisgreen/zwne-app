@@ -34,7 +34,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
+import { useLessonPlannerStore } from 'src/stores/lesson-planner.js'
 const planner = useLessonPlannerStore()
 const router = useRouter()
 

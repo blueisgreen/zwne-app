@@ -62,7 +62,7 @@
 import { ref, onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
-import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
+import { useLessonPlannerStore } from 'src/stores/lesson-planner.js'
 import TipTapEditor from 'components/TipTapEditor.vue'
 import LessonPreview from './LessonPreview.vue'
 import LessonEditorSpecs from './LessonEditorSpecs.vue'
