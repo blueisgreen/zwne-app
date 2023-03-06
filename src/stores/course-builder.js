@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { generateRandomKey } from 'components/modelHelper'
 
 const now = new Date()
 const starterLessons = {
@@ -79,11 +80,21 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
   },
 
   actions: {
-    createCourse() {
-      this.courses.push({
-        name: 'Nuclear Physics Fun-damentals',
-        trailhead: 'Nuclear Physics Fun-damentals',
-      })
+    addCourseToStore(course) {
+      console.log(course)
+      this.courseIndex[course.id] = course
+      this.courses.push(course.id)
+    },
+    createCourse(name, description, lessons) {
+      const trailhead = lessons.length > 0 ? lessons[0] : null
+      const newCourse = {
+        id: generateRandomKey(),
+        name,
+        description,
+        lessons,
+        trailhead,
+      }
+      this.addCourseToStore(newCourse)
     },
   },
 })

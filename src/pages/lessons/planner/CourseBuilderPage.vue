@@ -1,35 +1,11 @@
 <template>
   <q-page padding>
     <div class="row">
-      <div class="col q-pa-sm">
-        <q-card bordered>
-          <q-card-section>
-            <div class="text-h6">Available Lessons</div>
-          </q-card-section>
-          <q-separator inset />
-          <q-card-section>
-            <q-scroll-area style="height: 500px">
-              <q-list>
-                <q-item
-                  v-for="plan in courseBuilder.lessonPlanList"
-                  :key="plan.id"
-                  dense
-                  clickable
-                  @click="() => addLessonToCourse(plan.id)"
-                >
-                  <q-item-section>
-                    <q-item-label>{{ plan.title }}</q-item-label>
-                    <q-item-label caption>{{ plan.subtitle }}</q-item-label>
-                    <q-item-label lines="2"
-                      ><span v-html="plan.content"
-                    /></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-scroll-area>
-          </q-card-section>
-        </q-card>
+      <div class="col">
+        <div class="text-h4 text-center">Course Builder</div>
       </div>
+    </div>
+    <div class="row">
       <div class="col q-pa-sm">
         <q-card bordered>
           <q-card-section>
@@ -73,6 +49,38 @@
               </q-item>
             </q-list>
           </q-card-section>
+          <q-card-actions>
+            <q-btn @click="saveCourse">Save this Course</q-btn>
+          </q-card-actions>
+        </q-card>
+      </div>
+      <div class="col q-pa-sm">
+        <q-card bordered>
+          <q-card-section>
+            <div class="text-h6">Available Lessons</div>
+          </q-card-section>
+          <q-separator inset />
+          <q-card-section>
+            <q-scroll-area style="height: 500px">
+              <q-list>
+                <q-item
+                  v-for="plan in courseBuilder.lessonPlanList"
+                  :key="plan.id"
+                  dense
+                  clickable
+                  @click="() => addLessonToCourse(plan.id)"
+                >
+                  <q-item-section>
+                    <q-item-label>{{ plan.title }}</q-item-label>
+                    <q-item-label caption>{{ plan.subtitle }}</q-item-label>
+                    <q-item-label lines="2"
+                      ><span v-html="plan.content"
+                    /></q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-scroll-area>
+          </q-card-section>
         </q-card>
       </div>
     </div>
@@ -106,6 +114,13 @@ function bumpSort(index, direction = 0) {
   const toIndex = direction < 0 ? index - 1 : index + 1
   lessons.splice(index, 1)
   lessons.splice(toIndex, 0, value)
+}
+function saveCourse() {
+  courseBuilder.createCourse(
+    course.value.name,
+    course.value.description,
+    course.value.lessons
+  )
 }
 </script>
 
