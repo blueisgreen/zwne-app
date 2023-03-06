@@ -50,11 +50,25 @@
                 </q-item-section>
                 <q-space />
                 <q-item-section side top>
-                  <q-btn
-                    @click="() => removeFromCourseLessons(index)"
-                    icon="delete"
-                    dense
-                  />
+                  <q-btn-group push>
+                    <q-btn
+                      v-if="lessonCount > 1 && index > 0"
+                      @click="() => bumpSort(index, -1)"
+                      icon="arrow_upward"
+                      dense
+                    />
+                    <q-btn
+                      v-if="lessonCount > 1 && index < lessonCount - 1"
+                      @click="() => bumpSort(index)"
+                      icon="arrow_downward"
+                      dense
+                    />
+                    <q-btn
+                      @click="() => removeFromCourseLessons(index)"
+                      icon="delete"
+                      dense
+                    />
+                  </q-btn-group>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -78,12 +92,20 @@ const course = ref({
 const courseLessons = computed(() =>
   course.value.lessons.map((id) => courseBuilder.lessonPlan(id))
 )
+const lessonCount = computed(() => course.value.lessons.length)
 function addLessonToCourse(id) {
   course.value.lessons.push(id)
 }
 function removeFromCourseLessons(index) {
   console.log('lesson in position ' + index)
   course.value.lessons.splice(index, 1)
+}
+function bumpSort(index, direction = 0) {
+  const lessons = course.value.lessons
+  const value = lessons[index]
+  const toIndex = direction < 0 ? index - 1 : index + 1
+  lessons.splice(index, 1)
+  lessons.splice(toIndex, 0, value)
 }
 </script>
 
