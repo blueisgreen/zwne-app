@@ -166,6 +166,18 @@
           </div>
         </div>
       </q-card-section>
+      <q-separator />
+
+      <q-card-section>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary"># of Views</div>
+          <div class="col">42</div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Latest View</div>
+          <div class="col">March 3, 2023</div>
+        </div>
+      </q-card-section>
     </q-card>
   </div>
 </template>
