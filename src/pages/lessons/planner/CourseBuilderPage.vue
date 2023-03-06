@@ -36,16 +36,26 @@
             <div class="text-h6">Course</div>
             <q-input v-model="course.name" label="Name" />
             <q-input
-              type="textarea"
               v-model="course.description"
               label="Description"
+              autogrow
             />
           </q-card-section>
           <q-card-section>
             <q-list>
               <q-item-label header>Lessons in Course</q-item-label>
-              <q-item v-for="lesson in courseLessons" :key="lesson.id">
-                <q-item-label>{{ lesson.title }}</q-item-label>
+              <q-item v-for="(lesson, index) in courseLessons" :key="lesson.id">
+                <q-item-section>
+                  <q-item-label>{{ lesson.title }}</q-item-label>
+                </q-item-section>
+                <q-space />
+                <q-item-section side top>
+                  <q-btn
+                    @click="() => removeFromCourseLessons(index)"
+                    icon="delete"
+                    dense
+                  />
+                </q-item-section>
               </q-item>
             </q-list>
           </q-card-section>
@@ -70,6 +80,10 @@ const courseLessons = computed(() =>
 )
 function addLessonToCourse(id) {
   course.value.lessons.push(id)
+}
+function removeFromCourseLessons(index) {
+  console.log('lesson in position ' + index)
+  course.value.lessons.splice(index, 1)
 }
 </script>
 
