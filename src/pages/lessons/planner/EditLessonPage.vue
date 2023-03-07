@@ -12,6 +12,9 @@
       >
     </q-toolbar>
 
+    <q-banner class="bg-warning text-center" v-if="planner.isDraftDirty">
+      Save your changes.
+    </q-banner>
     <q-tabs
       v-model="tabModel"
       class="bg-blue-1 text-primary"
@@ -55,12 +58,10 @@
 <script setup>
 import { ref, onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useQuasar } from 'quasar'
 import { useLessonPlannerStore } from 'stores/lesson-planner.js'
 import TipTapEditor from 'components/editor/TipTapEditor.vue'
 import LessonPreview from './LessonPreview.vue'
 
-const $q = useQuasar()
 const planner = useLessonPlannerStore()
 const tabModel = ref('edit')
 

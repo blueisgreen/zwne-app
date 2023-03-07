@@ -418,6 +418,15 @@ export default {
   padding: 0.5em;
   max-height: 100%;
 }
+.ProseMirror:focus {
+  outline: none;
+}
+/* set */
+.ProseMirror {
+  min-height: 100px;
+  max-height: 500px;
+  overflow: scroll;
+}
 .ProseMirror {
   > * + * {
     margin-top: 0.75em;
