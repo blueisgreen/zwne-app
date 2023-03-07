@@ -7,6 +7,9 @@
           Create, edit, and publish lessons for the good humankind.
         </div>
       </q-toolbar-title>
+      <q-btn :to="{ name: 'courseBuilder' }" color="primary"
+        >Build Course</q-btn
+      >
       <q-btn @click="resetPage" label="reset" color="warning" />
       <lesson-planner-specs />
     </q-toolbar>
@@ -33,7 +36,7 @@ import { onMounted } from 'vue'
 import LessonPlannerSpecs from './LessonPlannerSpecs.vue'
 import LessonPlanSelectorList from './LessonPlanSelectorList.vue'
 import LessonPlanDetails from './LessonPlanDetails.vue'
-import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
+import { useLessonPlannerStore } from 'src/stores/lesson-planner.js'
 import Zanzibar from 'assets/Zanzibar.svg'
 
 const planner = useLessonPlannerStore()

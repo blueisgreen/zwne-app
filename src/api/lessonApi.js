@@ -5,20 +5,24 @@ const sample = [
     revision: 1,
     title: 'The First Chain Reaction',
     subtitle: 'What happens when you pile up enough uranium.',
-    categories: ['physics'],
+    version: 1,
+    categories: ['science'],
     createdAt: now,
     updatedAt: now,
     publishedAt: null,
+    archivedAt: null,
   },
   {
     id: 'pwr1',
     revision: 1,
     title: 'Pressurized Water Reactors (PWRs)',
     subtitle: 'An excellent way to product lots of electricity.',
-    categories: ['physics'],
+    version: 1,
+    categories: ['nuclear_power_plants'],
     createdAt: now,
     updatedAt: now,
     publishedAt: null,
+    archivedAt: null,
   },
 ]
 
@@ -36,4 +40,10 @@ export function getLessonContent(lessonId) {
   return new Promise(function (resolve, reject) {
     resolve('<p>Replace me with pithy explanations.</p>')
   })
+}
+
+export async function simulateApiCall(callback) {
+  return setTimeout(() => {
+    callback()
+  }, 1000)
 }

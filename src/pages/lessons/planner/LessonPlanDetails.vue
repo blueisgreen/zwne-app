@@ -75,10 +75,59 @@
 
       <q-separator />
 
+      <q-card-actions align="around">
+        <q-btn
+          :disable="!canPublish"
+          @click="planner.publishSelectedLesson"
+          color="primary"
+          dense
+          no-caps
+          >Publish</q-btn
+        >
+        <q-btn
+          :disable="!canRevise"
+          @click="planner.revisePublishedSelectedLesson"
+          color="primary"
+          dense
+          no-caps
+          >Revise</q-btn
+        >
+        <q-btn
+          :disable="!canRetract"
+          @click="planner.retractPublishedSelectedLesson"
+          color="primary"
+          dense
+          no-caps
+          >Retract</q-btn
+        >
+        <q-btn
+          :disable="!canArchive"
+          @click="planner.archiveSelectedLesson"
+          color="primary"
+          dense
+          no-caps
+          >Archive</q-btn
+        >
+        <q-btn
+          :disable="!canRevive"
+          @click="planner.reviveSelectedLesson"
+          color="primary"
+          dense
+          no-caps
+          >Revive</q-btn
+        >
+      </q-card-actions>
+
+      <q-separator />
+
       <q-card-section>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Lesson ID</div>
           <div class="col">{{ planner.selectedLesson.id }}</div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Version</div>
+          <div class="col">{{ planner.selectedLesson.version }}</div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Created</div>
@@ -100,18 +149,37 @@
             }}
           </div>
         </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Archived</div>
+          <div class="col">
+            {{
+              simpleDateTime(planner.selectedLesson.archivedAt, 'not archived')
+            }}
+          </div>
+        </div>
+      </q-card-section>
+      <q-separator />
+
+      <q-card-section>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary"># of Views</div>
+          <div class="col">42</div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Latest View</div>
+          <div class="col">March 3, 2023</div>
+        </div>
       </q-card-section>
     </q-card>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { date } from 'quasar'
-import { useLessonPlannerStore } from 'stores/lesson-planner-store.js'
+import { useLessonPlannerStore } from 'src/stores/lesson-planner.js'
 
 const planner = useLessonPlannerStore()
-const updatedCats = ref([])
 const availableCats = [
   { label: 'engineering', value: 'engineering' },
   { label: 'fun', value: 'fun' },
@@ -121,10 +189,39 @@ const availableCats = [
   { label: 'science', value: 'science' },
 ]
 const cats = computed(() => {
-  return planner.selectedLesson.categories.join(', ')
+  return planner.isSelected ? planner.selectedLesson.categories.join(', ') : ''
 })
 const editOn = computed(() => {
   return planner.selectedPlanChanges != null
+})
+
+// lesson state - probably belongs in store
+const canPublish = computed(() => {
+  return (
+    planner.isSelected &&
+    !planner.selectedLesson.publishedAt &&
+    !planner.selectedLesson.archivedAt
+  )
+})
+const canRetract = computed(() => {
+  return (
+    planner.isSelected &&
+    !canPublish.value &&
+    !planner.selectedLesson.archivedAt
+  )
+})
+const canRevise = computed(() => {
+  return (
+    planner.isSelected &&
+    !canPublish.value &&
+    !planner.selectedLesson.archivedAt
+  )
+})
+const canArchive = computed(() => {
+  return planner.isSelected && !planner.selectedLesson.archivedAt
+})
+const canRevive = computed(() => {
+  return planner.isSelected && planner.selectedLesson.archivedAt
 })
 
 function simpleDateTime(ts, nullLabel = '') {
