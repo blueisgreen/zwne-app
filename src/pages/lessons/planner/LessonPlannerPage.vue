@@ -10,8 +10,6 @@
       <q-btn :to="{ name: 'courseBuilder' }" color="primary" no-caps
         >Go To Course Builder</q-btn
       >
-      <q-btn @click="resetPage" label="reset" color="warning" />
-      <lesson-planner-specs />
     </q-toolbar>
 
     <div class="q-pa-md row q-gutter-md">
@@ -33,7 +31,6 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import LessonPlannerSpecs from './LessonPlannerSpecs.vue'
 import LessonPlanSelectorList from './LessonPlanSelectorList.vue'
 import LessonPlanDetails from './LessonPlanDetails.vue'
 import { useLessonPlannerStore } from 'src/stores/lesson-planner.js'

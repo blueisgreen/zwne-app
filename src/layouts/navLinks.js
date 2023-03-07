@@ -42,7 +42,7 @@ const priviledgedLinks = [
   {
     title: 'Course Lab',
     caption: 'Where knowledge is mixed and bottled',
-    icon: 'fa-solid fa-pencil',
+    icon: 'school',
     route: 'courseLab',
   },
   {

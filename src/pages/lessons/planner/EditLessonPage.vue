@@ -7,7 +7,9 @@
           Where you put together the content for enlightenment.
         </div>
       </q-toolbar-title>
-      <lesson-editor-specs />
+      <q-btn :to="{ name: 'lessonPlanner' }" color="primary" no-caps
+        >Go To Lesson Planner</q-btn
+      >
     </q-toolbar>
 
     <q-tabs
@@ -18,12 +20,6 @@
       no-caps
       indicator-color="secondary"
     >
-      <q-route-tab
-        :to="{ name: 'lesson-planner' }"
-        icon="fa-solid fa-left-long"
-        label="Planner"
-      />
-      <q-separator vertical inset />
       <q-tab name="edit" label="Edit" />
       <q-tab name="preview" label="Preview" />
       <q-tab name="html" label="HTML" />
@@ -48,9 +44,7 @@
         <div class="text-h6">HTML</div>
         <q-card>
           <q-card-section>
-            <pre style="white-space: pre-line">{{
-              planner.activeContentDraft
-            }}</pre>
+            <pre style="white-space: pre-line">{{ planner.activeContentDraft }}</pre>
           </q-card-section>
         </q-card>
       </q-tab-panel>
@@ -65,7 +59,6 @@ import { useQuasar } from 'quasar'
 import { useLessonPlannerStore } from 'stores/lesson-planner.js'
 import TipTapEditor from 'components/editor/TipTapEditor.vue'
 import LessonPreview from './LessonPreview.vue'
-import LessonEditorSpecs from './LessonEditorSpecs.vue'
 
 const $q = useQuasar()
 const planner = useLessonPlannerStore()
