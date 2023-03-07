@@ -29,34 +29,32 @@ const starterLessons = {
     content: '<p>Iodine, thorium, uranium, plutonium, polonium, and so on.</p>',
   },
 }
-const courseShape = {
-  id: 'blargy123',
-  name: 'Name of the course',
-  description: 'What the course is about',
-  trailhead: 'abc1', // first lesson ID
-  publishedAt: now,
-  lessonMap: {
-    abc1: {
-      next: 'def2',
-      teaser: 'Wait until you see what is next. It will knock your socks off.',
-    },
-    def2: {
-      next: 'def2',
-      teaser: 'Wait until you see what is next. It will knock your socks off.',
-    },
-    ghi3: {
-      next: 'def2',
-      teaser: 'Wait until you see what is next. It will knock your socks off.',
+const starterCourses = {
+  pGvcoU2WHUGo: {
+    id: 'pGvcoU2WHUGo',
+    name: 'Atomic Fundamentals',
+    description: 'Get to know the building blocks of everything',
+    trailhead: 'abc1',
+    lessons: ['abc1', 'def2', 'ghi3'],
+    lessonPathMap: {
+      abc1: {
+        next: 'def2',
+      },
+      def2: {
+        next: 'ghi3',
+      },
+      ghi3: {
+        next: null,
+      },
+      state: 'active',
     },
   },
 }
 
 export const useCourseBuilderStore = defineStore('courseBuilder', {
   state: () => ({
-    courses: ['blargy123'],
-    courseIndex: {
-      blargy123: courseShape,
-    },
+    courses: ['pGvcoU2WHUGo'],
+    courseIndex: starterCourses,
     lessonPlans: ['abc1', 'def2', 'ghi3'],
     lessonPlanIndex: starterLessons,
     activeCourse: '',
@@ -68,6 +66,9 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
     },
     planCount(state) {
       return state.lessonPlans.length
+    },
+    courseList(state) {
+      return state.courses.map((id) => state.courseIndex[id])
     },
     lessonPlanList(state) {
       return state.lessonPlans.map((planId) => state.lessonPlanIndex[planId])
