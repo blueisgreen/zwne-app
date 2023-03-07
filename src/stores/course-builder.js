@@ -50,6 +50,18 @@ const starterCourses = {
     },
   },
 }
+const buildLessonPathMap = (lessonList) => {
+  const pathMap = {}
+  let previous = null
+  lessonList.map((lessonId, index) => {
+    if (index > 0) {
+      pathMap[previous] = { next: lessonId }
+    }
+    previous = lessonId
+  })
+  pathMap[previous] = { next: '--the-end--' }
+  return pathMap
+}
 
 export const useCourseBuilderStore = defineStore('courseBuilder', {
   state: () => ({
@@ -93,23 +105,27 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
     },
     createCourse(name, description, lessons) {
       const trailhead = lessons.length > 0 ? lessons[0] : null
+      const lessonPathMap = buildLessonPathMap(lessons)
       const newCourse = {
         id: generateRandomKey(),
         name,
         description,
         lessons: lessons.slice(),
         trailhead,
+        lessonPathMap,
       }
       this.addCourseToStore(newCourse)
     },
     saveCourse(id, name, description, lessons) {
       const trailhead = lessons.length > 0 ? lessons[0] : null
+      const lessonPathMap = buildLessonPathMap(lessons)
       const updated = {
         id,
         name,
         description,
         lessons: lessons.slice(),
         trailhead,
+        lessonPathMap,
       }
       this.courseIndex[id] = updated
     },

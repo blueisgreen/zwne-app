@@ -4,6 +4,7 @@
       <div class="text-h6">Define the Course</div>
       <q-card bordered>
         <q-card-section>
+          <div class="text-caption" v-if="edit">Course ID: {{ edit }}</div>
           <q-input
             v-model="course.name"
             label="Name"
