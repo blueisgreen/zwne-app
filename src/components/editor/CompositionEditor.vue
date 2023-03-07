@@ -12,7 +12,7 @@
           tip: 'Save me',
           icon: 'save',
           label: 'Save',
-          handler: $emit('saveWork', composition),
+          handler: $emit('save', composition),
         },
         subscript: {
           icon: 'subscript',
@@ -54,7 +54,7 @@ const props = defineProps({
   mathSymbols: Boolean, // TODO: support for equations
 })
 
-const emit = defineEmits(['saveWork'])
+const emit = defineEmits(['save'])
 
 const toolbarItems = ref([])
 const composition = ref('')

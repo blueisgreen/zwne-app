@@ -300,7 +300,7 @@ import {
   availableButtonStyle,
   headings,
   alignments,
-} from './TipTapTools/toolbarStyleHelpers'
+} from './toolbarDetails'
 
 export default {
   components: {
