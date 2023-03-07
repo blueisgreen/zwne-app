@@ -17,7 +17,10 @@
           </li>
           <li><q-icon name="check" /> Apply metadata: catagories, etc.</li>
           <li><q-icon name="check" /> View usage stats</li>
-          <li>Set up lesson groups and paths (i.e., courses)</li>
+          <li>
+            <q-icon name="check" /> Set up lesson groups and paths (i.e.,
+            courses)
+          </li>
         </ul>
       </q-card-section>
       <q-card-actions align="right">
