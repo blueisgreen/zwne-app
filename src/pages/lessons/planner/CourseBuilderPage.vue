@@ -18,6 +18,34 @@
           <q-item-label class="text-bold">{{ course.name }}</q-item-label>
           <q-item-label>{{ course.description }}</q-item-label>
         </q-item-section>
+        <q-item-section side top>
+          <q-btn-group glossy>
+            <q-btn
+              @click.stop="showLifecycleAlert"
+              label="Share"
+              no-caps
+              color="secondary"
+            />
+            <q-btn
+              @click.stop="showLifecycleAlert"
+              label="Hide"
+              no-caps
+              color="secondary"
+            />
+            <q-btn
+              @click.stop="showLifecycleAlert"
+              label="Archive"
+              no-caps
+              color="accent"
+            />
+            <q-btn
+              @click.stop="showLifecycleAlert"
+              label="Restore"
+              no-caps
+              color="accent"
+            />
+          </q-btn-group>
+        </q-item-section>
       </q-item>
     </q-list>
     <q-btn
@@ -53,6 +81,9 @@ function editCourse(id) {
 }
 function cancelEdit() {
   showAddCourse.value = false
+}
+function showLifecycleAlert() {
+  alert('Implement course lifecycle actions')
 }
 </script>
 
