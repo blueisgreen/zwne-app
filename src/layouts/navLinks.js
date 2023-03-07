@@ -40,10 +40,10 @@ const insideLinks = [
 ]
 const priviledgedLinks = [
   {
-    title: 'Lesson Planner',
-    caption: 'For editing lessons',
+    title: 'Course Lab',
+    caption: 'Where knowledge is mixed and bottled',
     icon: 'fa-solid fa-pencil',
-    route: 'lesson-planner',
+    route: 'courseLab',
   },
   {
     title: 'User Support',

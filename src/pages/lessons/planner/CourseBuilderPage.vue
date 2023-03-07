@@ -1,6 +1,17 @@
 <template>
   <q-page padding>
-    <div class="text-h3">Course Builder</div>
+    <q-toolbar>
+      <q-toolbar-title>
+        <div class="text-h4">Course Builder</div>
+        <div class="text-caption text-secondary">
+          Bundle lessons into enjoyable courses to maximize understanding.
+        </div>
+      </q-toolbar-title>
+      <q-btn :to="{ name: 'lessonPlanner' }" color="primary" no-caps
+        >Go To Lesson Planner</q-btn
+      >
+    </q-toolbar>
+
     <div v-if="!courseBuilder.courseCount">
       You seem to have no courses. Go ahead and add one.
     </div>
@@ -58,11 +69,7 @@
       class="lower-gap"
     />
     <q-separator />
-    <course-builder
-      v-if="showAddCourse"
-      :edit="courseToEdit"
-      @cancel="cancelEdit"
-    />
+    <course-builder v-if="showAddCourse" :edit="courseToEdit" @cancel="cancelEdit" />
   </q-page>
 </template>
 
