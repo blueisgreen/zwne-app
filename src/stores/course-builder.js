@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { generateRandomKey } from 'components/modelHelper'
+import { generateRandomKey } from 'src/components/modelTools.js'
 
 const now = new Date()
 const starterLessons = {

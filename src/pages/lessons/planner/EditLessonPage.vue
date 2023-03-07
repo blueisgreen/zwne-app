@@ -7,9 +7,14 @@
           Where you put together the content for enlightenment.
         </div>
       </q-toolbar-title>
-      <lesson-editor-specs />
+      <q-btn :to="{ name: 'lessonPlanner' }" color="primary" no-caps
+        >Go To Lesson Planner</q-btn
+      >
     </q-toolbar>
 
+    <q-banner class="bg-warning text-center" v-if="planner.isDraftDirty">
+      Save your changes.
+    </q-banner>
     <q-tabs
       v-model="tabModel"
       class="bg-blue-1 text-primary"
@@ -18,12 +23,6 @@
       no-caps
       indicator-color="secondary"
     >
-      <q-route-tab
-        :to="{ name: 'lesson-planner' }"
-        icon="fa-solid fa-left-long"
-        label="Planner"
-      />
-      <q-separator vertical inset />
       <q-tab name="edit" label="Edit" />
       <q-tab name="preview" label="Preview" />
       <q-tab name="html" label="HTML" />
@@ -48,9 +47,7 @@
         <div class="text-h6">HTML</div>
         <q-card>
           <q-card-section>
-            <pre style="white-space: pre-line">{{
-              planner.activeContentDraft
-            }}</pre>
+            <pre style="white-space: pre-line">{{ planner.activeContentDraft }}</pre>
           </q-card-section>
         </q-card>
       </q-tab-panel>
@@ -61,13 +58,10 @@
 <script setup>
 import { ref, onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useQuasar } from 'quasar'
-import { useLessonPlannerStore } from 'src/stores/lesson-planner.js'
-import TipTapEditor from 'components/TipTapEditor.vue'
+import { useLessonPlannerStore } from 'stores/lesson-planner.js'
+import TipTapEditor from 'components/editor/TipTapEditor.vue'
 import LessonPreview from './LessonPreview.vue'
-import LessonEditorSpecs from './LessonEditorSpecs.vue'
 
-const $q = useQuasar()
 const planner = useLessonPlannerStore()
 const tabModel = ref('edit')
 

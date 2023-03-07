@@ -4,7 +4,7 @@ import {
   getLessonContent,
   simulateApiCall,
 } from '../api/lessonApi'
-import { generateRandomKey } from 'src/components/modelHelper'
+import { generateRandomKey } from 'src/components/modelTools.js'
 
 /**
   lesson metadata

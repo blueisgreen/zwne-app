@@ -90,12 +90,7 @@
             :active="editor.isActive('heading', { level: heading.level })"
             v-close-popup
             @click="
-              () =>
-                editor
-                  .chain()
-                  .focus()
-                  .toggleHeading({ level: heading.level })
-                  .run()
+              () => editor.chain().focus().toggleHeading({ level: heading.level }).run()
             "
           >
             <q-item-section>
@@ -115,9 +110,7 @@
             dense
             :active="editor.isActive({ textAlign: alignment.value })"
             v-close-popup
-            @click="
-              () => editor.chain().focus().setTextAlign(alignment.value).run()
-            "
+            @click="() => editor.chain().focus().setTextAlign(alignment.value).run()"
           >
             <q-item-section>
               <q-item-label>
@@ -150,16 +143,8 @@
 
       <q-separator vertical spaced />
 
-      <q-btn
-        @click="openLinkDialog"
-        icon="link"
-        v-bind="getButtonStyle('link')"
-      />
-      <q-btn
-        @click="openImageDialog"
-        icon="image"
-        v-bind="availableButtonStyle"
-      />
+      <q-btn @click="openLinkDialog" icon="link" v-bind="getButtonStyle('link')" />
+      <q-btn @click="openImageDialog" icon="image" v-bind="availableButtonStyle" />
       <q-btn
         @click="handleYouTubeClick"
         icon="fa-brands fa-youtube"
@@ -214,13 +199,7 @@
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Cancel" no-caps v-close-popup />
-        <q-btn
-          flat
-          label="Update Link"
-          no-caps
-          @click="updateLink()"
-          v-close-popup
-        />
+        <q-btn flat label="Update Link" no-caps @click="updateLink()" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -256,13 +235,7 @@
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Cancel" no-caps v-close-popup />
-        <q-btn
-          flat
-          label="Update Image"
-          no-caps
-          @click="updateImage()"
-          v-close-popup
-        />
+        <q-btn flat label="Update Image" no-caps @click="updateImage()" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -273,8 +246,8 @@
         <div class="text-h6">YouTube is not supported</div>
       </q-card-section>
       <q-card-section class="q-pt-none">
-        Someday when we have some videos to share, we will add YouTube support.
-        For now, it's on the long list of nice-to-haves.
+        Someday when we have some videos to share, we will add YouTube support. For now,
+        it's on the long list of nice-to-haves.
       </q-card-section>
       <q-card-actions align="right">
         <q-btn flat label="OK" color="primary" v-close-popup />
@@ -300,7 +273,7 @@ import {
   availableButtonStyle,
   headings,
   alignments,
-} from './TipTapTools/toolbarStyleHelpers'
+} from './toolbarDetails'
 
 export default {
   components: {
@@ -371,12 +344,7 @@ export default {
         this.editor.chain().focus().extendMarkRange('link').unsetLink().run()
         return
       }
-      this.editor
-        .chain()
-        .focus()
-        .extendMarkRange('link')
-        .setLink(this.linkInput)
-        .run()
+      this.editor.chain().focus().extendMarkRange('link').setLink(this.linkInput).run()
     },
     openImageDialog() {
       this.imageInput = this.getDefaultImageProps()
@@ -449,6 +417,15 @@ export default {
   border: 1px solid $grey-4;
   padding: 0.5em;
   max-height: 100%;
+}
+.ProseMirror:focus {
+  outline: none;
+}
+/* set */
+.ProseMirror {
+  min-height: 100px;
+  max-height: 500px;
+  overflow: scroll;
 }
 .ProseMirror {
   > * + * {

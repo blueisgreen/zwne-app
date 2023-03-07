@@ -29,14 +29,19 @@ const routes = [
         component: () => import('pages/lessons/LessonScratchPage.vue'),
       },
       {
-        path: 'lesson-planner',
-        name: 'lesson-planner',
-        component: () => import('pages/lessons/planner/LessonPlannerPage.vue'),
+        path: 'course-lab',
+        name: 'courseLab',
+        component: () => import('pages/lessons/planner/CourseLabPage.vue'),
       },
       {
         path: 'course-builder',
         name: 'courseBuilder',
         component: () => import('pages/lessons/planner/CourseBuilderPage.vue'),
+      },
+      {
+        path: 'lesson-planner',
+        name: 'lessonPlanner',
+        component: () => import('pages/lessons/planner/LessonPlannerPage.vue'),
       },
       {
         path: 'lesson-planner/lesson/:id',
