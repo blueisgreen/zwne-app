@@ -70,6 +70,11 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
     courseList(state) {
       return state.courses.map((id) => state.courseIndex[id])
     },
+    course: (state) => {
+      return (id) => {
+        return state.courseIndex[id]
+      }
+    },
     lessonPlanList(state) {
       return state.lessonPlans.map((planId) => state.lessonPlanIndex[planId])
     },
@@ -92,10 +97,21 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
         id: generateRandomKey(),
         name,
         description,
-        lessons,
+        lessons: lessons.slice(),
         trailhead,
       }
       this.addCourseToStore(newCourse)
+    },
+    saveCourse(id, name, description, lessons) {
+      const trailhead = lessons.length > 0 ? lessons[0] : null
+      const updated = {
+        id,
+        name,
+        description,
+        lessons: lessons.slice(),
+        trailhead,
+      }
+      this.courseIndex[id] = updated
     },
   },
 })

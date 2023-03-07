@@ -56,15 +56,35 @@
               </q-item-section>
             </q-item>
           </q-list>
+        </q-card-section>
+        <q-card-actions align="center">
           <q-btn
+            v-if="edit"
             @click="saveCourse"
+            dense
+            no-caps
+            icon="save"
+            color="primary"
+            label="Update It"
+          />
+          <q-btn
+            v-if="!edit"
+            @click="addCourse"
             dense
             no-caps
             icon="save"
             color="primary"
             label="Create It"
           />
-        </q-card-section>
+          <q-btn
+            @click="$emit('cancel')"
+            dense
+            no-caps
+            icon="cancel"
+            color="accent"
+            label="Cancel"
+          />
+        </q-card-actions>
       </q-card>
       <div class="q-pa-sm"></div>
     </div>
@@ -102,7 +122,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUpdate } from 'vue'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
 
 const props = defineProps({
@@ -111,16 +131,16 @@ const props = defineProps({
     required: false,
   },
 })
+
+defineEmits(['cancel'])
+
 const courseBuilder = useCourseBuilderStore()
-const course = ref({
-  name: '',
-  description: '',
-  lessons: [],
-})
+const course = ref({ lessons: [] })
 const courseLessons = computed(() =>
   course.value.lessons.map((id) => courseBuilder.lessonPlan(id))
 )
 const lessonCount = computed(() => course.value.lessons.length)
+
 function addLessonToCourse(id) {
   course.value.lessons.push(id)
 }
@@ -135,13 +155,46 @@ function bumpSort(index, direction = 0) {
   lessons.splice(index, 1)
   lessons.splice(toIndex, 0, value)
 }
-function saveCourse() {
+function addCourse() {
   courseBuilder.createCourse(
     course.value.name,
     course.value.description,
     course.value.lessons
   )
 }
+function saveCourse() {
+  courseBuilder.saveCourse(
+    props.edit,
+    course.value.name,
+    course.value.description,
+    course.value.lessons
+  )
+}
+
+function prepForEdit() {
+  if (props.edit) {
+    const given = courseBuilder.course(props.edit)
+    course.value = {
+      name: given.name,
+      description: given.description,
+      lessons: given.lessons.slice(),
+    }
+  } else {
+    course.value = {
+      name: '',
+      description: '',
+      lessons: [],
+    }
+  }
+}
+onMounted(() => {
+  console.log('CourseBuilder mounted')
+  prepForEdit()
+})
+onBeforeUpdate(() => {
+  console.log('CourseBuilder beforeUpdate')
+  prepForEdit()
+})
 </script>
 
 <style lang="scss" scoped>

@@ -12,6 +12,7 @@
         :key="course.id"
         dense
         clickable
+        @click="() => editCourse(course.id)"
       >
         <q-item-section>
           <q-item-label class="text-bold">{{ course.name }}</q-item-label>
@@ -20,9 +21,8 @@
       </q-item>
     </q-list>
     <q-btn
-      v-if="showAddCourse"
       label="Add Course"
-      @click="showAddCourse = true"
+      @click="() => editCourse()"
       icon="add_circle"
       dense
       no-caps
@@ -30,7 +30,11 @@
       class="lower-gap"
     />
     <q-separator />
-    <course-builder v-if="showAddCourse" />
+    <course-builder
+      v-if="showAddCourse"
+      :edit="courseToEdit"
+      @cancel="cancelEdit"
+    />
   </q-page>
 </template>
 
@@ -41,6 +45,15 @@ import { useCourseBuilderStore } from 'stores/course-builder.js'
 
 const courseBuilder = useCourseBuilderStore()
 const showAddCourse = ref(false)
+const courseToEdit = ref(null)
+
+function editCourse(id) {
+  courseToEdit.value = id
+  showAddCourse.value = true
+}
+function cancelEdit() {
+  showAddCourse.value = false
+}
 </script>
 
 <style lang="scss" scoped>
