@@ -2,16 +2,14 @@
   <q-page padding>
     <div class="q-pa-md q-gutter-md">
       <div class="text-h1">Course Laboratory</div>
-      <div class="text-subtitle1">
-        Where idealized knowledge sharing is discovered
-      </div>
-      <div>
+      <div class="text-subtitle1">Where idealized knowledge sharing is discovered</div>
+      <div class="section-style">
         <q-toolbar>
           <q-toolbar-title>Courses</q-toolbar-title>
           <q-btn
             label="Add Course"
             icon="add_circle"
-            @click="onNewCourse"
+            @click="builder.spawnCourse"
             color="primary"
             dense
             no-caps
@@ -27,16 +25,27 @@
             >
               <q-item-section>
                 <q-item-label>{{ course.name }}</q-item-label>
-                <q-item-label caption lines="2">{{
-                  course.description
-                }}</q-item-label>
+                <q-item-label caption lines="2">{{ course.description }}</q-item-label>
+              </q-item-section>
+              <q-item-section side top>
+                <q-item-label>{{ course.status }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
         </q-scroll-area>
       </div>
-      <div>
-        <div class="text-h2">Lessons</div>
+      <div class="section-style">
+        <q-toolbar>
+          <q-toolbar-title>Lessons</q-toolbar-title>
+          <q-btn
+            label="Add Lesson"
+            icon="add_circle"
+            @click="builder.spawnLesson"
+            color="primary"
+            dense
+            no-caps
+          />
+        </q-toolbar>
         <q-scroll-area class="scroller-style">
           <q-list>
             <q-item
@@ -47,9 +56,10 @@
             >
               <q-item-section>
                 <q-item-label>{{ lessonPlan.title }}</q-item-label>
-                <q-item-label caption lines="2">{{
-                  lessonPlan.subtitle
-                }}</q-item-label>
+                <q-item-label caption lines="2">{{ lessonPlan.subtitle }}</q-item-label>
+              </q-item-section>
+              <q-item-section side top>
+                <q-item-label>{{ getStatus(lessonPlan) }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -61,20 +71,26 @@
 
 <script setup>
 import { useCourseBuilderStore } from 'stores/course-builder'
+import { useLessonPlannerStore } from 'stores/lesson-planner'
 
 const builder = useCourseBuilderStore()
 
-function onNewCourse() {
-  builder.spawnCourse()
+function getStatus(lesson) {
+  return lesson.archivedAt ? 'archived' : lesson.publishedAt ? 'published' : 'draft'
 }
 </script>
 
 <style lang="scss" scoped>
 .scroller-style {
   height: 200px;
-  max-width: 500px;
+  max-width: 100%;
 }
 .dialog-style {
   width: 300px;
+}
+.section-style {
+  border-style: groove;
+  border-width: 3px;
+  border-color: $blue-11;
 }
 </style>

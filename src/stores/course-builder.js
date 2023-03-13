@@ -28,6 +28,15 @@ const starterLessons = {
     publishedAt: now,
     content: '<p>Iodine, thorium, uranium, plutonium, polonium, and so on.</p>',
   },
+  xyz13: {
+    id: 'xyz13',
+    title: 'Bad (Re)actors',
+    subtitle: 'Do not build your power plant this way.',
+    version: 13,
+    publishedAt: null,
+    archivedAt: new Date(),
+    content: '<p>Do this if you want things to go badly. Very badly.</p>',
+  },
 }
 const starterCourses = {
   pGvcoU2WHUGo: {
@@ -35,6 +44,7 @@ const starterCourses = {
     name: 'Atomic Fundamentals',
     description: 'Get to know the building blocks of everything',
     trailhead: 'abc1',
+    status: 'available',
     lessons: ['abc1', 'def2', 'ghi3'],
     lessonPathMap: {
       abc1: {
@@ -53,6 +63,7 @@ const starterCourses = {
     id: 'oGUHW2UocvGp',
     name: 'Fundamentals Atomics',
     description: 'Build with everything you know',
+    status: 'hidden',
     trailhead: 'ghi3',
     lessons: ['ghi3', 'abc1', 'def2'],
     lessonPathMap: {
@@ -86,7 +97,7 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
   state: () => ({
     courses: ['pGvcoU2WHUGo', 'oGUHW2UocvGp'],
     courseIndex: starterCourses,
-    lessonPlans: ['abc1', 'def2', 'ghi3'],
+    lessonPlans: ['abc1', 'def2', 'ghi3', 'xyz13'],
     lessonPlanIndex: starterLessons,
     activeCourse: '',
   }),
@@ -118,7 +129,7 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
 
   actions: {
     addCourseToStore(course) {
-      console.log('adding course: ' + course)
+      console.log('adding course: ' + JSON.stringify(course))
       this.courseIndex[course.id] = course
       this.courses.push(course.id)
     },
@@ -129,6 +140,7 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
         id: generateRandomKey(),
         name,
         description,
+        status: 'hidden',
         lessons: lessons.slice(),
         trailhead,
         lessonPathMap,
@@ -153,6 +165,22 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
         lessonPathMap,
       }
       this.courseIndex[id] = updated
+    },
+    addLessonToStore(lesson) {
+      console.log('adding lesson: ' + JSON.stringify(lesson))
+      this.lessonPlanIndex[lesson.id] = lesson
+      this.lessonPlans.push(lesson.id)
+    },
+    spawnLesson() {
+      const newLesson = {
+        id: generateRandomKey(),
+        title: 'A Title',
+        subtitle: 'A sub-title',
+        version: 1,
+        publishedAt: null,
+        content: 'something worth learning',
+      }
+      this.addLessonToStore(newLesson)
     },
   },
 })
