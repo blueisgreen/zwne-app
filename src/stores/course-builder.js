@@ -118,18 +118,11 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
 
   actions: {
     addCourseToStore(course) {
-      console.log(course)
+      console.log('adding course: ' + course)
       this.courseIndex[course.id] = course
       this.courses.push(course.id)
     },
-    spawnCourse(name = 'A Course') {
-      const seed = {
-        id: generateRandomKey(),
-        name: name,
-      }
-      this.addCourseToStore(seed)
-    },
-    createCourse(name, description, lessons) {
+    createCourse(name, description, lessons = []) {
       const trailhead = lessons.length > 0 ? lessons[0] : null
       const lessonPathMap = buildLessonPathMap(lessons)
       const newCourse = {
@@ -140,7 +133,13 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
         trailhead,
         lessonPathMap,
       }
-      this.addCourseToStore(newCourse.value)
+      this.addCourseToStore(newCourse)
+    },
+    spawnCourse() {
+      this.createCourse(
+        'A Course is a Course, of Course',
+        'What is this about?'
+      )
     },
     saveCourse(id, name, description, lessons) {
       const trailhead = lessons.length > 0 ? lessons[0] : null

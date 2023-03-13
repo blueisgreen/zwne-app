@@ -2,11 +2,11 @@
   <q-dialog v-model="newCourseDialog">
     <q-card>
       <q-card-section>
-        <q-input v-model="newCourseName" outlined label="Name" />
+        <q-input v-model="newCourseName" outlined dense label="Name" />
       </q-card-section>
       <q-card-actions>
-        <q-btn label="Cancel" v-close-popup />
-        <q-btn label="Create" @click="onNewCourse" />
+        <q-btn label="Create" @click="onNewCourse" dense color="primary" />
+        <q-btn label="Cancel" v-close-popup dense color="warning" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -29,4 +29,8 @@ function onNewCourse() {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.dialog-style {
+  width: 300px;
+}
+</style>
