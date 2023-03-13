@@ -1,11 +1,11 @@
 <template>
   <q-page padding>
     <div class="q-pa-md q-gutter-md">
-      <div class="text-h3">Course Laboratory</div>
+      <div class="text-h1">Course Laboratory</div>
       <div class="text-subtitle1">Where idealized knowledge sharing is discovered</div>
-      <div class="row">
-        <div class="col">
-          <div class="text-h2">Courses</div>
+      <div>
+        <div class="text-h2">Courses</div>
+        <q-scroll-area class="scroller-style">
           <q-list>
             <q-item
               v-for="course in builder.courseList"
@@ -19,44 +19,25 @@
               </q-item-section>
             </q-item>
           </q-list>
-
-          <q-card>
-            <q-card-actions align="center">
-              <q-btn
-                :to="{ name: 'courseBuilder' }"
-                no-caps
-                color="primary"
-                label="Work with Courses"
-              />
-            </q-card-actions>
-          </q-card>
-        </div>
-        <div class="col">
-          <q-card>
-            <q-card-section>Lessons</q-card-section>
-            <q-card-actions align="center">
-              <q-btn
-                :to="{ name: 'lessonPlanner' }"
-                no-caps
-                color="primary"
-                label="Work with Lessons"
-              />
-            </q-card-actions>
-          </q-card>
-        </div>
+        </q-scroll-area>
       </div>
-      <div class="row">
-        <div class="col">
-          <q-card>
-            <q-card-section>
-              Wish list:
-              <ul>
-                <li>Manage images, videos</li>
-                <li>Create quizzes</li>
-              </ul>
-            </q-card-section>
-          </q-card>
-        </div>
+      <div>
+        <div class="text-h2">Lessons</div>
+        <q-scroll-area class="scroller-style">
+          <q-list>
+            <q-item
+              v-for="lessonPlan in builder.lessonPlanList"
+              :key="lessonPlan.id"
+              clickable
+              :to="{ name: 'lessonPlanner', params: { id: lessonPlan.id } }"
+            >
+              <q-item-section>
+                <q-item-label>{{ lessonPlan.title }}</q-item-label>
+                <q-item-label caption lines="2">{{ lessonPlan.subtitle }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-scroll-area>
       </div>
     </div>
   </q-page>
@@ -67,4 +48,9 @@ import { useCourseBuilderStore } from 'stores/course-builder'
 const builder = useCourseBuilderStore()
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.scroller-style {
+  height: 200px;
+  max-width: 500px;
+}
+</style>

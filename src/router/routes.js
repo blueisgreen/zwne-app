@@ -34,18 +34,18 @@ const routes = [
         component: () => import('pages/lessons/planner/CourseLabPage.vue'),
       },
       {
-        path: 'course-builder',
+        path: 'course-builder/:id',
         name: 'courseBuilder',
         component: () => import('pages/lessons/planner/CourseBuilderPage.vue'),
       },
       {
-        path: 'lesson-planner',
+        path: 'lesson-planner/:id',
         name: 'lessonPlanner',
         component: () => import('pages/lessons/planner/LessonPlannerPage.vue'),
       },
       {
         path: 'lesson-planner/lesson/:id',
-        name: 'lesson-editor',
+        name: 'lessonEditor',
         component: () => import('pages/lessons/planner/EditLessonPage.vue'),
       },
       {
