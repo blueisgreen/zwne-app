@@ -49,6 +49,25 @@ const starterCourses = {
       state: 'active',
     },
   },
+  oGUHW2UocvGp: {
+    id: 'oGUHW2UocvGp',
+    name: 'Fundamentals Atomics',
+    description: 'Build with everything you know',
+    trailhead: 'ghi3',
+    lessons: ['ghi3', 'abc1', 'def2'],
+    lessonPathMap: {
+      abc1: {
+        next: 'def2',
+      },
+      def2: {
+        next: null,
+      },
+      ghi3: {
+        next: 'abc1',
+      },
+      state: 'active',
+    },
+  },
 }
 const buildLessonPathMap = (lessonList) => {
   const pathMap = {}
@@ -65,7 +84,7 @@ const buildLessonPathMap = (lessonList) => {
 
 export const useCourseBuilderStore = defineStore('courseBuilder', {
   state: () => ({
-    courses: ['pGvcoU2WHUGo'],
+    courses: ['pGvcoU2WHUGo', 'oGUHW2UocvGp'],
     courseIndex: starterCourses,
     lessonPlans: ['abc1', 'def2', 'ghi3'],
     lessonPlanIndex: starterLessons,
