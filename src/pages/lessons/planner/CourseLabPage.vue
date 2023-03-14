@@ -5,7 +5,7 @@
       <div class="text-subtitle1 text-secondary">
         Where idealized knowledge sharing is discovered
       </div>
-      <div class="section-style">
+      <div class="section-style shadow-3">
         <q-toolbar>
           <q-toolbar-title>Courses</q-toolbar-title>
           <q-btn
@@ -36,7 +36,7 @@
           </q-list>
         </q-scroll-area>
       </div>
-      <div class="section-style">
+      <div class="section-style shadow-3">
         <q-toolbar>
           <q-toolbar-title>Lessons</q-toolbar-title>
           <q-btn
@@ -91,8 +91,6 @@ function getStatus(lesson) {
   width: 300px;
 }
 .section-style {
-  border-style: groove;
-  border-width: 3px;
-  border-color: $blue-11;
+  border: 1px solid $primary;
 }
 </style>
