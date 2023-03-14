@@ -1,8 +1,10 @@
 <template>
   <q-page padding>
     <div class="q-pa-md q-gutter-md">
-      <div class="text-h1">Course Laboratory</div>
-      <div class="text-subtitle1">Where idealized knowledge sharing is discovered</div>
+      <div class="text-h2 text-primary">Course Laboratory</div>
+      <div class="text-subtitle1 text-secondary">
+        Where idealized knowledge sharing is discovered
+      </div>
       <div class="section-style">
         <q-toolbar>
           <q-toolbar-title>Courses</q-toolbar-title>

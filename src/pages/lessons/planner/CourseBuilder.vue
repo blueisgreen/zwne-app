@@ -142,6 +142,7 @@ const courseLessons = computed(() =>
 )
 const lessonCount = computed(() => course.value.lessons.length)
 
+function createLessonForCourse() {}
 function addLessonToCourse(id) {
   course.value.lessons.push(id)
 }
