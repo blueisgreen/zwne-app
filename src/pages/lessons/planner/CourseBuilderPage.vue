@@ -51,7 +51,7 @@
     </div>
 
     <div v-if="courseToBuild && editMode">
-      <course-builder :course-id="courseToBuild.id" @cancel="onCancelEdit" />
+      <course-builder :course-id="courseId" @cancel="onCancelEdit" />
     </div>
 
     <div class="text-center">
@@ -76,8 +76,9 @@ const route = useRoute()
 const builder = useCourseBuilderStore()
 
 const courseId = route.params.id
-const target = builder.course(courseId)
-const courseToBuild = ref(target)
+// const target = builder.course(courseId)
+// const courseToBuild = ref(target)
+const courseToBuild = computed(() => builder.course(courseId))
 const courseLessonList = computed(() =>
   courseToBuild.value.lessons.map((id) => builder.lessonPlan(id))
 )
