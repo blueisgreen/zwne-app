@@ -10,20 +10,29 @@
       <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps>To Course Lab</q-btn>
     </q-toolbar>
 
-    <div v-if="courseToBuild" class="q-pa-md">
-      <div class="row">
-        <div class="col-2">Name</div>
+    <div v-if="!courseToBuild" class="text-h3">
+      Loading...If you get stuck here for more than a few seconds, try returning to the
+      Course Lab entrance, and pick a course to work on. If you just did that, there must
+      be something wrong on our end. Sorry about that.
+    </div>
+
+    <div v-if="courseToBuild && !editMode" class="q-ma-md q-pa-md course-info shadow-3">
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Name</div>
         <div class="col">{{ courseToBuild.name }}</div>
+        <q-page-sticky position="top-right" :offset="[40, 120]">
+          <q-btn fab icon="edit" color="accent" @click="onEditCourse" />
+        </q-page-sticky>
       </div>
-      <div class="row">
-        <div class="col-2">Description</div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Description</div>
         <div class="col">{{ courseToBuild.description }}</div>
       </div>
-      <div class="row">
-        <div class="col-2">Lessons</div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Lessons</div>
         <div class="col">
-          <ul class="flat-list">
-            <li v-for="lesson in courseLessons" :key="lesson.id">
+          <ul>
+            <li v-for="lesson in courseLessonList" :key="lesson.id">
               {{ lesson.title }}
             </li>
           </ul>
@@ -31,7 +40,9 @@
       </div>
     </div>
 
-    <!-- <course-builder :edit="id" /> -->
+    <div v-if="courseToBuild && editMode">
+      <course-builder :course-id="courseToBuild.id" @cancel="onCancelEdit" />
+    </div>
 
     <div class="text-center">
       Course Lifecycle Actions:
@@ -46,60 +57,48 @@
 </template>
 
 <script setup>
-// import CourseBuilder from './CourseBuilder.vue'
-import { ref, computed, onBeforeMount, onMounted, watch } from 'vue'
-import { useCourseBuilderStore } from 'stores/course-builder.js'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
-
-const builder = useCourseBuilderStore()
+import { useCourseBuilderStore } from 'stores/course-builder.js'
+import CourseBuilder from './CourseBuilder.vue'
 
 const route = useRoute()
+const builder = useCourseBuilderStore()
+
 const courseId = route.params.id
-console.log('course ID: ' + courseId)
 const target = builder.course(courseId)
-console.log('course: ' + JSON.stringify(target))
 const courseToBuild = ref(target)
-const courseLessons = computed(() =>
+const courseLessonList = computed(() =>
   courseToBuild.value.lessons.map((id) => builder.lessonPlan(id))
 )
-const copyForEdit = ref(null)
 const editMode = ref(false)
 
-// watch(
-//   () => route.params.id,
-//   (newId) => {
-//     console.log('watch invoked: ' + newId)
-//     courseToBuild.value = builder.course(newId)
-//   }
-// )
-
-function editCourse() {
-  copyForEdit.value = { ...courseToBuild }
+function onEditCourse() {
   editMode.value = true
 }
-function cancelEdit() {
+function onCancelEdit() {
   editMode.value = false
 }
 function showLifecycleAlert() {
   alert('Implement course lifecycle actions')
 }
-// onBeforeMount(() => {
-//   console.log('onBeforeMount: id=' + props.id)
-//   console.log('onBeforeMount: props id=' + route.props.id)
-//   courseToBuild.value = builder.course(props.id)
-//   // courseLessons.value = courseToBuild.value.lessons.map((id) => courseBuilder.lessonPlan(id))
-// })
-// onMounted(() => {
-//   console.log('onBeforeMount: id=' + props.id)
-// })
 </script>
 
 <style lang="scss" scoped>
 .lower-gap {
   margin-bottom: 0.5em;
 }
-ul {
-  margin-top: 0;
-  margin-left: -1.5em;
+
+.course-info {
+  margin-top: 1em;
+  border: 1px solid $primary;
+  .prop-label {
+    font-weight: bold;
+    color: $primary;
+  }
+  ul {
+    margin-top: 0;
+    margin-left: -1.5em;
+  }
 }
 </style>

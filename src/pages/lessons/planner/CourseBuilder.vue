@@ -1,17 +1,11 @@
 <template>
   <div class="row">
     <div class="col q-pa-sm">
-      <div class="text-h6">Define the Course</div>
+      <div class="text-h6">Update the Course</div>
       <q-card bordered>
         <q-card-section>
-          <div class="text-caption" v-if="edit">Course ID: {{ edit }}</div>
-          <q-input
-            v-model="course.name"
-            label="Name"
-            class="lower-gap"
-            dense
-            outlined
-          />
+          <div class="text-caption">Course ID: {{ courseId }}</div>
+          <q-input v-model="course.name" label="Name" class="lower-gap" dense outlined />
           <q-input
             v-model="course.description"
             label="Description"
@@ -27,12 +21,8 @@
             >
             <q-item v-for="(lesson, index) in courseLessons" :key="lesson.id">
               <q-item-section>
-                <q-item-label class="text-bold">{{
-                  lesson.title
-                }}</q-item-label>
-                <q-item-label class="text-secondary">{{
-                  lesson.subtitle
-                }}</q-item-label>
+                <q-item-label class="text-bold">{{ lesson.title }}</q-item-label>
+                <q-item-label class="text-secondary">{{ lesson.subtitle }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
                 <q-btn-group push>
@@ -60,22 +50,12 @@
         </q-card-section>
         <q-card-actions align="center">
           <q-btn
-            v-if="edit"
             @click="saveCourse"
             dense
             no-caps
             icon="save"
             color="primary"
-            label="Update It"
-          />
-          <q-btn
-            v-if="!edit"
-            @click="addCourse"
-            dense
-            no-caps
-            icon="save"
-            color="primary"
-            label="Create It"
+            label="Save"
           />
           <q-btn
             @click="$emit('cancel')"
@@ -96,22 +76,18 @@
           <q-scroll-area style="height: 350px">
             <q-list bordered separator padding>
               <q-item
-                v-for="plan in courseBuilder.lessonPlanList"
+                v-for="plan in builder.lessonPlanList"
                 :key="plan.id"
                 dense
                 clickable
                 @click="() => addLessonToCourse(plan.id)"
               >
                 <q-item-section top>
-                  <q-item-label class="text-bold">{{
-                    plan.title
-                  }}</q-item-label>
+                  <q-item-label class="text-bold">{{ plan.title }}</q-item-label>
                   <q-item-label caption class="text-secondary">{{
                     plan.subtitle
                   }}</q-item-label>
-                  <q-item-label lines="2"
-                    ><span v-html="plan.content"
-                  /></q-item-label>
+                  <q-item-label lines="2"><span v-html="plan.content" /></q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -127,22 +103,21 @@ import { ref, computed, onMounted, onBeforeUpdate } from 'vue'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
 
 const props = defineProps({
-  edit: {
+  courseId: {
     type: String,
-    required: false,
+    required: true,
   },
 })
+const emit = defineEmits(['cancel'])
 
-defineEmits(['cancel'])
+const builder = useCourseBuilderStore()
 
-const courseBuilder = useCourseBuilderStore()
 const course = ref({ lessons: [] })
 const courseLessons = computed(() =>
-  course.value.lessons.map((id) => courseBuilder.lessonPlan(id))
+  course.value.lessons.map((id) => builder.lessonPlan(id))
 )
 const lessonCount = computed(() => course.value.lessons.length)
 
-function createLessonForCourse() {}
 function addLessonToCourse(id) {
   course.value.lessons.push(id)
 }
@@ -157,36 +132,21 @@ function bumpSort(index, direction = 0) {
   lessons.splice(index, 1)
   lessons.splice(toIndex, 0, value)
 }
-function addCourse() {
-  courseBuilder.createCourse(
-    course.value.name,
-    course.value.description,
-    course.value.lessons
-  )
-}
 function saveCourse() {
-  courseBuilder.saveCourse(
-    props.edit,
+  builder.saveCourse(
+    props.courseId,
     course.value.name,
     course.value.description,
     course.value.lessons
   )
+  emit('cancel')
 }
-
 function prepForEdit() {
-  if (props.edit) {
-    const given = courseBuilder.course(props.edit)
-    course.value = {
-      name: given.name,
-      description: given.description,
-      lessons: given.lessons.slice(),
-    }
-  } else {
-    course.value = {
-      name: '',
-      description: '',
-      lessons: [],
-    }
+  const given = builder.course(props.courseId)
+  course.value = {
+    name: given.name,
+    description: given.description,
+    lessons: given.lessons.slice(),
   }
 }
 onMounted(() => {
