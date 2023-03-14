@@ -4,13 +4,13 @@
       <q-toolbar-title>
         <div class="copyright-text">
           &copy; 2021-{{ year }}
-          <a href="https://www.happyspiritenterprises.com"
-            >Happy Spirit Enterprises</a
-          >
+          <a href="https://www.happyspiritenterprises.com">Happy Spirit Enterprises</a>
         </div>
       </q-toolbar-title>
-      <q-btn flat size="sm" to="/privacy-and-terms">Privacy Policy</q-btn>
-      <q-btn flat size="sm" :to="{ name: 'legal' }">Terms of Use</q-btn>
+      <router-link :to="{ name: 'legal' }">Privacy Policy</router-link>
+      <span class="q-pl-sm"
+        ><router-link :to="{ name: 'legal' }">Terms of Use</router-link></span
+      >
     </q-toolbar>
   </q-footer>
 </template>

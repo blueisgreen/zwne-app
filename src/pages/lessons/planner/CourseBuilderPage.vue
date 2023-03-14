@@ -10,10 +10,20 @@
       <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps>To Course Lab</q-btn>
     </q-toolbar>
 
-    <div v-if="!courseToBuild" class="text-h3">
-      Loading...If you get stuck here for more than a few seconds, try returning to the
-      Course Lab entrance, and pick a course to work on. If you just did that, there must
-      be something wrong on our end. Sorry about that.
+    <div v-if="!courseToBuild" class="q-pa-md">
+      <div class="text-h4">Loading...</div>
+      <div class="q-my-md">
+        If you get stuck here for more than a few seconds, it means we did not find the
+        course with the ID of
+        <span class="text-bold">{{ courseId }}</span
+        >. Return to
+        <router-link :to="{ name: 'courseLab' }">the Lab entrance</router-link>
+        and choose something from the list of courses.
+      </div>
+      <div class="q-my-md">
+        If you just tried that and are still stuck, something else must be wrong. Sorry
+        about that.
+      </div>
     </div>
 
     <div v-if="courseToBuild && !editMode" class="q-ma-md q-pa-md course-info shadow-3">

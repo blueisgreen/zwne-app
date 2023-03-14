@@ -1,13 +1,20 @@
 <template>
-  <div class="row">
+  <div v-if="!draftCourse" class="text-h3">Loading...</div>
+  <div v-if="draftCourse" class="row">
     <div class="col q-pa-sm">
       <div class="text-h6">Update the Course</div>
       <q-card bordered>
         <q-card-section>
           <div class="text-caption">Course ID: {{ courseId }}</div>
-          <q-input v-model="course.name" label="Name" class="lower-gap" dense outlined />
           <q-input
-            v-model="course.description"
+            v-model="draftCourse.name"
+            label="Name"
+            class="lower-gap"
+            dense
+            outlined
+          />
+          <q-input
+            v-model="draftCourse.description"
             label="Description"
             class="lower-gap"
             outlined
@@ -112,21 +119,21 @@ const emit = defineEmits(['cancel'])
 
 const builder = useCourseBuilderStore()
 
-const course = ref({ lessons: [] })
+const draftCourse = ref(null)
 const courseLessons = computed(() =>
-  course.value.lessons.map((id) => builder.lessonPlan(id))
+  draftCourse.value.lessons.map((id) => builder.lessonPlan(id))
 )
-const lessonCount = computed(() => course.value.lessons.length)
+const lessonCount = computed(() => draftCourse.value.lessons.length)
 
 function addLessonToCourse(id) {
-  course.value.lessons.push(id)
+  draftCourse.value.lessons.push(id)
 }
 function removeFromCourseLessons(index) {
   console.log('lesson in position ' + index)
-  course.value.lessons.splice(index, 1)
+  draftCourse.value.lessons.splice(index, 1)
 }
 function bumpSort(index, direction = 0) {
-  const lessons = course.value.lessons
+  const lessons = draftCourse.value.lessons
   const value = lessons[index]
   const toIndex = direction < 0 ? index - 1 : index + 1
   lessons.splice(index, 1)
@@ -135,15 +142,15 @@ function bumpSort(index, direction = 0) {
 function saveCourse() {
   builder.saveCourse(
     props.courseId,
-    course.value.name,
-    course.value.description,
-    course.value.lessons
+    draftCourse.value.name,
+    draftCourse.value.description,
+    draftCourse.value.lessons
   )
   emit('cancel')
 }
 function prepForEdit() {
   const given = builder.course(props.courseId)
-  course.value = {
+  draftCourse.value = {
     name: given.name,
     description: given.description,
     lessons: given.lessons.slice(),
