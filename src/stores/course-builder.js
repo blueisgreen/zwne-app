@@ -59,7 +59,6 @@ const starterCourses = {
       ghi3: {
         next: null,
       },
-      state: 'active',
     },
     status: 'open',
     createdAt: now,
@@ -187,17 +186,14 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
         'What is this about?'
       )
     },
-    saveCourse(id, name, description, lessons) {
-      const trailhead = lessons.length > 0 ? lessons[0] : null
-      const lessonPathMap = buildLessonPathMap(lessons)
-      const updated = {
-        id,
-        name,
-        description,
-        lessons: lessons.slice(),
-        trailhead,
-        lessonPathMap,
-      }
+    saveCourse(updates) {
+      console.log('saving: ' + JSON.stringify(updates))
+      const { id, lessons } = updates
+      const updated = { ...updates }
+      updated.lessons = lessons.slice()
+      updated.tags = updates.tags.slice()
+      updated.trailhead = lessons.length > 0 ? lessons[0] : null
+      updated.lessonPathMap = buildLessonPathMap(lessons)
       this.courseIndex[id] = updated
     },
     addLessonToStore(lesson) {

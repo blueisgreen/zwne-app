@@ -21,6 +21,23 @@
             dense
             autogrow
           />
+          <q-input
+            v-model="draftCourse.objectives"
+            label="Objectives"
+            class="lower-gap"
+            outlined
+            dense
+            autogrow
+          />
+          <q-input
+            v-model="draftCourse.notes"
+            label="Notes"
+            class="lower-gap"
+            outlined
+            dense
+            autogrow
+          />
+
           <q-list bordered separator padding class="lower-gap">
             <q-item-label header>Lessons in Course</q-item-label>
             <q-item v-if="!lessonCount" class="text-secondary"
@@ -28,8 +45,12 @@
             >
             <q-item v-for="(lesson, index) in courseLessons" :key="lesson.id">
               <q-item-section>
-                <q-item-label class="text-bold">{{ lesson.title }}</q-item-label>
-                <q-item-label class="text-secondary">{{ lesson.subtitle }}</q-item-label>
+                <q-item-label class="text-bold">{{
+                  lesson.title
+                }}</q-item-label>
+                <q-item-label class="text-secondary">{{
+                  lesson.subtitle
+                }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
                 <q-btn-group push>
@@ -54,6 +75,27 @@
               </q-item-section>
             </q-item>
           </q-list>
+
+          <q-select
+            outlined
+            v-model="draftCourse.level"
+            :options="levelOptions"
+            label="Level"
+            class="lower-gap"
+            dense
+          />
+          <q-select
+            outlined
+            v-model="draftCourse.tags"
+            :options="tagOptions"
+            multiple
+            emit-value
+            clearable
+            options-dense
+            label="Tags"
+            class="lower-gap"
+            dense
+          />
         </q-card-section>
         <q-card-actions align="center">
           <q-btn
@@ -90,11 +132,15 @@
                 @click="() => addLessonToCourse(plan.id)"
               >
                 <q-item-section top>
-                  <q-item-label class="text-bold">{{ plan.title }}</q-item-label>
+                  <q-item-label class="text-bold">{{
+                    plan.title
+                  }}</q-item-label>
                   <q-item-label caption class="text-secondary">{{
                     plan.subtitle
                   }}</q-item-label>
-                  <q-item-label lines="2"><span v-html="plan.content" /></q-item-label>
+                  <q-item-label lines="2"
+                    ><span v-html="plan.content"
+                  /></q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -125,6 +171,15 @@ const courseLessons = computed(() =>
 )
 const lessonCount = computed(() => draftCourse.value.lessons.length)
 
+const levelOptions = ['beginner', 'intermediate', 'advanced', 'expert']
+const tagOptions = [
+  'science',
+  'particle-physics',
+  'engineering',
+  'nuclear-power-plants',
+  'PWRs',
+]
+
 function addLessonToCourse(id) {
   draftCourse.value.lessons.push(id)
 }
@@ -140,21 +195,16 @@ function bumpSort(index, direction = 0) {
   lessons.splice(toIndex, 0, value)
 }
 function saveCourse() {
-  builder.saveCourse(
-    props.courseId,
-    draftCourse.value.name,
-    draftCourse.value.description,
-    draftCourse.value.lessons
-  )
+  builder.saveCourse(draftCourse.value)
   emit('cancel')
 }
 function prepForEdit() {
   const given = builder.course(props.courseId)
-  draftCourse.value = {
-    name: given.name,
-    description: given.description,
-    lessons: given.lessons.slice(),
-  }
+  draftCourse.value = { ...given }
+
+  // deep copy arrays
+  draftCourse.value.lessons = given.lessons.slice()
+  draftCourse.value.tags = given.tags.slice()
 }
 onMounted(() => {
   prepForEdit()
