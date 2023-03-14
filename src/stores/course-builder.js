@@ -25,7 +25,7 @@ const starterLessons = {
     title: 'Radioactive Isotopes',
     subtitle: 'Some elements have trouble holding themselves together',
     version: 2,
-    publishedAt: now,
+    publishedAt: null,
     content: '<p>Iodine, thorium, uranium, plutonium, polonium, and so on.</p>',
   },
   xyz13: {
@@ -34,7 +34,7 @@ const starterLessons = {
     subtitle: 'Do not build your power plant this way.',
     version: 13,
     publishedAt: null,
-    archivedAt: new Date(),
+    archivedAt: now,
     content: '<p>Do this if you want things to go badly. Very badly.</p>',
   },
 }
@@ -43,9 +43,12 @@ const starterCourses = {
     id: 'pGvcoU2WHUGo',
     name: 'Atomic Fundamentals',
     description: 'Get to know the building blocks of everything',
-    trailhead: 'abc1',
-    status: 'available',
+    objectives: 'Support lofty dreams of human progress.',
+    level: 'beginner',
+    tags: ['science', 'elements'],
+    notes: 'Extensive notes to self by the author.',
     lessons: ['abc1', 'def2', 'ghi3'],
+    trailhead: 'abc1',
     lessonPathMap: {
       abc1: {
         next: 'def2',
@@ -58,14 +61,20 @@ const starterCourses = {
       },
       state: 'active',
     },
+    status: 'open',
+    createdAt: now,
+    updatedAt: now,
   },
   oGUHW2UocvGp: {
     id: 'oGUHW2UocvGp',
     name: 'Fundamentals Atomics',
     description: 'Build with everything you know',
-    status: 'hidden',
-    trailhead: 'ghi3',
+    objectives: 'Support lofty dreams of human progress.',
+    level: 'beginner',
+    tags: ['perspective', 'particle-physics'],
+    notes: 'Extensive notes to self by the author.',
     lessons: ['ghi3', 'abc1', 'def2'],
+    trailhead: 'ghi3',
     lessonPathMap: {
       abc1: {
         next: 'def2',
@@ -76,8 +85,33 @@ const starterCourses = {
       ghi3: {
         next: 'abc1',
       },
-      state: 'active',
     },
+    status: 'closed',
+    createdAt: now,
+    updatedAt: now,
+  },
+  blargypants123: {
+    id: 'blargypants123',
+    name: 'PWRs Are a Powerhouse, Literally',
+    description:
+      'What reactor design has delivered the most electricity to the world? You guessed it.',
+    objectives: 'Share the wonders of pressurized water reactors.',
+    level: 'intermediate',
+    tags: ['nuclear-power-plants', 'PWRs', 'gen3'],
+    notes: 'Give people a good feeling about the success of PWRs.',
+    lessons: ['abc1', 'def2'],
+    trailhead: 'abc1',
+    lessonPathMap: {
+      abc1: {
+        next: 'def2',
+      },
+      def2: {
+        next: null,
+      },
+    },
+    status: 'open',
+    createdAt: now,
+    updatedAt: now,
   },
 }
 const buildLessonPathMap = (lessonList) => {
@@ -95,7 +129,7 @@ const buildLessonPathMap = (lessonList) => {
 
 export const useCourseBuilderStore = defineStore('courseBuilder', {
   state: () => ({
-    courses: ['pGvcoU2WHUGo', 'oGUHW2UocvGp'],
+    courses: ['pGvcoU2WHUGo', 'oGUHW2UocvGp', 'blargypants123'],
     courseIndex: starterCourses,
     lessonPlans: ['abc1', 'def2', 'ghi3', 'xyz13'],
     lessonPlanIndex: starterLessons,

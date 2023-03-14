@@ -28,6 +28,11 @@
 
     <div v-if="courseToBuild && !editMode" class="q-ma-md q-pa-md course-info shadow-3">
       <div class="row q-pb-sm">
+        <div class="col">
+          <div class="text-center text-h6">About This Course</div>
+        </div>
+      </div>
+      <div class="row q-pb-sm">
         <div class="col-2 prop-label">Name</div>
         <div class="col">{{ courseToBuild.name }}</div>
         <q-page-sticky position="top-right" :offset="[40, 120]">
@@ -39,14 +44,84 @@
         <div class="col">{{ courseToBuild.description }}</div>
       </div>
       <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Objectives</div>
+        <div class="col">
+          {{ courseToBuild.objectives || 'This course aims to teach...' }}
+        </div>
+      </div>
+      <div class="row q-pb-sm">
         <div class="col-2 prop-label">Lessons</div>
         <div class="col">
           <ul>
             <li v-for="lesson in courseLessonList" :key="lesson.id">
-              {{ lesson.title }}
+              <router-link :to="{ name: 'lessonPlanner', params: { id: lesson.id } }">{{
+                lesson.title
+              }}</router-link>
             </li>
           </ul>
         </div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Level</div>
+        <div class="col">{{ courseToBuild.level || 'Beginner' }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Tags</div>
+        <div class="col">{{ tagListDisplay }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Notes (internal)</div>
+        <div class="col">
+          {{
+            courseToBuild.notes || 'Notes for course creator, not intended to be shared'
+          }}
+        </div>
+      </div>
+
+      <div class="row q-pb-sm">
+        <div class="col">
+          <q-separator spaced />
+          <div class="text-center text-h6">Cover Art</div>
+        </div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Banner</div>
+        <div class="col">
+          {{
+            courseToBuild.bannerImageUrl ||
+            'https://cdn.zanzisworld.com/courses/images/banner' +
+              courseToBuild.id +
+              '.png'
+          }}
+        </div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Cover</div>
+        <div class="col">
+          {{
+            courseToBuild.bannerImageUrl ||
+            'https://cdn.zanzisworld.com/courses/images/cover' + courseToBuild.id + '.png'
+          }}
+        </div>
+      </div>
+
+      <div class="row q-pb-sm">
+        <div class="col">
+          <q-separator spaced />
+          <div class="text-center text-h6">Other Information</div>
+        </div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Course ID</div>
+        <div class="col">{{ courseToBuild.id }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Status</div>
+        <div class="col">{{ courseToBuild.status || 'Unknown' }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Last Update</div>
+        <div class="col">{{ courseToBuild.updatedAt || 'Unknown' }}</div>
       </div>
     </div>
 
@@ -57,8 +132,8 @@
     <div class="text-center">
       Course Lifecycle Actions:
       <q-btn-group glossy>
-        <q-btn @click.stop="showLifecycleAlert" label="Share" no-caps color="secondary" />
-        <q-btn @click.stop="showLifecycleAlert" label="Hide" no-caps color="secondary" />
+        <q-btn @click.stop="showLifecycleAlert" label="Open" no-caps color="secondary" />
+        <q-btn @click.stop="showLifecycleAlert" label="Close" no-caps color="secondary" />
         <q-btn @click.stop="showLifecycleAlert" label="Archive" no-caps color="accent" />
         <q-btn @click.stop="showLifecycleAlert" label="Restore" no-caps color="accent" />
       </q-btn-group>
@@ -76,12 +151,13 @@ const route = useRoute()
 const builder = useCourseBuilderStore()
 
 const courseId = route.params.id
-// const target = builder.course(courseId)
-// const courseToBuild = ref(target)
 const courseToBuild = computed(() => builder.course(courseId))
 const courseLessonList = computed(() =>
   courseToBuild.value.lessons.map((id) => builder.lessonPlan(id))
 )
+const tagListDisplay = computed(() => {
+  return courseToBuild.value.tags.reduce((accum, tag) => accum + `#${tag} `, '')
+})
 const editMode = ref(false)
 
 function onEditCourse() {
