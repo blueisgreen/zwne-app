@@ -2,100 +2,220 @@
   <q-page padding>
     <q-toolbar>
       <q-toolbar-title>
-        <div class="text-h4">Course Builder</div>
-        <div class="text-caption text-secondary">
+        <div class="text-h2 text-primary">Course Builder</div>
+        <div class="text-caption text-secondary q-pl-xs">
           Bundle lessons into enjoyable courses to maximize understanding.
         </div>
       </q-toolbar-title>
-      <q-btn :to="{ name: 'lessonPlanner' }" color="primary" no-caps
-        >Go To Lesson Planner</q-btn
-      >
+      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps>To Course Lab</q-btn>
     </q-toolbar>
 
-    <div v-if="!courseBuilder.courseCount">
-      You seem to have no courses. Go ahead and add one.
+    <div v-if="!courseToBuild" class="q-pa-md">
+      <div class="text-h4">Loading...</div>
+      <div class="q-my-md">
+        If you get stuck here for more than a few seconds, it means we did not find the
+        course with the ID of
+        <span class="text-bold">{{ courseId }}</span
+        >. Return to
+        <router-link :to="{ name: 'courseLab' }">the Lab entrance</router-link>
+        and choose something from the list of courses.
+      </div>
+      <div class="q-my-md">
+        If you just tried that and are still stuck, something else must be wrong. Sorry
+        about that.
+      </div>
     </div>
 
-    <div class="text-h6">Courses</div>
-    <q-list bordered separator class="lower-gap">
-      <q-item
-        v-for="course in courseBuilder.courseList"
-        :key="course.id"
-        dense
-        clickable
-        @click="() => editCourse(course.id)"
-      >
-        <q-item-section>
-          <q-item-label class="text-bold">{{ course.name }}</q-item-label>
-          <q-item-label>{{ course.description }}</q-item-label>
-        </q-item-section>
-        <q-item-section side top>
+    <div v-if="courseToBuild && !editMode" class="q-ma-md q-pa-md course-info shadow-3">
+      <div class="row q-pb-sm">
+        <div class="col">
+          <div class="text-center text-h6">About This Course</div>
+        </div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Name</div>
+        <div class="col">{{ courseToBuild.name }}</div>
+        <q-page-sticky position="top-right" :offset="[40, 120]">
+          <q-btn fab icon="edit" color="accent" @click="onEditCourse" />
+        </q-page-sticky>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Description</div>
+        <div class="col">{{ courseToBuild.description }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Objectives</div>
+        <div class="col">
+          {{ courseToBuild.objectives }}
+        </div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Lessons</div>
+        <div class="col">
+          <ul>
+            <li v-for="lesson in courseLessonList" :key="lesson.id">
+              <router-link :to="{ name: 'lessonPlanner', params: { id: lesson.id } }">{{
+                lesson.title
+              }}</router-link>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Level</div>
+        <div class="col">{{ courseToBuild.level }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Tags</div>
+        <div class="col">{{ tagListDisplay }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Notes (internal)</div>
+        <div class="col">{{ courseToBuild.notes }}</div>
+      </div>
+
+      <div class="row q-pb-sm">
+        <div class="col">
+          <q-separator spaced />
+          <div class="text-center text-h6">Cover Art</div>
+        </div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Banner</div>
+        <div class="col">
+          {{
+            courseToBuild.bannerImageUrl ||
+            'https://cdn.zanzisworld.com/courses/images/banner' +
+              courseToBuild.id +
+              '.png'
+          }}
+        </div>
+        <div class="col-1">
+          <q-btn icon="edit" dense @click="onEditImage" />
+        </div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Cover</div>
+        <div class="col">
+          {{
+            courseToBuild.bannerImageUrl ||
+            'https://cdn.zanzisworld.com/courses/images/cover' + courseToBuild.id + '.png'
+          }}
+        </div>
+        <div class="col-1">
+          <q-btn icon="edit" dense @click="onEditImage" />
+        </div>
+      </div>
+
+      <div class="row q-pb-sm">
+        <div class="col">
+          <q-separator spaced />
+          <div class="text-center text-h6">Other Information</div>
+        </div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Course ID</div>
+        <div class="col">{{ courseToBuild.id }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Last Update</div>
+        <div class="col">{{ courseToBuild.updatedAt || 'Unknown' }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Status</div>
+        <div class="col">{{ courseToBuild.status || 'Unknown' }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Change Availability</div>
+        <div class="col">
           <q-btn-group glossy>
             <q-btn
-              @click.stop="showLifecycleAlert"
-              label="Share"
+              v-if="courseToBuild.status === 'closed'"
+              @click.stop="() => builder.openCourse(courseId)"
+              label="Open"
               no-caps
               color="secondary"
             />
             <q-btn
-              @click.stop="showLifecycleAlert"
-              label="Hide"
+              v-if="courseToBuild.status === 'open'"
+              @click.stop="() => builder.closeCourse(courseId)"
+              label="Close"
               no-caps
               color="secondary"
             />
             <q-btn
-              @click.stop="showLifecycleAlert"
+              v-if="courseToBuild.status === 'closed' || courseToBuild.status === 'open'"
+              @click.stop="() => builder.archiveCourse(courseId)"
               label="Archive"
               no-caps
               color="accent"
             />
             <q-btn
-              @click.stop="showLifecycleAlert"
+              v-if="courseToBuild.status === 'archived'"
+              @click.stop="() => builder.reviveCourse(courseId)"
               label="Restore"
               no-caps
               color="accent"
             />
           </q-btn-group>
-        </q-item-section>
-      </q-item>
-    </q-list>
-    <q-btn
-      label="Add Course"
-      @click="() => editCourse()"
-      icon="add_circle"
-      dense
-      no-caps
-      color="primary"
-      class="lower-gap"
-    />
-    <q-separator />
-    <course-builder v-if="showAddCourse" :edit="courseToEdit" @cancel="cancelEdit" />
+        </div>
+      </div>
+    </div>
+
+    <div v-if="courseToBuild && editMode">
+      <course-builder :course-id="courseId" @cancel="onCancelEdit" />
+    </div>
   </q-page>
 </template>
 
 <script setup>
-import CourseBuilder from './CourseBuilder.vue'
 import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
+import CourseBuilder from './CourseBuilder.vue'
 
-const courseBuilder = useCourseBuilderStore()
-const showAddCourse = ref(false)
-const courseToEdit = ref(null)
+const route = useRoute()
+const builder = useCourseBuilderStore()
 
-function editCourse(id) {
-  courseToEdit.value = id
-  showAddCourse.value = true
+const courseId = route.params.id
+const courseToBuild = computed(() => builder.course(courseId))
+const courseLessonList = computed(() =>
+  courseToBuild.value.lessons.map((id) => builder.lessonPlan(id))
+)
+const tagListDisplay = computed(() => {
+  const { tags } = courseToBuild.value
+  return tags
+    ? courseToBuild.value.tags.reduce((accum, tag) => accum + `#${tag} `, '')
+    : ''
+})
+const editMode = ref(false)
+
+function onEditCourse() {
+  editMode.value = true
 }
-function cancelEdit() {
-  showAddCourse.value = false
+function onCancelEdit() {
+  editMode.value = false
 }
-function showLifecycleAlert() {
-  alert('Implement course lifecycle actions')
+function onEditImage() {
+  alert('This will bring up a fancy image picker, someday.')
 }
 </script>
 
 <style lang="scss" scoped>
 .lower-gap {
   margin-bottom: 0.5em;
+}
+
+.course-info {
+  margin-top: 1em;
+  border: 1px solid $primary;
+  .prop-label {
+    font-weight: bold;
+    color: $primary;
+  }
+  ul {
+    margin-top: 0;
+    margin-left: -1.5em;
+  }
 }
 </style>

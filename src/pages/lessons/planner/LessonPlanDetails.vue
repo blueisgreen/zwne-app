@@ -1,66 +1,64 @@
 <template>
-  <div v-if="!planner.selectedLesson">
+  <div v-if="!lessonToEdit">
     <div class="text-h3">Choose a plan to inspect</div>
   </div>
-  <div v-if="!!planner.selectedLesson">
+  <div v-if="!!lessonToEdit">
     <q-card bordered>
       <q-card-section>
         <q-toolbar>
-          <q-toolbar-title>Lesson Details</q-toolbar-title>
-          <span v-if="!editOn"
-            ><q-btn @click="editDetails" label="Edit" no-caps
+          <q-toolbar-title>Lesson Information</q-toolbar-title>
+          <span v-if="!editMode"
+            ><q-btn
+              @click="onEdit"
+              label="Edit"
+              dense
+              no-caps
+              icon="edit"
+              color="secondary"
           /></span>
-          <span v-if="editOn">
-            <q-btn label="Save" color="primary" @click="handleSave" />
+          <span v-if="editMode">
+            <q-btn label="Save" color="primary" @click="onSave" />
             <q-btn
               label="Cancel"
-              @click="handleCancel"
+              @click="onCancelEdit"
               color="primary"
               flat
               class="q-ml-sm"
           /></span>
         </q-toolbar>
       </q-card-section>
-      <q-card-section v-if="!editOn">
+      <q-card-section v-if="!editMode">
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Title</div>
-          <div class="col">{{ planner.selectedLesson.title }}</div>
+          <div class="col">{{ lessonToEdit.title }}</div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Subtitle</div>
-          <div class="col">{{ planner.selectedLesson.subtitle }}</div>
+          <div class="col">{{ lessonToEdit.subtitle }}</div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Category</div>
-          <div class="col">{{ cats }}</div>
+          <div class="col">{{ displayCategories }}</div>
         </div>
       </q-card-section>
-      <q-card-section v-if="editOn">
+      <q-card-section v-if="editMode">
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Title</div>
           <div class="col">
-            <q-input
-              v-model="planner.selectedPlanChanges.title"
-              outlined
-              dense
-            />
+            <q-input v-model="lessonToEdit.title" outlined dense />
           </div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Subtitle</div>
           <div class="col">
-            <q-input
-              v-model="planner.selectedPlanChanges.subtitle"
-              outlined
-              dense
-            />
+            <q-input v-model="lessonToEdit.subtitle" outlined dense />
           </div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Categories</div>
           <div class="col">
             <q-select
-              v-model="planner.selectedPlanChanges.categories"
+              v-model="lessonToEdit.categories"
               :options="availableCats"
               multiple
               emit-value
@@ -73,12 +71,63 @@
         </div>
       </q-card-section>
 
-      <q-separator />
+      <q-separator v-if="!editMode" />
 
-      <q-card-actions align="around">
+      <q-card-section v-if="!editMode">
+        <div class="text-center">
+          <q-btn
+            :to="{ name: 'lessonEditor', params: { id: lessonId } }"
+            label="Edit Lesson Content"
+            icon="edit"
+            color="secondary"
+            no-caps
+          />
+        </div>
+      </q-card-section>
+
+      <q-separator v-if="!editMode" />
+
+      <q-card-section v-if="!editMode">
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Lesson ID</div>
+          <div class="col">{{ lessonToEdit.id }}</div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Version</div>
+          <div class="col">{{ lessonToEdit.version }}</div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Created</div>
+          <div class="col">
+            {{ displayDateTime(lessonToEdit.createdAt, 'unsaved') }}
+          </div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Last updated</div>
+          <div class="col">
+            {{ displayDateTime(lessonToEdit.updatedAt, 'unsaved') }}
+          </div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Published</div>
+          <div class="col">
+            {{ displayDateTime(lessonToEdit.publishedAt, 'unpublished') }}
+          </div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Archived</div>
+          <div class="col">
+            {{ displayDateTime(lessonToEdit.archivedAt, 'not archived') }}
+          </div>
+        </div>
+      </q-card-section>
+
+      <q-separator v-if="!editMode" />
+
+      <q-card-actions v-if="!editMode" align="center">
         <q-btn
           :disable="!canPublish"
-          @click="planner.publishSelectedLesson"
+          @click="() => builder.publishLesson(lessonId)"
           color="primary"
           dense
           no-caps
@@ -86,7 +135,7 @@
         >
         <q-btn
           :disable="!canRevise"
-          @click="planner.revisePublishedSelectedLesson"
+          @click="() => builder.reviseLesson(lessonId)"
           color="primary"
           dense
           no-caps
@@ -94,92 +143,53 @@
         >
         <q-btn
           :disable="!canRetract"
-          @click="planner.retractPublishedSelectedLesson"
-          color="primary"
+          @click="() => builder.retractLesson(lessonId)"
+          color="accent"
           dense
           no-caps
           >Retract</q-btn
         >
         <q-btn
           :disable="!canArchive"
-          @click="planner.archiveSelectedLesson"
-          color="primary"
+          @click="() => builder.archiveLesson(lessonId)"
+          color="accent"
           dense
           no-caps
           >Archive</q-btn
         >
         <q-btn
           :disable="!canRevive"
-          @click="planner.reviveSelectedLesson"
+          @click="() => builder.reviveLesson(lessonId)"
           color="primary"
           dense
           no-caps
           >Revive</q-btn
         >
       </q-card-actions>
-
-      <q-separator />
-
-      <q-card-section>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Lesson ID</div>
-          <div class="col">{{ planner.selectedLesson.id }}</div>
-        </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Version</div>
-          <div class="col">{{ planner.selectedLesson.version }}</div>
-        </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Created</div>
-          <div class="col">
-            {{ simpleDateTime(planner.selectedLesson.createdAt, 'unsaved') }}
-          </div>
-        </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Last updated</div>
-          <div class="col">
-            {{ simpleDateTime(planner.selectedLesson.updatedAt, 'unsaved') }}
-          </div>
-        </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Published</div>
-          <div class="col">
-            {{
-              simpleDateTime(planner.selectedLesson.publishedAt, 'unpublished')
-            }}
-          </div>
-        </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Archived</div>
-          <div class="col">
-            {{
-              simpleDateTime(planner.selectedLesson.archivedAt, 'not archived')
-            }}
-          </div>
-        </div>
-      </q-card-section>
-      <q-separator />
-
-      <q-card-section>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary"># of Views</div>
-          <div class="col">42</div>
-        </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Latest View</div>
-          <div class="col">March 3, 2023</div>
-        </div>
-      </q-card-section>
     </q-card>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { date } from 'quasar'
-import { useLessonPlannerStore } from 'src/stores/lesson-planner.js'
+import { computed, ref } from 'vue'
+import { displayDateTime } from 'components/displayTools.js'
+import { useCourseBuilderStore } from 'stores/course-builder.js'
 
-const planner = useLessonPlannerStore()
+const props = defineProps({
+  lessonId: {
+    type: String,
+    required: true,
+  },
+})
+
+const builder = useCourseBuilderStore()
+const lessonToEdit = builder.lessonPlan(props.lessonId)
+const draftLesson = ref(null)
+const editMode = ref(false)
+const displayCategories = computed(() => {
+  return lessonToEdit.categories ? lessonToEdit.categories.join(', ') : ''
+})
+
 const availableCats = [
   { label: 'engineering', value: 'engineering' },
   { label: 'fun', value: 'fun' },
@@ -188,54 +198,41 @@ const availableCats = [
   { label: 'safety', value: 'safety' },
   { label: 'science', value: 'science' },
 ]
-const cats = computed(() => {
-  return planner.isSelected ? planner.selectedLesson.categories.join(', ') : ''
-})
-const editOn = computed(() => {
-  return planner.selectedPlanChanges != null
-})
 
 // lesson state - probably belongs in store
 const canPublish = computed(() => {
-  return (
-    planner.isSelected &&
-    !planner.selectedLesson.publishedAt &&
-    !planner.selectedLesson.archivedAt
-  )
+  return !lessonToEdit.publishedAt && !lessonToEdit.archivedAt
 })
 const canRetract = computed(() => {
-  return (
-    planner.isSelected &&
-    !canPublish.value &&
-    !planner.selectedLesson.archivedAt
-  )
+  return !canPublish.value && !lessonToEdit.archivedAt
 })
 const canRevise = computed(() => {
-  return (
-    planner.isSelected &&
-    !canPublish.value &&
-    !planner.selectedLesson.archivedAt
-  )
+  return !canPublish.value && !lessonToEdit.archivedAt
 })
 const canArchive = computed(() => {
-  return planner.isSelected && !planner.selectedLesson.archivedAt
+  return !lessonToEdit.archivedAt
 })
 const canRevive = computed(() => {
-  return planner.isSelected && planner.selectedLesson.archivedAt
+  return lessonToEdit.archivedAt
 })
 
-function simpleDateTime(ts, nullLabel = '') {
-  return ts ? date.formatDate(ts, 'YYYY-MMM-D H:mm:ss ZZ') : nullLabel
+function onEdit() {
+  draftLesson.value = { ...lessonToEdit }
+  draftLesson.value.categories = lessonToEdit.categories
+    ? lessonToEdit.categories.slice()
+    : []
+  editMode.value = true
 }
-function editDetails() {
-  planner.editSelectedDetails()
+function onSave() {
+  if (!draftLesson.value) {
+    console.error('tried to save before editing')
+    return
+  }
+  builder.saveLessonPlan(draftLesson.value)
+  editMode.value = false
 }
-function handleSave() {
-  console.log('saving plan details')
-  planner.savePlanChanges()
-}
-function handleCancel() {
-  planner.clearPlanEdits()
+function onCancelEdit() {
+  editMode.value = false
 }
 </script>
 
