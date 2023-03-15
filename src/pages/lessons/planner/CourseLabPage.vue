@@ -42,7 +42,7 @@
           <q-btn
             label="Add Lesson"
             icon="add_circle"
-            @click="builder.spawnLesson"
+            @click="newLessonDialog = true"
             color="primary"
             dense
             no-caps
@@ -69,15 +69,52 @@
       </div>
     </div>
   </q-page>
+  <q-dialog v-model="newLessonDialog" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Give the lesson a title</div>
+        <div class="text-subtitle1">You can change it later.</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input
+          dense
+          v-model="newLessonTitle"
+          autofocus
+          @keyup.enter="onCreateLessonFromDialog"
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn
+          flat
+          label="Create Lesson"
+          @click="onCreateLessonFromDialog"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
 import { useCourseBuilderStore } from 'stores/course-builder'
+import { ref } from 'vue'
 
 const builder = useCourseBuilderStore()
 
+const newLessonDialog = ref(false)
+const newLessonTitle = ref('')
+
 function getStatus(lesson) {
   return lesson.archivedAt ? 'archived' : lesson.publishedAt ? 'published' : 'draft'
+}
+function onCreateLessonFromDialog() {
+  if (newLessonTitle.value && newLessonTitle.value != '') {
+    builder.spawnLesson(newLessonTitle)
+  }
+  newLessonDialog.value = false
 }
 </script>
 

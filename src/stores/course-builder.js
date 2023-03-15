@@ -218,12 +218,12 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       this.lessonPlanIndex[lesson.id] = lesson
       this.lessonPlans.push(lesson.id)
     },
-    spawnLesson(title = 'A Title') {
+    spawnLesson(title = 'a suitable title') {
       const now = new Date()
       const newLesson = {
         id: generateRandomKey(),
         title,
-        subtitle: 'A sub-title',
+        subtitle: 'provide more context',
         version: 1,
         categories: [],
         createdAt: now,
