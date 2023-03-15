@@ -34,11 +34,9 @@
     <q-tab-panels v-model="tabModel">
       <q-tab-panel name="edit">
         <div v-if="lessonPlan">
-          <div class="text-h6 text-center">
-            {{ lessonPlan.title }}
-          </div>
-          <div class="text-caption text-secondary text-center">
-            {{ lessonPlan.subtitle }}
+          <div class="q-mb-md text-h5">
+            Editing Lesson:
+            <span class="text-italic">{{ lessonPlan.title }}</span>
           </div>
           <tip-tap-editor v-model="draftContent" @save="onSave" />
         </div>
@@ -47,15 +45,20 @@
         </div>
       </q-tab-panel>
       <q-tab-panel name="preview">
-        <lesson-preview />
+        <div class="q-mb-md text-h5">Lesson Preview</div>
+        <div class="q-pa-md shadow-3">
+          <div class="text-h5">{{ lessonPlan.title }}</div>
+          <div class="text-caption text-secondary">
+            {{ lessonPlan.subtitle }}
+          </div>
+          <span class="preview-style" v-html="draftContent" />
+        </div>
       </q-tab-panel>
       <q-tab-panel name="html">
-        <div class="text-h6">HTML</div>
-        <q-card>
-          <q-card-section>
-            <pre style="white-space: pre-line">{{ draftContent }}</pre>
-          </q-card-section>
-        </q-card>
+        <div class="q-mb-md text-h5">HTML View</div>
+        <div class="q-pa-md shadow-3">
+          <pre style="white-space: pre-line">{{ draftContent }}</pre>
+        </div>
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -66,7 +69,6 @@ import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCourseBuilderStore } from 'src/stores/course-builder.js'
 import TipTapEditor from 'components/editor/TipTapEditor.vue'
-import LessonPreview from './LessonPreview.vue'
 
 const route = useRoute()
 const builder = useCourseBuilderStore()
@@ -84,4 +86,8 @@ function onSave() {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.preview-style {
+  padding: 3em;
+}
+</style>
