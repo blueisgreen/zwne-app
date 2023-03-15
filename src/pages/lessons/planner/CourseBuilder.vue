@@ -137,8 +137,40 @@
           </q-scroll-area>
         </q-card-section>
       </q-card>
+      <q-separator spaced />
+      <div class="text-h6">
+        Or create a new lesson
+        <q-btn @click="newLessonDialog = true" icon="add_circle" color="primary" />
+      </div>
     </div>
   </div>
+  <q-dialog v-model="newLessonDialog" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Give the lesson a title</div>
+        <div class="text-subtitle1">You can change it later.</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input
+          dense
+          v-model="newLessonTitle"
+          autofocus
+          @keyup.enter="onCreateLessonFromDialog"
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn
+          flat
+          label="Create Lesson"
+          @click="onCreateLessonFromDialog"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
@@ -155,6 +187,9 @@ const emit = defineEmits(['cancel'])
 
 const builder = useCourseBuilderStore()
 
+const newLessonDialog = ref(false)
+const newLessonTitle = ref('')
+
 const draftCourse = ref(null)
 const courseLessons = computed(() =>
   draftCourse.value.lessons.map((id) => builder.lessonPlan(id))
@@ -170,6 +205,12 @@ const tagOptions = [
   'PWRs',
 ]
 
+function onCreateLessonFromDialog() {
+  if (newLessonTitle.value && newLessonTitle.value != '') {
+    builder.spawnLesson(newLessonTitle)
+  }
+  newLessonDialog.value = false
+}
 function addLessonToCourse(id) {
   draftCourse.value.lessons.push(id)
 }

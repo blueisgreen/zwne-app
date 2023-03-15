@@ -218,14 +218,19 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       this.lessonPlanIndex[lesson.id] = lesson
       this.lessonPlans.push(lesson.id)
     },
-    spawnLesson() {
+    spawnLesson(title = 'A Title') {
+      const now = new Date()
       const newLesson = {
         id: generateRandomKey(),
-        title: 'A Title',
+        title,
         subtitle: 'A sub-title',
         version: 1,
+        categories: [],
+        createdAt: now,
+        updatedAt: now,
         publishedAt: null,
-        content: 'something worth learning',
+        archivedAt: null,
+        content: '<p>Focus on one idea.</p>',
       }
       this.addLessonToStore(newLesson)
     },
