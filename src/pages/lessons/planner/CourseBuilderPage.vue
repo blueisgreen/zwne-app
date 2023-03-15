@@ -3,7 +3,7 @@
     <q-toolbar>
       <q-toolbar-title>
         <div class="text-h2 text-primary">Course Builder</div>
-        <div class="text-caption text-secondary">
+        <div class="text-caption text-secondary q-pl-xs">
           Bundle lessons into enjoyable courses to maximize understanding.
         </div>
       </q-toolbar-title>
@@ -116,27 +116,52 @@
         <div class="col">{{ courseToBuild.id }}</div>
       </div>
       <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Last Update</div>
+        <div class="col">{{ courseToBuild.updatedAt || 'Unknown' }}</div>
+      </div>
+      <div class="row q-pb-sm">
         <div class="col-2 prop-label">Status</div>
         <div class="col">{{ courseToBuild.status || 'Unknown' }}</div>
       </div>
       <div class="row q-pb-sm">
-        <div class="col-2 prop-label">Last Update</div>
-        <div class="col">{{ courseToBuild.updatedAt || 'Unknown' }}</div>
+        <div class="col-2 prop-label">Change Availability</div>
+        <div class="col">
+          <q-btn-group glossy>
+            <q-btn
+              v-if="courseToBuild.status === 'closed'"
+              @click.stop="() => builder.openCourse(courseId)"
+              label="Open"
+              no-caps
+              color="secondary"
+            />
+            <q-btn
+              v-if="courseToBuild.status === 'open'"
+              @click.stop="() => builder.closeCourse(courseId)"
+              label="Close"
+              no-caps
+              color="secondary"
+            />
+            <q-btn
+              v-if="courseToBuild.status === 'closed' || courseToBuild.status === 'open'"
+              @click.stop="() => builder.archiveCourse(courseId)"
+              label="Archive"
+              no-caps
+              color="accent"
+            />
+            <q-btn
+              v-if="courseToBuild.status === 'archived'"
+              @click.stop="() => builder.reviveCourse(courseId)"
+              label="Restore"
+              no-caps
+              color="accent"
+            />
+          </q-btn-group>
+        </div>
       </div>
     </div>
 
     <div v-if="courseToBuild && editMode">
       <course-builder :course-id="courseId" @cancel="onCancelEdit" />
-    </div>
-
-    <div class="text-center">
-      Course Lifecycle Actions:
-      <q-btn-group glossy>
-        <q-btn @click.stop="showLifecycleAlert" label="Open" no-caps color="secondary" />
-        <q-btn @click.stop="showLifecycleAlert" label="Close" no-caps color="secondary" />
-        <q-btn @click.stop="showLifecycleAlert" label="Archive" no-caps color="accent" />
-        <q-btn @click.stop="showLifecycleAlert" label="Restore" no-caps color="accent" />
-      </q-btn-group>
     </div>
   </q-page>
 </template>
@@ -165,6 +190,18 @@ function onEditCourse() {
 }
 function onCancelEdit() {
   editMode.value = false
+}
+function onOpenCourse() {
+  builder.openCourse(courseId)
+}
+function onCloseCourse() {
+  builder.closeCourse(courseId)
+}
+function onArchiveCourse() {
+  builder.archiveCourse(courseId)
+}
+function onReviveCourse() {
+  builder.reviveCourse(courseId)
 }
 function showLifecycleAlert() {
   alert('Implement course lifecycle actions')

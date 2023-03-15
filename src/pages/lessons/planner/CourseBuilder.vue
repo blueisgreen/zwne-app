@@ -29,15 +29,6 @@
             dense
             autogrow
           />
-          <q-input
-            v-model="draftCourse.notes"
-            label="Notes"
-            class="lower-gap"
-            outlined
-            dense
-            autogrow
-          />
-
           <q-list bordered separator padding class="lower-gap">
             <q-item-label header>Lessons in Course</q-item-label>
             <q-item v-if="!lessonCount" class="text-secondary"
@@ -45,12 +36,8 @@
             >
             <q-item v-for="(lesson, index) in courseLessons" :key="lesson.id">
               <q-item-section>
-                <q-item-label class="text-bold">{{
-                  lesson.title
-                }}</q-item-label>
-                <q-item-label class="text-secondary">{{
-                  lesson.subtitle
-                }}</q-item-label>
+                <q-item-label class="text-bold">{{ lesson.title }}</q-item-label>
+                <q-item-label class="text-secondary">{{ lesson.subtitle }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
                 <q-btn-group push>
@@ -75,7 +62,6 @@
               </q-item-section>
             </q-item>
           </q-list>
-
           <q-select
             outlined
             v-model="draftCourse.level"
@@ -95,6 +81,14 @@
             label="Tags"
             class="lower-gap"
             dense
+          />
+          <q-input
+            v-model="draftCourse.notes"
+            label="Notes"
+            class="lower-gap"
+            outlined
+            dense
+            autogrow
           />
         </q-card-section>
         <q-card-actions align="center">
@@ -132,15 +126,11 @@
                 @click="() => addLessonToCourse(plan.id)"
               >
                 <q-item-section top>
-                  <q-item-label class="text-bold">{{
-                    plan.title
-                  }}</q-item-label>
+                  <q-item-label class="text-bold">{{ plan.title }}</q-item-label>
                   <q-item-label caption class="text-secondary">{{
                     plan.subtitle
                   }}</q-item-label>
-                  <q-item-label lines="2"
-                    ><span v-html="plan.content"
-                  /></q-item-label>
+                  <q-item-label lines="2"><span v-html="plan.content" /></q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>

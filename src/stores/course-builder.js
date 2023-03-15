@@ -212,5 +212,21 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       }
       this.addLessonToStore(newLesson)
     },
+    openCourse(id) {
+      this.course(id).status = 'open'
+    },
+    closeCourse(id) {
+      this.course(id).status = 'closed'
+    },
+    archiveCourse(id) {
+      const course = this.course(id)
+      course.status = 'archived'
+      course.archivedAt = new Date()
+    },
+    reviveCourse(id) {
+      const course = this.course(id)
+      course.status = 'closed'
+      course.archivedAt = null
+    },
   },
 })
