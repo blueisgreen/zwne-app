@@ -7,45 +7,19 @@
           Create, edit, and publish lessons for the good humankind.
         </div>
       </q-toolbar-title>
-      <q-btn :to="{ name: 'courseBuilder' }" color="primary" no-caps
-        >Go To Course Builder</q-btn
-      >
+      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps>To Course Lab</q-btn>
     </q-toolbar>
 
-    <div class="q-pa-md row q-gutter-md">
-      <div class="col-4">
-        <lesson-plan-selector-list />
-      </div>
-      <div class="col">
-        <lesson-plan-details v-if="planner.selectedLesson" />
-        <q-chip v-else>
-          <q-avatar size="lg">
-            <img :src="Zanzibar" />
-          </q-avatar>
-          Choose a lesson
-        </q-chip>
-      </div>
-    </div>
+    <lesson-plan-details v-if="lessonId" :lesson-id="lessonId" />
   </q-page>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import LessonPlanSelectorList from './LessonPlanSelectorList.vue'
+import { useRoute } from 'vue-router'
 import LessonPlanDetails from './LessonPlanDetails.vue'
-import { useLessonPlannerStore } from 'src/stores/lesson-planner.js'
-import Zanzibar from 'assets/Zanzibar.svg'
 
-const planner = useLessonPlannerStore()
-
-async function resetPage() {
-  planner.$reset()
-  await planner.fetchLessonPlans()
-}
-
-onMounted(async () => {
-  await planner.fetchLessonPlans()
-})
+const route = useRoute()
+const lessonId = route.params.id
 </script>
 
 <style lang="scss" scoped></style>

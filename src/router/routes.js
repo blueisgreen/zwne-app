@@ -49,7 +49,7 @@ const routes = [
         component: () => import('pages/lessons/planner/LessonPlannerPage.vue'),
       },
       {
-        path: 'lesson-planner/lesson/:id',
+        path: 'lesson-planner/editor/:id',
         name: 'lessonEditor',
         component: () => import('pages/lessons/planner/EditLessonPage.vue'),
       },

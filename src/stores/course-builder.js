@@ -193,6 +193,22 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       updated.lessonPathMap = buildLessonPathMap(lessons)
       this.courseIndex[id] = updated
     },
+    openCourse(id) {
+      this.course(id).status = 'open'
+    },
+    closeCourse(id) {
+      this.course(id).status = 'closed'
+    },
+    archiveCourse(id) {
+      const course = this.course(id)
+      course.status = 'archived'
+      course.archivedAt = new Date()
+    },
+    reviveCourse(id) {
+      const course = this.course(id)
+      course.status = 'closed'
+      course.archivedAt = null
+    },
     addLessonToStore(lesson) {
       console.log('adding lesson: ' + JSON.stringify(lesson))
       this.lessonPlanIndex[lesson.id] = lesson
@@ -209,21 +225,34 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       }
       this.addLessonToStore(newLesson)
     },
-    openCourse(id) {
-      this.course(id).status = 'open'
+    saveLessonPlan(updates) {},
+    publishLesson(id) {
+      const lesson = this.lessonPlan(id)
+      lesson.publishedAt = new Date()
+      lesson.updatedAt = new Date()
     },
-    closeCourse(id) {
-      this.course(id).status = 'closed'
+    reviseLesson(id) {
+      const lesson = this.lessonPlan(id)
+      lesson.publishedAt = null
+      lesson.createdAt = new Date()
+      lesson.updatedAt = new Date()
+      lesson.version++
     },
-    archiveCourse(id) {
-      const course = this.course(id)
-      course.status = 'archived'
-      course.archivedAt = new Date()
+    retractLesson(id) {
+      const lesson = this.lessonPlan(id)
+      lesson.publishedAt = null
+      lesson.updatedAt = new Date()
     },
-    reviveCourse(id) {
-      const course = this.course(id)
-      course.status = 'closed'
-      course.archivedAt = null
+    archiveLesson(id) {
+      const lesson = this.lessonPlan(id)
+      lesson.publishedAt = null
+      lesson.archivedAt = new Date()
+      lesson.updatedAt = new Date()
+    },
+    reviveLesson(id) {
+      const lesson = this.lessonPlan(id)
+      lesson.archivedAt = null
+      lesson.updatedAt = new Date()
     },
   },
 })

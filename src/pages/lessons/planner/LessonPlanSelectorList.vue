@@ -2,7 +2,13 @@
   <div>
     <q-toolbar class="text-primary">
       <q-toolbar-title> Choose a Lesson </q-toolbar-title>
-      <q-btn round dense icon="add" color="primary" @click="planner.createLesson" />
+      <q-btn
+        round
+        dense
+        icon="add"
+        color="primary"
+        @click="planner.createLesson"
+      />
     </q-toolbar>
     <q-scroll-area style="height: 400px">
       <q-list bordered separator>
