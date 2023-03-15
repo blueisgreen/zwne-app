@@ -11,7 +11,7 @@
           <q-btn
             label="Add Course"
             icon="add_circle"
-            @click="builder.spawnCourse"
+            @click="newCourseDialog = true"
             color="primary"
             dense
             no-caps
@@ -69,6 +69,33 @@
       </div>
     </div>
   </q-page>
+  <q-dialog v-model="newCourseDialog" persistent>
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Give the course a name</div>
+        <div class="text-subtitle1">You can change it later.</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input
+          dense
+          v-model="newCourseName"
+          autofocus
+          @keyup.enter="onCreateCourseFromDialog"
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn
+          flat
+          label="Create Lesson"
+          @click="onCreateCourseFromDialog"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
   <q-dialog v-model="newLessonDialog" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
@@ -104,17 +131,26 @@ import { ref } from 'vue'
 
 const builder = useCourseBuilderStore()
 
+const newCourseDialog = ref(false)
+const newCourseName = ref('')
 const newLessonDialog = ref(false)
 const newLessonTitle = ref('')
 
-function getStatus(lesson) {
-  return lesson.archivedAt ? 'archived' : lesson.publishedAt ? 'published' : 'draft'
+function onCreateCourseFromDialog() {
+  if (newCourseName.value && newCourseName.value != '') {
+    builder.spawnCourse(newCourseName)
+  }
+  newCourseDialog.value = false
 }
 function onCreateLessonFromDialog() {
   if (newLessonTitle.value && newLessonTitle.value != '') {
     builder.spawnLesson(newLessonTitle)
   }
   newLessonDialog.value = false
+}
+
+function getStatus(lesson) {
+  return lesson.archivedAt ? 'archived' : lesson.publishedAt ? 'published' : 'draft'
 }
 </script>
 

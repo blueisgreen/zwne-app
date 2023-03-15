@@ -170,22 +170,23 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       this.courseIndex[course.id] = course
       this.courses.push(course.id)
     },
-    createCourse(name = 'name me', description = '', lessons = []) {
-      const trailhead = lessons.length > 0 ? lessons[0] : null
-      const lessonPathMap = buildLessonPathMap(lessons)
+    spawnCourse(name = 'a suitable name') {
       const newCourse = {
         id: generateRandomKey(),
         name,
-        description,
+        description: 'what this is about',
+        objectives: 'what the student will learn',
         status: 'closed',
-        lessons: lessons.slice(),
-        trailhead,
-        lessonPathMap,
+        level: '',
+        tags: [],
+        lessons: [],
+        notes: 'for course designer',
+        trailhead: '',
+        lessonPathMap: {},
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }
       this.addCourseToStore(newCourse)
-    },
-    spawnCourse() {
-      this.createCourse()
     },
     saveCourse(updates) {
       console.log('saving: ' + JSON.stringify(updates))
@@ -234,7 +235,7 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       }
       this.addLessonToStore(newLesson)
     },
-    saveLessonPlan(updates) {},
+    saveLessonPlan(updates) {}, // TODO: investigate how save lesson is working
     saveLessonContent(lessonId, revision) {
       const lesson = this.lessonPlan(lessonId)
       lesson.content = revision
