@@ -73,7 +73,6 @@
 
 <script setup>
 import { useCourseBuilderStore } from 'stores/course-builder'
-import { useLessonPlannerStore } from 'stores/lesson-planner'
 
 const builder = useCourseBuilderStore()
 

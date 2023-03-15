@@ -7,10 +7,12 @@
           Create, edit, and publish lessons for the good humankind.
         </div>
       </q-toolbar-title>
-      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps>To Course Lab</q-btn>
+      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps
+        >To Course Lab</q-btn
+      >
     </q-toolbar>
 
-    <lesson-plan-details v-if="lessonId" :lesson-id="lessonId" />
+    <lesson-plan-details :lesson-id="lessonId" />
   </q-page>
 </template>
 

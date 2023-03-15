@@ -8,6 +8,7 @@ const starterLessons = {
     title: 'What is an atom?',
     subtitle: 'About what an atom is',
     version: 3,
+    categories: ['science'],
     publishedAt: now,
     content: '<p>Think small. Now go smaller. And smaller.</p>',
   },
@@ -16,6 +17,7 @@ const starterLessons = {
     title: 'Elements',
     subtitle: 'Elements are particular kinds of atoms',
     version: 5,
+    categories: ['science'],
     publishedAt: now,
     content:
       '<p>Hydrogen, helium, lithium, beryllium, boron, carbon, nitrogen, oxygen, and so on.</p>',
@@ -25,6 +27,7 @@ const starterLessons = {
     title: 'Radioactive Isotopes',
     subtitle: 'Some elements have trouble holding themselves together',
     version: 2,
+    categories: ['science', 'safety'],
     publishedAt: null,
     content: '<p>Iodine, thorium, uranium, plutonium, polonium, and so on.</p>',
   },
@@ -33,6 +36,7 @@ const starterLessons = {
     title: 'Bad (Re)actors',
     subtitle: 'Do not build your power plant this way.',
     version: 13,
+    categories: ['nuclear_power_plants', 'perspective', 'engineering'],
     publishedAt: null,
     archivedAt: now,
     content: '<p>Do this if you want things to go badly. Very badly.</p>',
@@ -226,6 +230,10 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       this.addLessonToStore(newLesson)
     },
     saveLessonPlan(updates) {},
+    saveLessonContent(lessonId, revision) {
+      const lesson = this.lessonPlan(lessonId)
+      lesson.content = revision
+    },
     publishLesson(id) {
       const lesson = this.lessonPlan(id)
       lesson.publishedAt = new Date()
