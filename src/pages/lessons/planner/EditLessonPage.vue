@@ -65,7 +65,6 @@
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCourseBuilderStore } from 'src/stores/course-builder.js'
-import { useLessonPlannerStore } from 'stores/lesson-planner.js'
 import TipTapEditor from 'components/editor/TipTapEditor.vue'
 import LessonPreview from './LessonPreview.vue'
 
@@ -76,12 +75,12 @@ const tabModel = ref('edit')
 
 const lessonId = route.params.id
 const lessonPlan = builder.lessonPlan(lessonId)
-const draftContent = lessonPlan.content
+const draftContent = ref(lessonPlan.content)
 
-const isDraftDirty = computed(() => draftContent != lessonPlan.content)
+const isDraftDirty = computed(() => draftContent.value != lessonPlan.content)
 
 function onSave() {
-  builder.saveLessonContent(lessonId, draftContent)
+  builder.saveLessonContent(lessonId, draftContent.value)
 }
 </script>
 
