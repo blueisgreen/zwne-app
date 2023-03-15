@@ -2,16 +2,16 @@
   <q-page padding>
     <q-toolbar>
       <q-toolbar-title>
-        <div class="text-h4">Lesson Composer</div>
+        <div class="text-h4">Lesson Planner</div>
         <div class="text-caption text-secondary">
-          Where you put together the content for enlightenment.
+          Create, edit, and publish lessons for the good humankind.
         </div>
       </q-toolbar-title>
       <q-btn
         :to="{ name: 'lessonPlanner', params: { id: lessonId } }"
         color="primary"
         no-caps
-        >Go To Lesson Planner</q-btn
+        >Go To Lesson Information</q-btn
       >
     </q-toolbar>
 

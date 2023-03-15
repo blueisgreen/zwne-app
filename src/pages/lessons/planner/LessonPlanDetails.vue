@@ -6,8 +6,16 @@
     <q-card bordered>
       <q-card-section>
         <q-toolbar>
-          <q-toolbar-title>Lesson Details</q-toolbar-title>
-          <span v-if="!editMode"><q-btn @click="onEdit" label="Edit" no-caps /></span>
+          <q-toolbar-title>Lesson Information</q-toolbar-title>
+          <span v-if="!editMode"
+            ><q-btn
+              @click="onEdit"
+              label="Edit"
+              dense
+              no-caps
+              icon="edit"
+              color="secondary"
+          /></span>
           <span v-if="editMode">
             <q-btn label="Save" color="primary" @click="onSave" />
             <q-btn
@@ -63,19 +71,23 @@
         </div>
       </q-card-section>
 
-      <q-separator />
+      <q-separator v-if="!editMode" />
 
-      <q-card-section>
-        <q-btn
-          :to="{ name: 'lessonEditor', params: { id: lessonId } }"
-          label="Edit Lesson Content"
-          no-caps
-        />
+      <q-card-section v-if="!editMode">
+        <div class="text-center">
+          <q-btn
+            :to="{ name: 'lessonEditor', params: { id: lessonId } }"
+            label="Edit Lesson Content"
+            icon="edit"
+            color="secondary"
+            no-caps
+          />
+        </div>
       </q-card-section>
 
-      <q-separator />
+      <q-separator v-if="!editMode" />
 
-      <q-card-section>
+      <q-card-section v-if="!editMode">
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Lesson ID</div>
           <div class="col">{{ lessonToEdit.id }}</div>
@@ -110,9 +122,9 @@
         </div>
       </q-card-section>
 
-      <q-separator />
+      <q-separator v-if="!editMode" />
 
-      <q-card-actions align="center">
+      <q-card-actions v-if="!editMode" align="center">
         <q-btn
           :disable="!canPublish"
           @click="() => builder.publishLesson(lessonId)"
