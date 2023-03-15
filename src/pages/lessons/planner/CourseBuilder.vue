@@ -193,8 +193,8 @@ function prepForEdit() {
   draftCourse.value = { ...given }
 
   // deep copy arrays
-  draftCourse.value.lessons = given.lessons.slice()
-  draftCourse.value.tags = given.tags.slice()
+  draftCourse.value.lessons = given.lessons ? given.lessons.slice() : []
+  draftCourse.value.tags = given.tags ? given.tags.slice() : []
 }
 onMounted(() => {
   prepForEdit()

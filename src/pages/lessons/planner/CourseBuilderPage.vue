@@ -46,7 +46,7 @@
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Objectives</div>
         <div class="col">
-          {{ courseToBuild.objectives || 'This course aims to teach...' }}
+          {{ courseToBuild.objectives }}
         </div>
       </div>
       <div class="row q-pb-sm">
@@ -63,7 +63,7 @@
       </div>
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Level</div>
-        <div class="col">{{ courseToBuild.level || 'Beginner' }}</div>
+        <div class="col">{{ courseToBuild.level }}</div>
       </div>
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Tags</div>
@@ -71,11 +71,7 @@
       </div>
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Notes (internal)</div>
-        <div class="col">
-          {{
-            courseToBuild.notes || 'Notes for course creator, not intended to be shared'
-          }}
-        </div>
+        <div class="col">{{ courseToBuild.notes }}</div>
       </div>
 
       <div class="row q-pb-sm">
@@ -181,7 +177,10 @@ const courseLessonList = computed(() =>
   courseToBuild.value.lessons.map((id) => builder.lessonPlan(id))
 )
 const tagListDisplay = computed(() => {
-  return courseToBuild.value.tags.reduce((accum, tag) => accum + `#${tag} `, '')
+  const { tags } = courseToBuild.value
+  return tags
+    ? courseToBuild.value.tags.reduce((accum, tag) => accum + `#${tag} `, '')
+    : ''
 })
 const editMode = ref(false)
 
@@ -190,21 +189,6 @@ function onEditCourse() {
 }
 function onCancelEdit() {
   editMode.value = false
-}
-function onOpenCourse() {
-  builder.openCourse(courseId)
-}
-function onCloseCourse() {
-  builder.closeCourse(courseId)
-}
-function onArchiveCourse() {
-  builder.archiveCourse(courseId)
-}
-function onReviveCourse() {
-  builder.reviveCourse(courseId)
-}
-function showLifecycleAlert() {
-  alert('Implement course lifecycle actions')
 }
 </script>
 

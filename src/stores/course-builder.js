@@ -166,14 +166,14 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       this.courseIndex[course.id] = course
       this.courses.push(course.id)
     },
-    createCourse(name, description, lessons = []) {
+    createCourse(name = 'name me', description = '', lessons = []) {
       const trailhead = lessons.length > 0 ? lessons[0] : null
       const lessonPathMap = buildLessonPathMap(lessons)
       const newCourse = {
         id: generateRandomKey(),
         name,
         description,
-        status: 'hidden',
+        status: 'closed',
         lessons: lessons.slice(),
         trailhead,
         lessonPathMap,
@@ -181,10 +181,7 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       this.addCourseToStore(newCourse)
     },
     spawnCourse() {
-      this.createCourse(
-        'A Course is a Course, of Course',
-        'What is this about?'
-      )
+      this.createCourse()
     },
     saveCourse(updates) {
       console.log('saving: ' + JSON.stringify(updates))
