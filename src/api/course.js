@@ -3,15 +3,17 @@ import { listCourses, getCourse } from '../graphql/queries'
 import { createCourse, updateCourse, deleteCourse } from '../graphql/mutations'
 
 function mapDataToCourse(data) {
+  console.log('mapping course data => ' + JSON.stringify(data))
   return {
     id: data.id,
-    name: data.name,
-    description: data.description,
-    objectives: data.objectives,
-    status: data.status,
-    level: data.level,
-    tags: data.tags,
-    notes: data.notes,
+    name: data.name || '',
+    description: data.description || '',
+    objectives: data.objectives || '',
+    status: data.status || '',
+    level: data.level || '',
+    tags: data.tags || [],
+    notes: data.notes || '',
+    lessons: [],
     trailhead: data.trailhead,
     archivedAt: data.archivedAt,
     createdAt: data.createdAt,
