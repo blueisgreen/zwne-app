@@ -64,6 +64,13 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
         this.courses.push(course.id)
       }
     },
+    removeCourseFromStore(id) {
+      delete this.courseIndex.id
+      const index = this.courses.indexOf(id)
+      if (index > -1) {
+        this.courses.splice(index, 1)
+      }
+    },
     async loadCourses() {
       const courses = await fetchCourses()
       if (courses) {
@@ -77,6 +84,10 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       newCourse.tags = []
       newCourse.lessons = []
       this.addCourseToStore(newCourse)
+    },
+    async deleteCourse(id) {
+      await goDeleteCourse(id)
+      this.removeCourseFromStore(id)
     },
     saveCourse(updates) {
       const { id, lessons } = updates

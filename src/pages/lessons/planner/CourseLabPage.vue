@@ -67,6 +67,24 @@
           </q-list>
         </q-scroll-area>
       </div>
+      <div class="section-style shadow-3">
+        <div class="text-h4">Danger Zone</div>
+        <div>Actions taken here are irreversible. Be careful!</div>
+        <div>Delete Course - click on a course to delete it forever.</div>
+        <q-list>
+          <q-item
+            v-for="course in builder.courseList"
+            :key="course.id"
+            clickable
+            @click="() => onDeleteCourse(course.id)"
+          >
+            <q-item-section>
+              <q-item-label class="text-accent">Delete {{ course.name }}</q-item-label>
+              <q-item-label caption lines="2">{{ course.description }}</q-item-label>
+            </q-item-section>
+          </q-item></q-list
+        >
+      </div>
     </div>
   </q-page>
   <q-dialog v-model="newCourseDialog" persistent>
@@ -140,6 +158,13 @@ onBeforeMount(async () => {
   await builder.loadCourses()
 })
 
+async function onDeleteCourse(id) {
+  await builder.deleteCourse(id)
+}
+function getStatus(lesson) {
+  return lesson.archivedAt ? 'archived' : lesson.publishedAt ? 'published' : 'draft'
+}
+
 async function onCreateCourseFromDialog() {
   try {
     if (newCourseName.value && newCourseName.value != '') {
@@ -155,9 +180,6 @@ function onCreateLessonFromDialog() {
     builder.spawnLesson(newLessonTitle.value)
   }
   newLessonDialog.value = false
-}
-function getStatus(lesson) {
-  return lesson.archivedAt ? 'archived' : lesson.publishedAt ? 'published' : 'draft'
 }
 </script>
 
