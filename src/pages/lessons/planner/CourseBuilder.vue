@@ -176,6 +176,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUpdate } from 'vue'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
+// import { CourseLevelOptions } from '../../../models'  TODO: why does this hang the page?
 
 const props = defineProps({
   courseId: {
@@ -196,7 +197,7 @@ const courseLessons = computed(() =>
 )
 const lessonCount = computed(() => draftCourse.value.lessons.length)
 
-const levelOptions = ['beginner', 'intermediate', 'advanced', 'expert']
+const levelOptions = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT', 'ALL']
 const tagOptions = [
   'science',
   'particle-physics',
@@ -225,8 +226,8 @@ function bumpSort(index, direction = 0) {
   lessons.splice(index, 1)
   lessons.splice(toIndex, 0, value)
 }
-function saveCourse() {
-  builder.saveCourse(draftCourse.value)
+async function saveCourse() {
+  await builder.updateCourse(draftCourse.value)
   emit('cancel')
 }
 function prepForEdit() {

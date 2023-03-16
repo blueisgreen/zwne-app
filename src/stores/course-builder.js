@@ -59,7 +59,6 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
   actions: {
     addCourseToStore(course) {
       this.courseIndex[course.id] = course
-
       if (!this.courses.includes(course.id)) {
         this.courses.push(course.id)
       }
@@ -71,7 +70,14 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
         this.courses.splice(index, 1)
       }
     },
+    async spawnCourse(name = 'a suitable name') {
+      const newCourse = await goCreateCourse({ name })
+      newCourse.tags = [] // TODO: add to returned payload
+      newCourse.lessons = [] // TODO: add to returned payload
+      this.addCourseToStore(newCourse)
+    },
     async loadCourses() {
+      // TODO: find way to prevent refetching when already in store
       const courses = await fetchCourses()
       if (courses) {
         courses.forEach((course) => this.addCourseToStore(course))
@@ -79,25 +85,41 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
         console.log('Curious. We did not find any courses.')
       }
     },
-    async spawnCourse(name = 'a suitable name') {
-      const newCourse = await goCreateCourse({ name })
-      newCourse.tags = []
-      newCourse.lessons = []
-      this.addCourseToStore(newCourse)
+    async loadCourse(id, refresh = false) {
+      const cached = this.course(id)
+      if (!refresh && cached) {
+        return cached
+      }
+      const course = await fetchCourse(id)
+      if (course) {
+        this.addCourseToStore(course)
+      }
+    },
+    async updateCourse(updates) {
+      const current = this.course(updates.id)
+      if (!current) {
+        console.error('out of sync for update => ' + JSON.stringify(updates))
+        return
+      }
+      const updated = await goUpdateCourse({
+        ...updates,
+        _version: current._version,
+      })
+      this.addCourseToStore(updated)
     },
     async deleteCourse(id) {
       await goDeleteCourse(id)
       this.removeCourseFromStore(id)
     },
-    saveCourse(updates) {
-      const { id, lessons } = updates
-      const updated = { ...updates }
-      updated.lessons = lessons.slice()
-      updated.tags = updates.tags.slice()
-      updated.trailhead = lessons.length > 0 ? lessons[0] : null
-      updated.lessonPathMap = buildLessonPathMap(lessons)
-      this.courseIndex[id] = updated
-    },
+    // saveCourse(updates) {
+    //   const { id, lessons } = updates
+    //   const updated = { ...updates }
+    //   updated.lessons = lessons.slice()
+    //   updated.tags = updates.tags.slice()
+    //   updated.trailhead = lessons.length > 0 ? lessons[0] : null
+    //   updated.lessonPathMap = buildLessonPathMap(lessons)
+    //   this.courseIndex[id] = updated
+    // },
     openCourse(id) {
       this.course(id).status = 'open'
     },
