@@ -1,123 +1,14 @@
 import { defineStore } from 'pinia'
 import { generateRandomKey } from 'src/components/modelTools.js'
-import { goCreateCourse } from '../api/course'
+import {
+  goCreateCourse,
+  fetchCourses,
+  fetchCourse,
+  goUpdateCourse,
+  goDeleteCourse,
+} from '../api/course'
+import { starterLessons } from './offline-data'
 
-const now = new Date()
-const starterLessons = {
-  abc1: {
-    id: 'abc1',
-    title: 'What is an atom?',
-    subtitle: 'About what an atom is',
-    version: 3,
-    categories: ['science'],
-    publishedAt: now,
-    content: '<p>Think small. Now go smaller. And smaller.</p>',
-  },
-  def2: {
-    id: 'def2',
-    title: 'Elements',
-    subtitle: 'Elements are particular kinds of atoms',
-    version: 5,
-    categories: ['science'],
-    publishedAt: now,
-    content:
-      '<p>Hydrogen, helium, lithium, beryllium, boron, carbon, nitrogen, oxygen, and so on.</p>',
-  },
-  ghi3: {
-    id: 'ghi3',
-    title: 'Radioactive Isotopes',
-    subtitle: 'Some elements have trouble holding themselves together',
-    version: 2,
-    categories: ['science', 'safety'],
-    publishedAt: null,
-    content: '<p>Iodine, thorium, uranium, plutonium, polonium, and so on.</p>',
-  },
-  xyz13: {
-    id: 'xyz13',
-    title: 'Bad (Re)actors',
-    subtitle: 'Do not build your power plant this way.',
-    version: 13,
-    categories: ['nuclear_power_plants', 'perspective', 'engineering'],
-    publishedAt: null,
-    archivedAt: now,
-    content: '<p>Do this if you want things to go badly. Very badly.</p>',
-  },
-}
-const starterCourses = {
-  pGvcoU2WHUGo: {
-    id: 'pGvcoU2WHUGo',
-    name: 'Atomic Fundamentals',
-    description: 'Get to know the building blocks of everything',
-    objectives: 'Support lofty dreams of human progress.',
-    level: 'beginner',
-    tags: ['science', 'elements'],
-    notes: 'Extensive notes to self by the author.',
-    lessons: ['abc1', 'def2', 'ghi3'],
-    trailhead: 'abc1',
-    lessonPathMap: {
-      abc1: {
-        next: 'def2',
-      },
-      def2: {
-        next: 'ghi3',
-      },
-      ghi3: {
-        next: null,
-      },
-    },
-    status: 'open',
-    createdAt: now,
-    updatedAt: now,
-  },
-  oGUHW2UocvGp: {
-    id: 'oGUHW2UocvGp',
-    name: 'Fundamentals Atomics',
-    description: 'Build with everything you know',
-    objectives: 'Support lofty dreams of human progress.',
-    level: 'beginner',
-    tags: ['perspective', 'particle-physics'],
-    notes: 'Extensive notes to self by the author.',
-    lessons: ['ghi3', 'abc1', 'def2'],
-    trailhead: 'ghi3',
-    lessonPathMap: {
-      abc1: {
-        next: 'def2',
-      },
-      def2: {
-        next: null,
-      },
-      ghi3: {
-        next: 'abc1',
-      },
-    },
-    status: 'closed',
-    createdAt: now,
-    updatedAt: now,
-  },
-  blargypants123: {
-    id: 'blargypants123',
-    name: 'PWRs Are a Powerhouse, Literally',
-    description:
-      'What reactor design has delivered the most electricity to the world? You guessed it.',
-    objectives: 'Share the wonders of pressurized water reactors.',
-    level: 'intermediate',
-    tags: ['nuclear-power-plants', 'PWRs', 'gen3'],
-    notes: 'Give people a good feeling about the success of PWRs.',
-    lessons: ['abc1', 'def2'],
-    trailhead: 'abc1',
-    lessonPathMap: {
-      abc1: {
-        next: 'def2',
-      },
-      def2: {
-        next: null,
-      },
-    },
-    status: 'open',
-    createdAt: now,
-    updatedAt: now,
-  },
-}
 const buildLessonPathMap = (lessonList) => {
   const pathMap = {}
   let previous = null
@@ -173,30 +64,20 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
         this.courses.push(course.id)
       }
     },
+    async loadCourses() {
+      const courses = await fetchCourses()
+      if (courses) {
+        courses.forEach((course) => this.addCourseToStore(course))
+      } else {
+        console.log('Curious. We did not find any courses.')
+      }
+    },
     async spawnCourse(name = 'a suitable name') {
       const newCourse = await goCreateCourse({ name })
       newCourse.tags = []
       newCourse.lessons = []
       this.addCourseToStore(newCourse)
     },
-    // spawnCourse(name = 'a suitable name') {
-    //   const newCourse = {
-    //     id: generateRandomKey(),
-    //     name,
-    //     description: 'what this is about',
-    //     objectives: 'what the student will learn',
-    //     status: 'closed',
-    //     level: '',
-    //     tags: [],
-    //     lessons: [],
-    //     notes: 'for course designer',
-    //     trailhead: '',
-    //     lessonPathMap: {},
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //   }
-    //   this.addCourseToStore(newCourse)
-    // },
     saveCourse(updates) {
       const { id, lessons } = updates
       const updated = { ...updates }

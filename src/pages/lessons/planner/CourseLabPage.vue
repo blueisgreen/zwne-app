@@ -127,7 +127,7 @@
 
 <script setup>
 import { useCourseBuilderStore } from 'stores/course-builder'
-import { ref } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 
 const builder = useCourseBuilderStore()
 
@@ -135,6 +135,10 @@ const newCourseDialog = ref(false)
 const newCourseName = ref('')
 const newLessonDialog = ref(false)
 const newLessonTitle = ref('')
+
+onBeforeMount(async () => {
+  await builder.loadCourses()
+})
 
 async function onCreateCourseFromDialog() {
   try {
@@ -152,7 +156,6 @@ function onCreateLessonFromDialog() {
   }
   newLessonDialog.value = false
 }
-
 function getStatus(lesson) {
   return lesson.archivedAt ? 'archived' : lesson.publishedAt ? 'published' : 'draft'
 }
