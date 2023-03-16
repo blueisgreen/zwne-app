@@ -89,7 +89,7 @@
         <q-btn flat label="Cancel" v-close-popup />
         <q-btn
           flat
-          label="Create Lesson"
+          label="Create Course"
           @click="onCreateCourseFromDialog"
           v-close-popup
         />
@@ -136,15 +136,19 @@ const newCourseName = ref('')
 const newLessonDialog = ref(false)
 const newLessonTitle = ref('')
 
-function onCreateCourseFromDialog() {
-  if (newCourseName.value && newCourseName.value != '') {
-    builder.spawnCourse(newCourseName)
+async function onCreateCourseFromDialog() {
+  try {
+    if (newCourseName.value && newCourseName.value != '') {
+      await builder.spawnCourse(newCourseName.value)
+    }
+  } catch (err) {
+    console.log(err)
   }
   newCourseDialog.value = false
 }
 function onCreateLessonFromDialog() {
   if (newLessonTitle.value && newLessonTitle.value != '') {
-    builder.spawnLesson(newLessonTitle)
+    builder.spawnLesson(newLessonTitle.value)
   }
   newLessonDialog.value = false
 }

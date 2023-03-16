@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { generateRandomKey } from 'src/components/modelTools.js'
+import { goCreateCourse } from '../api/course'
 
 const now = new Date()
 const starterLessons = {
@@ -132,8 +133,8 @@ const buildLessonPathMap = (lessonList) => {
 
 export const useCourseBuilderStore = defineStore('courseBuilder', {
   state: () => ({
-    courses: ['pGvcoU2WHUGo', 'oGUHW2UocvGp', 'blargypants123'],
-    courseIndex: starterCourses,
+    courses: [],
+    courseIndex: {},
     lessonPlans: ['abc1', 'def2', 'ghi3', 'xyz13'],
     lessonPlanIndex: starterLessons,
     activeCourse: '',
@@ -166,30 +167,37 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
 
   actions: {
     addCourseToStore(course) {
-      console.log('adding course: ' + JSON.stringify(course))
       this.courseIndex[course.id] = course
-      this.courses.push(course.id)
-    },
-    spawnCourse(name = 'a suitable name') {
-      const newCourse = {
-        id: generateRandomKey(),
-        name,
-        description: 'what this is about',
-        objectives: 'what the student will learn',
-        status: 'closed',
-        level: '',
-        tags: [],
-        lessons: [],
-        notes: 'for course designer',
-        trailhead: '',
-        lessonPathMap: {},
-        createdAt: new Date(),
-        updatedAt: new Date(),
+
+      if (!this.courses.includes(course.id)) {
+        this.courses.push(course.id)
       }
+    },
+    async spawnCourse(name = 'a suitable name') {
+      const newCourse = await goCreateCourse({ name })
+      newCourse.tags = []
+      newCourse.lessons = []
       this.addCourseToStore(newCourse)
     },
+    // spawnCourse(name = 'a suitable name') {
+    //   const newCourse = {
+    //     id: generateRandomKey(),
+    //     name,
+    //     description: 'what this is about',
+    //     objectives: 'what the student will learn',
+    //     status: 'closed',
+    //     level: '',
+    //     tags: [],
+    //     lessons: [],
+    //     notes: 'for course designer',
+    //     trailhead: '',
+    //     lessonPathMap: {},
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   }
+    //   this.addCourseToStore(newCourse)
+    // },
     saveCourse(updates) {
-      console.log('saving: ' + JSON.stringify(updates))
       const { id, lessons } = updates
       const updated = { ...updates }
       updated.lessons = lessons.slice()
