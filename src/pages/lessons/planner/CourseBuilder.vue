@@ -36,12 +36,8 @@
             >
             <q-item v-for="(lesson, index) in courseLessons" :key="lesson.id">
               <q-item-section>
-                <q-item-label class="text-bold">{{
-                  lesson.title
-                }}</q-item-label>
-                <q-item-label class="text-secondary">{{
-                  lesson.subtitle
-                }}</q-item-label>
+                <q-item-label class="text-bold">{{ lesson.title }}</q-item-label>
+                <q-item-label class="text-secondary">{{ lesson.subtitle }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
                 <q-btn-group push>
@@ -130,15 +126,11 @@
                 @click="() => addLessonToCourse(plan.id)"
               >
                 <q-item-section top>
-                  <q-item-label class="text-bold">{{
-                    plan.title
-                  }}</q-item-label>
+                  <q-item-label class="text-bold">{{ plan.title }}</q-item-label>
                   <q-item-label caption class="text-secondary">{{
                     plan.subtitle
                   }}</q-item-label>
-                  <q-item-label lines="2"
-                    ><span v-html="plan.content"
-                  /></q-item-label>
+                  <q-item-label lines="2"><span v-html="plan.content" /></q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -148,11 +140,7 @@
       <q-separator spaced />
       <div class="text-h6">
         Or create a new lesson
-        <q-btn
-          @click="newLessonDialog = true"
-          icon="add_circle"
-          color="primary"
-        />
+        <q-btn @click="newLessonDialog = true" icon="add_circle" color="primary" />
       </div>
     </div>
   </div>
@@ -250,9 +238,6 @@ function prepForEdit() {
   draftCourse.value.tags = given.tags ? given.tags.slice() : []
 }
 onMounted(() => {
-  prepForEdit()
-})
-onBeforeUpdate(() => {
   prepForEdit()
 })
 </script>
