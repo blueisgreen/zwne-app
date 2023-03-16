@@ -1,0 +1,46 @@
+type LessonPathStep @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  courseId: ID
+  fromLesson: ID
+  toLesson: ID
+}
+
+type Lesson @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String
+  subtitle: String
+  version: Int
+  categories: [String]
+  content: String
+  archivedAt: AWSDateTime
+  publishedAt: AWSDateTime
+  courses: [Course] @manyToMany(relationName: "LessonCourse")
+}
+
+enum CourseStatusOptions {
+  CLOSED
+  OPEN
+  ARCHIVED
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+  ALL
+}
+
+type Course @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  description: String
+  objectives: String
+  status: CourseStatusOptions
+  level: CourseLevel
+  tags: [String]
+  notes: String
+  trailhead: String
+  archivedAt: AWSDateTime
+  lessons: [Lesson] @manyToMany(relationName: "LessonCourse")
+}
