@@ -80,27 +80,33 @@ export async function fetchCourse(id) {
  * @returns
  */
 export async function goUpdateCourse(given) {
-  console.log('goUpdateCourse')
-  console.log('given => ' + JSON.stringify(given))
-  const { id, name, description, objectives, notes, status, level, _version } =
-    given
+  const {
+    id,
+    name,
+    description,
+    objectives,
+    status,
+    level,
+    tags,
+    notes,
+    _version,
+  } = given
   const changes = {
     id,
     name,
     description,
     objectives,
-    notes,
     status,
     level,
+    tags,
+    notes,
     _version,
   }
-  console.log('changes => ' + JSON.stringify(changes))
   try {
     const results = await API.graphql({
       query: updateCourse,
       variables: { input: changes },
     })
-    console.log('returned from update => ' + JSON.stringify(results))
     return mapDataToCourse(results.data.updateCourse)
   } catch (err) {
     console.error(err)
