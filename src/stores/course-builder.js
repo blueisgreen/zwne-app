@@ -6,7 +6,12 @@ import {
   fetchCourse,
   goUpdateCourse,
   goDeleteCourse,
-} from '../api/course'
+  goCreateLesson,
+  fetchLessons,
+  fetchLesson,
+  goUpdateLesson,
+  goDeleteLesson,
+} from '../api'
 import { starterLessons } from './offline-data'
 
 const buildLessonPathMap = (lessonList) => {
@@ -22,15 +27,14 @@ const buildLessonPathMap = (lessonList) => {
   return pathMap
 }
 
-export const useCourseBuilderStore = defineStore('courseBuilder', {
+export const useCourseBuilderStore = defineStore('courseLab', {
   state: () => ({
     courses: [],
     courseIndex: {},
-    lessonPlans: ['abc1', 'def2', 'ghi3', 'xyz13'],
-    lessonPlanIndex: starterLessons,
+    lessonPlans: [],
+    lessonPlanIndex: {},
     activeCourse: '',
   }),
-
   getters: {
     courseCount(state) {
       return state.courses.length
@@ -55,7 +59,6 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       }
     },
   },
-
   actions: {
     addCourseToStore(course) {
       this.courseIndex[course.id] = course
@@ -140,23 +143,65 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
     addLessonToStore(lesson) {
       console.log('adding lesson: ' + JSON.stringify(lesson))
       this.lessonPlanIndex[lesson.id] = lesson
-      this.lessonPlans.push(lesson.id)
-    },
-    spawnLesson(title = 'a suitable title') {
-      const now = new Date()
-      const newLesson = {
-        id: generateRandomKey(),
-        title,
-        subtitle: 'provide more context',
-        version: 1,
-        categories: [],
-        createdAt: now,
-        updatedAt: now,
-        publishedAt: null,
-        archivedAt: null,
-        content: '<p>Focus on one idea.</p>',
+      if (!this.lessonPlans.includes(lesson.id)) {
+        this.lessonPlans.push(lesson.id)
       }
+    },
+    removeLessonFromStore(id) {
+      delete this.lessonPlanIndex.id
+      const index = this.lessonPlans.indexOf(id)
+      if (index > -1) {
+        this.courses.splice(index, 1)
+      }
+    },
+    async spawnLesson(title = 'a suitable title') {
+      const newLesson = await goCreateLesson({ title })
       this.addLessonToStore(newLesson)
+    },
+    async loadLessons() {
+      // TODO: find way to prevent refetching when already in store
+      const lessons = await fetchLessons()
+      if (lessons) {
+        lessons.forEach((lesson) => {
+          if (!lesson._deleted) {
+            this.addLessonToStore(lesson)
+          }
+        })
+      } else {
+        console.log('Curious. We did not find any lessons.')
+      }
+    },
+    async loadLesson(id, refresh = false) {
+      const cached = this.lessonPlan(id)
+      if (!refresh && cached) {
+        return cached
+      }
+      const lesson = await fetchLesson(id)
+      console.log('Retrieved lesson => ' + JSON.stringify(lesson))
+      if (lesson) {
+        this.addLessonToStore(lesson)
+      }
+    },
+    async updateLesson(updates) {
+      const current = this.lessonPlan(updates.id)
+      if (!current) {
+        console.error('out of sync for update => ' + JSON.stringify(updates))
+        return
+      }
+      const updated = await goUpdateLesson({
+        ...updates,
+        _version: current._version,
+      })
+      this.addLessonToStore(updated)
+    },
+    async deleteLesson(id) {
+      const lesson = this.lessonPlan(id)
+      const isDeleted = await goDeleteLesson(id, lesson._version)
+      if (isDeleted) {
+        this.removeLessonFromStore(id)
+      } else {
+        console.log('failed to delete')
+      }
     },
     saveLessonPlan(updates) {}, // TODO: investigate how save lesson is working
     saveLessonContent(lessonId, revision) {
