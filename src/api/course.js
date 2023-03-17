@@ -1,6 +1,7 @@
 import { API, graphqlOperation } from 'aws-amplify'
 import { listCourses, getCourse } from '../graphql/queries'
 import { createCourse, updateCourse, deleteCourse } from '../graphql/mutations'
+import { stringify } from 'postcss'
 
 function mapDataToCourse(data) {
   return {
@@ -48,8 +49,15 @@ export async function goCreateCourse(given) {
  */
 export async function fetchCourses() {
   try {
-    // const results = await API.graphql(graphqlOperation(listCourses))
-    const results = await API.graphql({ query: listCourses })
+    // TODO: filter deleted items during fetch
+    const variables = {}
+    //   filter: {
+    //     _deleted: {
+    //       eq: false,
+    //     },
+    //   },
+    // }
+    const results = await API.graphql({ query: listCourses, variables })
     const out = results.data.listCourses.items.map((data) =>
       mapDataToCourse(data)
     )
@@ -118,11 +126,13 @@ export async function goUpdateCourse(given) {
  * Wipes out a course. Kersplat!
  * @param {*} id
  */
-export async function goDeleteCourse(id) {
+export async function goDeleteCourse(id, _version) {
   try {
-    const result = await API.graphql(
-      graphqlOperation(deleteCourse, { input: { id } })
-    )
+    const result = await API.graphql({
+      query: deleteCourse,
+      variables: { input: { id, _version } },
+    })
+    console.log('Deleted item => ' + JSON.stringify(result))
     return true
   } catch (err) {
     console.error(err)

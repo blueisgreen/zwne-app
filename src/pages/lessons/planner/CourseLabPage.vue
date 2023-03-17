@@ -68,22 +68,32 @@
         </q-scroll-area>
       </div>
       <div class="section-style shadow-3">
-        <div class="text-h4">Danger Zone</div>
-        <div>Actions taken here are irreversible. Be careful!</div>
-        <div>Delete Course - click on a course to delete it forever.</div>
-        <q-list>
-          <q-item
-            v-for="course in builder.courseList"
-            :key="course.id"
-            clickable
-            @click="() => onDeleteCourse(course.id)"
-          >
-            <q-item-section>
-              <q-item-label class="text-accent">Delete {{ course.name }}</q-item-label>
-              <q-item-label caption lines="2">{{ course.description }}</q-item-label>
-            </q-item-section>
-          </q-item></q-list
+        <q-expansion-item
+          v-model="dangerZoneExpanded"
+          icon="warning"
+          label="Danger Zone"
+          caption="Use with care"
         >
+          <div class="text-accent text-h4 text-center">
+            Be careful! Actions taken here are irreversible.
+          </div>
+          <q-list>
+            <q-item v-for="course in builder.courseList" :key="course.id">
+              <q-item-section>
+                <q-item-label class="text-bold">{{ course.name }}</q-item-label>
+                <q-item-label caption lines="2">{{ course.description }}</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn
+                  @click="() => onDeleteCourse(course.id)"
+                  icon="delete"
+                  dense
+                  color="accent"
+                  label="Delete Course"
+                />
+              </q-item-section> </q-item
+          ></q-list>
+        </q-expansion-item>
       </div>
     </div>
   </q-page>
@@ -153,6 +163,7 @@ const newCourseDialog = ref(false)
 const newCourseName = ref('')
 const newLessonDialog = ref(false)
 const newLessonTitle = ref('')
+const dangerZoneExpanded = ref(false)
 
 onBeforeMount(async () => {
   await builder.loadCourses()

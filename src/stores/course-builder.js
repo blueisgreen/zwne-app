@@ -80,7 +80,11 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       // TODO: find way to prevent refetching when already in store
       const courses = await fetchCourses()
       if (courses) {
-        courses.forEach((course) => this.addCourseToStore(course))
+        courses.forEach((course) => {
+          if (!course._deleted) {
+            this.addCourseToStore(course)
+          }
+        })
       } else {
         console.log('Curious. We did not find any courses.')
       }
@@ -109,8 +113,13 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       this.addCourseToStore(updated)
     },
     async deleteCourse(id) {
-      await goDeleteCourse(id)
-      this.removeCourseFromStore(id)
+      const course = this.course(id)
+      const isDeleted = await goDeleteCourse(id, course._version)
+      if (isDeleted) {
+        this.removeCourseFromStore(id)
+      } else {
+        console.log('failed to delete')
+      }
     },
     openCourse(id) {
       this.course(id).status = 'open'
