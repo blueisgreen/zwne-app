@@ -36,8 +36,12 @@
             >
             <q-item v-for="(lesson, index) in courseLessons" :key="lesson.id">
               <q-item-section>
-                <q-item-label class="text-bold">{{ lesson.title }}</q-item-label>
-                <q-item-label class="text-secondary">{{ lesson.subtitle }}</q-item-label>
+                <q-item-label class="text-bold">{{
+                  lesson.title
+                }}</q-item-label>
+                <q-item-label class="text-secondary">{{
+                  lesson.subtitle
+                }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
                 <q-btn-group push>
@@ -126,11 +130,15 @@
                 @click="() => addLessonToCourse(plan.id)"
               >
                 <q-item-section top>
-                  <q-item-label class="text-bold">{{ plan.title }}</q-item-label>
+                  <q-item-label class="text-bold">{{
+                    plan.title
+                  }}</q-item-label>
                   <q-item-label caption class="text-secondary">{{
                     plan.subtitle
                   }}</q-item-label>
-                  <q-item-label lines="2"><span v-html="plan.content" /></q-item-label>
+                  <q-item-label lines="2"
+                    ><span v-html="plan.content"
+                  /></q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -140,7 +148,11 @@
       <q-separator spaced />
       <div class="text-h6">
         Or create a new lesson
-        <q-btn @click="newLessonDialog = true" icon="add_circle" color="primary" />
+        <q-btn
+          @click="newLessonDialog = true"
+          icon="add_circle"
+          color="primary"
+        />
       </div>
     </div>
   </div>
@@ -174,13 +186,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUpdate } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
 // import { CourseLevelOptions } from '../../../models'  TODO: why does this hang the page?
 
 const props = defineProps({
-  courseId: {
-    type: String,
+  course: {
+    type: Object,
     required: true,
   },
 })
@@ -191,7 +203,7 @@ const builder = useCourseBuilderStore()
 const newLessonDialog = ref(false)
 const newLessonTitle = ref('')
 
-const draftCourse = ref(null)
+const draftCourse = computed()
 const courseLessons = computed(() =>
   draftCourse.value.lessons.map((id) => builder.lessonPlan(id))
 )
@@ -230,16 +242,12 @@ async function saveCourse() {
   await builder.updateCourse(draftCourse.value)
   emit('cancel')
 }
-function prepForEdit() {
-  const given = builder.course(props.courseId)
-  draftCourse.value = { ...given }
+onMounted(() => {
+  draftCourse.value = { ...course }
 
   // deep copy arrays
-  draftCourse.value.lessons = given.lessons ? given.lessons.slice() : []
-  draftCourse.value.tags = given.tags ? given.tags.slice() : []
-}
-onMounted(() => {
-  prepForEdit()
+  draftCourse.value.lessons = course.lessons ? course.lessons.slice() : []
+  draftCourse.value.tags = course.tags ? course.tags.slice() : []
 })
 </script>
 

@@ -91,6 +91,7 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
         return cached
       }
       const course = await fetchCourse(id)
+      console.log('Retrieved course => ' + JSON.stringify(course))
       if (course) {
         this.addCourseToStore(course)
       }
@@ -111,15 +112,6 @@ export const useCourseBuilderStore = defineStore('courseBuilder', {
       await goDeleteCourse(id)
       this.removeCourseFromStore(id)
     },
-    // saveCourse(updates) {
-    //   const { id, lessons } = updates
-    //   const updated = { ...updates }
-    //   updated.lessons = lessons.slice()
-    //   updated.tags = updates.tags.slice()
-    //   updated.trailhead = lessons.length > 0 ? lessons[0] : null
-    //   updated.lessonPathMap = buildLessonPathMap(lessons)
-    //   this.courseIndex[id] = updated
-    // },
     openCourse(id) {
       this.course(id).status = 'open'
     },

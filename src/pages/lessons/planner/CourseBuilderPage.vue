@@ -7,31 +7,26 @@
           Bundle lessons into enjoyable courses to maximize understanding.
         </div>
       </q-toolbar-title>
-      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps
-        >To Course Lab</q-btn
-      >
+      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps>To Course Lab</q-btn>
     </q-toolbar>
 
     <div v-if="!courseToBuild" class="q-pa-md">
       <div class="text-h4">Loading...</div>
       <div class="q-my-md">
-        If you get stuck here for more than a few seconds, it means we did not
-        find the course with the ID of
+        If you get stuck here for more than a few seconds, it means we did not find the
+        course with the ID of
         <span class="text-bold">{{ courseId }}</span
         >. Return to
         <router-link :to="{ name: 'courseLab' }">the Lab entrance</router-link>
         and choose something from the list of courses.
       </div>
       <div class="q-my-md">
-        If you just tried that and are still stuck, something else must be
-        wrong. Sorry about that.
+        If you just tried that and are still stuck, something else must be wrong. Sorry
+        about that.
       </div>
     </div>
 
-    <div
-      v-if="courseToBuild && !editMode"
-      class="q-ma-md q-pa-md course-info shadow-3"
-    >
+    <div v-if="courseToBuild && !editMode" class="q-ma-md q-pa-md course-info shadow-3">
       <div class="row q-pb-sm">
         <div class="col">
           <div class="text-center text-h6">About This Course</div>
@@ -59,10 +54,9 @@
         <div class="col">
           <ul>
             <li v-for="lesson in courseLessonList" :key="lesson.id">
-              <router-link
-                :to="{ name: 'lessonPlanner', params: { id: lesson.id } }"
-                >{{ lesson.title }}</router-link
-              >
+              <router-link :to="{ name: 'lessonPlanner', params: { id: lesson.id } }">{{
+                lesson.title
+              }}</router-link>
             </li>
           </ul>
         </div>
@@ -105,9 +99,7 @@
         <div class="col">
           {{
             courseToBuild.bannerImageUrl ||
-            'https://cdn.zanzisworld.com/courses/images/cover' +
-              courseToBuild.id +
-              '.png'
+            'https://cdn.zanzisworld.com/courses/images/cover' + courseToBuild.id + '.png'
           }}
         </div>
         <div class="col-1">
@@ -152,10 +144,7 @@
               color="secondary"
             />
             <q-btn
-              v-if="
-                courseToBuild.status === 'closed' ||
-                courseToBuild.status === 'open'
-              "
+              v-if="courseToBuild.status === 'closed' || courseToBuild.status === 'open'"
               @click.stop="() => builder.archiveCourse(courseId)"
               label="Archive"
               no-caps
@@ -174,13 +163,13 @@
     </div>
 
     <div v-if="courseToBuild && editMode">
-      <course-builder :course-id="courseId" @cancel="onCancelEdit" />
+      <course-builder :course="courseToBuild" @cancel="onCancelEdit" />
     </div>
   </q-page>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUpdate } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
 import CourseBuilder from './CourseBuilder.vue'
@@ -189,16 +178,19 @@ const route = useRoute()
 const builder = useCourseBuilderStore()
 
 const courseId = route.params.id
-const courseToBuild = computed(() => builder.course(courseId))
-const courseLessonList = computed(() =>
-  courseToBuild.value.lessons.map((id) => builder.lessonPlan(id))
-)
+const courseToBuild = ref(null)
+const courseLessonList = computed(() => {
+  return courseToBuild.value
+    ? courseToBuild.value.lessons.map((lessonId) => builder.lessonPlan(lessonId))
+    : []
+})
 const tagListDisplay = computed(() => {
   const { tags } = courseToBuild.value
   return tags
     ? courseToBuild.value.tags.reduce((accum, tag) => accum + `#${tag} `, '')
     : ''
 })
+
 const editMode = ref(false)
 
 function onEditCourse() {
@@ -210,6 +202,14 @@ function onCancelEdit() {
 function onEditImage() {
   alert('This will bring up a fancy image picker, someday.')
 }
+onMounted(async () => {
+  if (courseId) {
+    courseToBuild.value = await builder.loadCourse(courseId)
+    console.log('Course loaded')
+  } else {
+    console.error('Failed to load. Course ID unknown.')
+  }
+})
 </script>
 
 <style lang="scss" scoped>

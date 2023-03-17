@@ -48,7 +48,8 @@ export async function goCreateCourse(given) {
  */
 export async function fetchCourses() {
   try {
-    const results = await API.graphql(graphqlOperation(listCourses))
+    // const results = await API.graphql(graphqlOperation(listCourses))
+    const results = await API.graphql({ query: listCourses })
     const out = results.data.listCourses.items.map((data) =>
       mapDataToCourse(data)
     )
@@ -63,12 +64,12 @@ export async function fetchCourses() {
  * @returns
  */
 export async function fetchCourse(id) {
+  console.log('Fetching course with ID => ' + id)
   try {
-    const results = await API.graphql(
-      graphqlOperation(getCourse, { input: { id } })
-    )
+    // const results = await API.graphql(graphqlOperation(getCourse, { id }))
+    const results = await API.graphql({ query: getCourse, variables: { id } })
     console.log(JSON.stringify(results))
-    return results.data
+    return mapDataToCourse(results.data.getCourse)
   } catch (err) {
     console.error(err)
   }
