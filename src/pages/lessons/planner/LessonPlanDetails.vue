@@ -1,8 +1,8 @@
 <template>
-  <div v-if="!lessonToEdit">
+  <div v-if="!lesson">
     <div class="text-h3">Choose a plan to inspect</div>
   </div>
-  <div v-if="!!lessonToEdit">
+  <div v-if="!!lesson">
     <q-card bordered>
       <q-card-section>
         <q-toolbar>
@@ -30,11 +30,11 @@
       <q-card-section v-if="!editMode">
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Title</div>
-          <div class="col">{{ lessonToEdit.title }}</div>
+          <div class="col">{{ lesson.title }}</div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Subtitle</div>
-          <div class="col">{{ lessonToEdit.subtitle }}</div>
+          <div class="col">{{ lesson.subtitle }}</div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Category</div>
@@ -45,20 +45,20 @@
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Title</div>
           <div class="col">
-            <q-input v-model="lessonToEdit.title" outlined dense />
+            <q-input v-model="draftLesson.title" outlined dense />
           </div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Subtitle</div>
           <div class="col">
-            <q-input v-model="lessonToEdit.subtitle" outlined dense />
+            <q-input v-model="draftLesson.subtitle" outlined dense />
           </div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Categories</div>
           <div class="col">
             <q-select
-              v-model="lessonToEdit.categories"
+              v-model="draftLesson.categories"
               :options="availableCats"
               multiple
               emit-value
@@ -76,7 +76,7 @@
       <q-card-section v-if="!editMode">
         <div class="text-center">
           <q-btn
-            :to="{ name: 'lessonEditor', params: { id: lessonId } }"
+            :to="{ name: 'lessonEditor', params: { id: lesson.id } }"
             label="Edit Lesson Content"
             icon="edit"
             color="secondary"
@@ -90,34 +90,34 @@
       <q-card-section v-if="!editMode">
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Lesson ID</div>
-          <div class="col">{{ lessonToEdit.id }}</div>
+          <div class="col">{{ lesson.id }}</div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Version</div>
-          <div class="col">{{ lessonToEdit.version }}</div>
+          <div class="col">{{ lesson.version }}</div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Created</div>
           <div class="col">
-            {{ displayDateTime(lessonToEdit.createdAt, 'unsaved') }}
+            {{ displayDateTime(lesson.createdAt, 'unsaved') }}
           </div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Last updated</div>
           <div class="col">
-            {{ displayDateTime(lessonToEdit.updatedAt, 'unsaved') }}
+            {{ displayDateTime(lesson.updatedAt, 'unsaved') }}
           </div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Published</div>
           <div class="col">
-            {{ displayDateTime(lessonToEdit.publishedAt, 'unpublished') }}
+            {{ displayDateTime(lesson.publishedAt, 'unpublished') }}
           </div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Archived</div>
           <div class="col">
-            {{ displayDateTime(lessonToEdit.archivedAt, 'not archived') }}
+            {{ displayDateTime(lesson.archivedAt, 'not archived') }}
           </div>
         </div>
       </q-card-section>
@@ -127,7 +127,7 @@
       <q-card-actions v-if="!editMode" align="center">
         <q-btn
           :disable="!canPublish"
-          @click="() => builder.publishLesson(lessonId)"
+          @click="() => builder.publishLesson(lesson.id)"
           color="primary"
           dense
           no-caps
@@ -135,7 +135,7 @@
         >
         <q-btn
           :disable="!canRevise"
-          @click="() => builder.reviseLesson(lessonId)"
+          @click="() => builder.reviseLesson(lesson.id)"
           color="primary"
           dense
           no-caps
@@ -143,7 +143,7 @@
         >
         <q-btn
           :disable="!canRetract"
-          @click="() => builder.retractLesson(lessonId)"
+          @click="() => builder.retractLesson(lesson.id)"
           color="accent"
           dense
           no-caps
@@ -151,7 +151,7 @@
         >
         <q-btn
           :disable="!canArchive"
-          @click="() => builder.archiveLesson(lessonId)"
+          @click="() => builder.archiveLesson(lesson.id)"
           color="accent"
           dense
           no-caps
@@ -159,7 +159,7 @@
         >
         <q-btn
           :disable="!canRevive"
-          @click="() => builder.reviveLesson(lessonId)"
+          @click="() => builder.reviveLesson(lesson.id)"
           color="primary"
           dense
           no-caps
@@ -171,7 +171,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { displayDateTime } from 'components/displayTools.js'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
 
@@ -183,11 +183,10 @@ const props = defineProps({
 })
 
 const builder = useCourseBuilderStore()
-const lessonToEdit = ref(props.lesson)
 const draftLesson = ref(null)
 const editMode = ref(false)
 const displayCategories = computed(() => {
-  return lessonToEdit.value.categories ? lessonToEdit.value.categories.join(', ') : ''
+  return lesson.value.categories ? lesson.value.categories.join(', ') : ''
 })
 
 const availableCats = [
@@ -201,25 +200,25 @@ const availableCats = [
 
 // lesson state - probably belongs in store
 const canPublish = computed(() => {
-  return !lessonToEdit.value.publishedAt && !lessonToEdit.value.archivedAt
+  return !lesson.value.publishedAt && !lesson.value.archivedAt
 })
 const canRetract = computed(() => {
-  return !canPublish.value && !lessonToEdit.value.archivedAt
+  return !canPublish.value && !lesson.value.archivedAt
 })
 const canRevise = computed(() => {
-  return !canPublish.value && !lessonToEdit.value.archivedAt
+  return !canPublish.value && !lesson.value.archivedAt
 })
 const canArchive = computed(() => {
-  return !lessonToEdit.value.archivedAt
+  return !lesson.value.archivedAt
 })
 const canRevive = computed(() => {
-  return lessonToEdit.value.archivedAt
+  return lesson.value.archivedAt
 })
 
 function onEdit() {
-  draftLesson.value = { ...lessonToEdit }
-  draftLesson.value.categories = lessonToEdit.value.categories
-    ? lessonToEdit.value.categories.slice()
+  draftLesson.value = { ...lesson }
+  draftLesson.value.categories = lesson.value.categories
+    ? lesson.value.categories.slice()
     : []
   editMode.value = true
 }
