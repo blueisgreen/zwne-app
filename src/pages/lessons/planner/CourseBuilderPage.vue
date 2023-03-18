@@ -169,15 +169,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUpdate } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
 import CourseBuilder from './CourseBuilder.vue'
 
 const route = useRoute()
-const builder = useCourseBuilderStore()
-
 const courseId = route.params.id
+
+const builder = useCourseBuilderStore()
 const courseToBuild = ref(null)
 const courseLessonList = computed(() => {
   return courseToBuild.value

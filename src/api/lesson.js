@@ -20,11 +20,12 @@ function mapDataToLesson(data) {
 }
 
 /**
- * Attempts to persist a new course based on given values.
+ * Attempts to persist a new lesson based on given values.
  * @param {*} given
- * @returns Course
+ * @returns Lesson
  */
 export async function goCreateLesson(given) {
+  console.log('goCreateLesson')
   try {
     const { title } = given
     const results = await API.graphql(
@@ -32,17 +33,18 @@ export async function goCreateLesson(given) {
         input: { title },
       })
     )
-    return mapDataToCourse(results.data.createLesson)
+    return mapDataToLesson(results.data.createLesson)
   } catch (err) {
     console.error(err)
   }
 }
 
 /**
- * Retrieves a list of courses.
+ * Retrieves a list of lessons.
  * @returns
  */
 export async function fetchLessons() {
+  console.log('fetchLessons')
   try {
     // TODO: filter deleted items during fetch
     const variables = {}
@@ -63,13 +65,12 @@ export async function fetchLessons() {
 }
 
 /**
- * Retrieves a course instance.
+ * Retrieves a lesson instance.
  * @returns
  */
 export async function fetchLesson(id) {
-  console.log('Fetching course with ID => ' + id)
+  console.log('Fetching lesson with ID => ' + id)
   try {
-    // const results = await API.graphql(graphqlOperation(getCourse, { id }))
     const results = await API.graphql({ query: getLesson, variables: { id } })
     console.log(JSON.stringify(results))
     return mapDataToLesson(results.data.getLesson)
@@ -79,7 +80,7 @@ export async function fetchLesson(id) {
 }
 
 /**
- * Update course information.
+ * Update lesson information.
  * @param {*} given
  * @returns
  */
@@ -118,7 +119,7 @@ export async function goUpdateLesson(given) {
 }
 
 /**
- * Wipes out a course. Kersplat!
+ * Wipes out a lesson. Kersplat!
  * @param {*} id
  */
 export async function goDeleteLesson(id, _version) {

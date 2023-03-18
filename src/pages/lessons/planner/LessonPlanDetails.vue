@@ -171,23 +171,23 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { displayDateTime } from 'components/displayTools.js'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
 
 const props = defineProps({
-  lessonId: {
-    type: String,
+  lesson: {
+    type: Object,
     required: true,
   },
 })
 
 const builder = useCourseBuilderStore()
-const lessonToEdit = builder.lessonPlan(props.lessonId)
+const lessonToEdit = ref(props.lesson)
 const draftLesson = ref(null)
 const editMode = ref(false)
 const displayCategories = computed(() => {
-  return lessonToEdit.categories ? lessonToEdit.categories.join(', ') : ''
+  return lessonToEdit.value.categories ? lessonToEdit.value.categories.join(', ') : ''
 })
 
 const availableCats = [
@@ -201,34 +201,34 @@ const availableCats = [
 
 // lesson state - probably belongs in store
 const canPublish = computed(() => {
-  return !lessonToEdit.publishedAt && !lessonToEdit.archivedAt
+  return !lessonToEdit.value.publishedAt && !lessonToEdit.value.archivedAt
 })
 const canRetract = computed(() => {
-  return !canPublish.value && !lessonToEdit.archivedAt
+  return !canPublish.value && !lessonToEdit.value.archivedAt
 })
 const canRevise = computed(() => {
-  return !canPublish.value && !lessonToEdit.archivedAt
+  return !canPublish.value && !lessonToEdit.value.archivedAt
 })
 const canArchive = computed(() => {
-  return !lessonToEdit.archivedAt
+  return !lessonToEdit.value.archivedAt
 })
 const canRevive = computed(() => {
-  return lessonToEdit.archivedAt
+  return lessonToEdit.value.archivedAt
 })
 
 function onEdit() {
   draftLesson.value = { ...lessonToEdit }
-  draftLesson.value.categories = lessonToEdit.categories
-    ? lessonToEdit.categories.slice()
+  draftLesson.value.categories = lessonToEdit.value.categories
+    ? lessonToEdit.value.categories.slice()
     : []
   editMode.value = true
 }
-function onSave() {
+async function onSave() {
   if (!draftLesson.value) {
-    console.error('tried to save before editing')
+    console.error('tried to save before loading')
     return
   }
-  builder.saveLessonPlan(draftLesson.value)
+  await builder.updateLesson(draftLesson.value)
   editMode.value = false
 }
 function onCancelEdit() {

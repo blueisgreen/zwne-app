@@ -41,7 +41,8 @@
           <tip-tap-editor v-model="draftContent" @save="onSave" />
         </div>
         <div v-if="!lessonPlan">
-          Loading...If this message stays longer than a few seconds, something is wrong.
+          Loading...If this message stays longer than a few seconds, something
+          is wrong.
         </div>
       </q-tab-panel>
       <q-tab-panel name="preview">
@@ -82,7 +83,7 @@ const draftContent = ref(lessonPlan.content)
 const isDraftDirty = computed(() => draftContent.value != lessonPlan.content)
 
 function onSave() {
-  builder.saveLessonContent(lessonId, draftContent.value)
+  builder.updateLesson({ id: lessonId, content: draftContent.value })
 }
 </script>
 

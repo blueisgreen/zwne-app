@@ -166,7 +166,7 @@ const newLessonTitle = ref('')
 const dangerZoneExpanded = ref(false)
 
 onBeforeMount(async () => {
-  await builder.loadCourses()
+  await Promise.all([builder.loadCourses(), builder.loadLessons()])
 })
 
 async function onDeleteCourse(id) {
@@ -186,9 +186,13 @@ async function onCreateCourseFromDialog() {
   }
   newCourseDialog.value = false
 }
-function onCreateLessonFromDialog() {
-  if (newLessonTitle.value && newLessonTitle.value != '') {
-    builder.spawnLesson(newLessonTitle.value)
+async function onCreateLessonFromDialog() {
+  try {
+    if (newLessonTitle.value && newLessonTitle.value != '') {
+      await builder.spawnLesson(newLessonTitle.value)
+    }
+  } catch (err) {
+    console.log(err)
   }
   newLessonDialog.value = false
 }

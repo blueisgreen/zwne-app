@@ -172,6 +172,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       }
     },
     async loadLesson(id, refresh = false) {
+      console.log('loadLesson')
       const cached = this.lessonPlan(id)
       if (!refresh && cached) {
         return cached
@@ -183,6 +184,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       }
     },
     async updateLesson(updates) {
+      console.log('updateLesson')
       const current = this.lessonPlan(updates.id)
       if (!current) {
         console.error('out of sync for update => ' + JSON.stringify(updates))

@@ -30,6 +30,7 @@ function mapDataToCourse(data) {
  * @returns Course
  */
 export async function goCreateCourse(given) {
+  console.log('goCreateCourse')
   try {
     const { name } = given
     const results = await API.graphql(
@@ -48,6 +49,7 @@ export async function goCreateCourse(given) {
  * @returns
  */
 export async function fetchCourses() {
+  console.log('fetchCourses')
   try {
     // TODO: filter deleted items during fetch
     const variables = {}
