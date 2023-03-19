@@ -17,7 +17,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUpdate } from 'vue'
+import {
+  ref,
+  onBeforeMount,
+  onMounted,
+  onBeforeUpdate,
+  onUpdated,
+  onBeforeUnmount,
+  onUnmounted,
+  onErrorCaptured,
+} from 'vue'
 import { useRoute } from 'vue-router'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
 import LessonPlanDetails from './LessonPlanDetails.vue'
@@ -26,25 +35,34 @@ const route = useRoute()
 const lessonId = route.params.id
 
 const builder = useCourseBuilderStore()
-const lessonToEdit = computed(() => builder.lessonPlan(lessonId))
+const lessonToEdit = ref(null)
 
+onBeforeMount(() => {
+  console.log('onBeforeMount')
+})
 onMounted(async () => {
   console.log('onMounted')
   if (lessonId) {
     lessonToEdit.value = await builder.loadLesson(lessonId)
-    console.log('Lesson loaded')
+    console.log('Lesson loaded => ' + JSON.stringify(lessonToEdit.value))
   } else {
     console.error('Failed to load. Lesson ID unknown.')
   }
 })
-onBeforeUpdate(async () => {
+onBeforeUpdate(() => {
   console.log('onBeforeUpdate')
-  if (lessonId) {
-    lessonToEdit.value = await builder.loadLesson(lessonId)
-    console.log('Lesson loaded')
-  } else {
-    console.error('Failed to load. Lesson ID unknown.')
-  }
+})
+onUpdated(() => {
+  console.log('onUpdated')
+})
+onBeforeUnmount(() => {
+  console.log('onBeforeUnmount')
+})
+onUnmounted(() => {
+  console.log('onUnmounted')
+})
+onErrorCaptured(() => {
+  console.log('onErrorCaptured')
 })
 </script>
 

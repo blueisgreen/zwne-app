@@ -186,7 +186,7 @@ const builder = useCourseBuilderStore()
 const draftLesson = ref(null)
 const editMode = ref(false)
 const displayCategories = computed(() => {
-  return lesson.value.categories ? lesson.value.categories.join(', ') : ''
+  return props.lesson.categories ? props.lesson.categories.join(', ') : ''
 })
 
 const availableCats = [
@@ -200,29 +200,32 @@ const availableCats = [
 
 // lesson state - probably belongs in store
 const canPublish = computed(() => {
-  return !lesson.value.publishedAt && !lesson.value.archivedAt
+  return !props.lesson.publishedAt && !props.lesson.archivedAt
 })
 const canRetract = computed(() => {
-  return !canPublish.value && !lesson.value.archivedAt
+  return !canPublish.value && !props.lesson.archivedAt
 })
 const canRevise = computed(() => {
-  return !canPublish.value && !lesson.value.archivedAt
+  return !canPublish.value && !props.lesson.archivedAt
 })
 const canArchive = computed(() => {
-  return !lesson.value.archivedAt
+  return !props.lesson.archivedAt
 })
 const canRevive = computed(() => {
-  return lesson.value.archivedAt
+  return props.lesson.archivedAt
 })
 
 function onEdit() {
-  draftLesson.value = { ...lesson }
-  draftLesson.value.categories = lesson.value.categories
-    ? lesson.value.categories.slice()
+  console.log('LessonPlanDetails.onEdit')
+  draftLesson.value = { ...props.lesson }
+  draftLesson.value.categories = props.lesson.categories
+    ? [...props.lesson.categories]
     : []
   editMode.value = true
 }
 async function onSave() {
+  console.log('LessonPlanDetails.onSave')
+  console.log('draft lesson => ' + JSON.stringify(draftLesson.value))
   if (!draftLesson.value) {
     console.error('tried to save before loading')
     return

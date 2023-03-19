@@ -85,33 +85,22 @@ export async function fetchLesson(id) {
  * @returns
  */
 export async function goUpdateLesson(given) {
-  const {
-    id,
-    name,
-    description,
-    objectives,
-    status,
-    level,
-    tags,
-    notes,
-    _version,
-  } = given
+  const { id, title, subtitle, categories, content, _version } = given
   const changes = {
     id,
-    name,
-    description,
-    objectives,
-    status,
-    level,
-    tags,
-    notes,
+    title,
+    subtitle,
+    categories,
+    content,
     _version,
   }
   try {
+    console.log('lessonAPI.goUpdateLesson: given=' + JSON.stringify(changes))
     const results = await API.graphql({
       query: updateLesson,
       variables: { input: changes },
     })
+    console.log('Updated lesson => ' + JSON.stringify(results))
     return mapDataToLesson(results.data.updateLesson)
   } catch (err) {
     console.error(err)

@@ -102,6 +102,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       if (course) {
         this.addCourseToStore(course)
       }
+      return course
     },
     async updateCourse(updates) {
       const current = this.course(updates.id)
@@ -182,18 +183,19 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       if (lesson) {
         this.addLessonToStore(lesson)
       }
+      return lesson
     },
     async updateLesson(updates) {
       console.log('updateLesson')
+      console.log('Given updates => ' + JSON.stringify(updates))
       const current = this.lessonPlan(updates.id)
       if (!current) {
         console.error('out of sync for update => ' + JSON.stringify(updates))
         return
       }
-      const updated = await goUpdateLesson({
-        ...updates,
-        _version: current._version,
-      })
+      const combined = { ...updates, _version: current._version }
+      console.log('Combined updates => ' + JSON.stringify(combined))
+      const updated = await goUpdateLesson(combined)
       this.addLessonToStore(updated)
     },
     async deleteLesson(id) {
