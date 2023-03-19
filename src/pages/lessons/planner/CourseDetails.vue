@@ -5,7 +5,7 @@
       <div class="text-h6">Update the Course</div>
       <q-card bordered>
         <q-card-section>
-          <div class="text-caption">Course ID: {{ courseId }}</div>
+          <div class="text-caption">Course ID: {{ course.id }}</div>
           <q-input
             v-model="draftCourse.name"
             label="Name"
@@ -174,17 +174,7 @@
 </template>
 
 <script setup>
-import {
-  ref,
-  computed,
-  onBeforeMount,
-  onMounted,
-  onBeforeUpdate,
-  onUpdated,
-  onBeforeUnmount,
-  onUnmounted,
-  onErrorCaptured,
-} from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
 // import { CourseLevelOptions } from '../../../models'  TODO: why does this hang the page?
 
@@ -201,7 +191,7 @@ const builder = useCourseBuilderStore()
 const newLessonDialog = ref(false)
 const newLessonTitle = ref('')
 
-const draftCourse = computed() // FIXME: how does this work?
+const draftCourse = ref(null) // FIXME: how does this work?
 const courseLessons = computed(() =>
   draftCourse.value.lessons.map((id) => builder.lessonPlan(id))
 )
@@ -240,31 +230,13 @@ async function saveCourse() {
   await builder.updateCourse(draftCourse.value)
   emit('cancel')
 }
-onBeforeMount(() => {
-  console.log('CourseBuilder.onBeforeMount')
-})
 onMounted(() => {
   console.log('CourseBuilder.onMounted')
-  draftCourse.value = { ...course }
+  draftCourse.value = { ...props.course }
 
   // deep copy arrays
-  draftCourse.value.lessons = course.lessons ? course.lessons.slice() : []
-  draftCourse.value.tags = course.tags ? course.tags.slice() : []
-})
-onBeforeUpdate(() => {
-  console.log('CourseBuilder.onBeforeUpdate')
-})
-onUpdated(() => {
-  console.log('CourseBuilder.onUpdated')
-})
-onBeforeUnmount(() => {
-  console.log('CourseBuilder.onBeforeUnmount')
-})
-onUnmounted(() => {
-  console.log('CourseBuilder.onUnmounted')
-})
-onErrorCaptured(() => {
-  console.log('CourseBuilder.onErrorCaptured')
+  draftCourse.value.lessons = props.course.lessons ? props.course.lessons.slice() : []
+  draftCourse.value.tags = props.course.tags ? props.course.tags.slice() : []
 })
 </script>
 

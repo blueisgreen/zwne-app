@@ -11,7 +11,6 @@
         >To Course Lab</q-btn
       >
     </q-toolbar>
-    <q-ajax-bar ref="progressBar" position="top" size="10px" />
     <div v-if="!courseToBuild" class="q-pa-md">
       <div class="text-h4">Loading...</div>
       <div class="q-my-md">
@@ -174,34 +173,26 @@
     </div>
 
     <div v-if="courseToBuild && editMode">
-      <course-builder :course="courseToBuild" @cancel="onCancelEdit" />
+      <course-details :course="courseToBuild" @cancel="onCancelEdit" />
     </div>
   </q-page>
 </template>
 
 <script setup>
-import {
-  ref,
-  computed,
-  onBeforeMount,
-  onMounted,
-  onBeforeUpdate,
-  onUpdated,
-  onBeforeUnmount,
-  onUnmounted,
-  onErrorCaptured,
-} from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
-import CourseBuilder from './CourseBuilder.vue'
+import CourseDetails from './CourseDetails.vue'
 
 const route = useRoute()
 const courseId = route.params.id
 
-const progressBar = ref(null)
 const builder = useCourseBuilderStore()
-const courseToBuild = ref(null)
+const courseToBuild = computed(() => {
+  return builder.course(courseId)
+})
 const courseLessonList = computed(() => {
+  // TODO: put this with store logic
   return courseToBuild.value
     ? courseToBuild.value.lessons.map((lessonId) =>
         builder.lessonPlan(lessonId)
@@ -214,7 +205,6 @@ const tagListDisplay = computed(() => {
     ? courseToBuild.value.tags.reduce((accum, tag) => accum + `#${tag} `, '')
     : ''
 })
-
 const editMode = ref(false)
 
 function onEditCourse() {
@@ -226,32 +216,15 @@ function onCancelEdit() {
 function onEditImage() {
   alert('This will bring up a fancy image picker, someday.')
 }
-onBeforeMount(() => {
-  console.log('CourseBuilderPage.onBeforeMount')
-})
+
 onMounted(async () => {
   console.log('CourseBuilderPage.onMounted')
   if (courseId) {
-    courseToBuild.value = await builder.loadCourse(courseId)
-    console.log('Course loaded => ' + JSON.stringify(courseToBuild.value))
+    // TODO: add loading indicator
+    await builder.loadCourse(courseId)
   } else {
     console.error('Failed to load. Course ID unknown.')
   }
-})
-onBeforeUpdate(() => {
-  console.log('CourseBuilderPage.onBeforeUpdate')
-})
-onUpdated(() => {
-  console.log('CourseBuilderPage.onUpdated')
-})
-onBeforeUnmount(() => {
-  console.log('CourseBuilderPage.onBeforeUnmount')
-})
-onUnmounted(() => {
-  console.log('CourseBuilderPage.onUnmounted')
-})
-onErrorCaptured(() => {
-  console.log('CourseBuilderPage.onErrorCaptured')
 })
 </script>
 

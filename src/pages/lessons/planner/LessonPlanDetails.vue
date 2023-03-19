@@ -1,8 +1,8 @@
 <template>
   <div v-if="!lesson">
-    <div class="text-h3">Choose a plan to inspect</div>
+    <div class="text-h3">Choose a lesson plan to inspect</div>
   </div>
-  <div v-if="!!lesson">
+  <div v-else>
     <q-card bordered>
       <q-card-section>
         <q-toolbar>
