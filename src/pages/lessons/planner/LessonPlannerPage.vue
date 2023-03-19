@@ -13,12 +13,20 @@
     <div v-if="lessonToEdit">
       <lesson-plan-details :lesson="lessonToEdit" />
     </div>
+    <div v-else>
+      <div class="text-h4">
+        Loading...If you see this for more than a few seconds, perhaps we cananot find the
+        lesson you are looking for. Click the button to return to the Course Lab entrance
+        and pick something that is available.
+      </div>
+    </div>
   </q-page>
 </template>
 
 <script setup>
 import {
   ref,
+  computed,
   onBeforeMount,
   onMounted,
   onBeforeUpdate,
@@ -35,7 +43,11 @@ const route = useRoute()
 const lessonId = route.params.id
 
 const builder = useCourseBuilderStore()
-const lessonToEdit = ref(null)
+// const lessonToEdit = ref(null)
+const lessonToEdit = computed(() => {
+  console.log('LessonPlannerPage.lessonToEdit.computed')
+  return builder.lessonPlan(lessonId)
+})
 
 onBeforeMount(() => {
   console.log('onBeforeMount')
@@ -43,8 +55,8 @@ onBeforeMount(() => {
 onMounted(async () => {
   console.log('onMounted')
   if (lessonId) {
-    lessonToEdit.value = await builder.loadLesson(lessonId)
-    console.log('Lesson loaded => ' + JSON.stringify(lessonToEdit.value))
+    // lessonToEdit.value = await builder.loadLesson(lessonId)
+    await builder.loadLesson(lessonId)
   } else {
     console.error('Failed to load. Lesson ID unknown.')
   }

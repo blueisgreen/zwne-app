@@ -3,7 +3,9 @@ import { listLessons, getLesson } from '../graphql/queries'
 import { createLesson, updateLesson, deleteLesson } from '../graphql/mutations'
 
 function mapDataToLesson(data) {
-  // FIXME:
+  if (!data) {
+    return null
+  }
   return {
     id: data.id,
     title: data.title || '',
