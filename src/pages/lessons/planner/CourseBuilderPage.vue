@@ -49,18 +49,6 @@
         </div>
       </div>
       <div class="row q-pb-sm">
-        <div class="col-2 prop-label">Lessons</div>
-        <div class="col">
-          <ul>
-            <li v-for="lesson in courseLessonList" :key="lesson.id">
-              <router-link :to="{ name: 'lessonPlanner', params: { id: lesson.id } }">{{
-                lesson.title
-              }}</router-link>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="row q-pb-sm">
         <div class="col-2 prop-label">Level</div>
         <div class="col">{{ courseToBuild.level }}</div>
       </div>
@@ -71,6 +59,18 @@
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Notes (internal)</div>
         <div class="col">{{ courseToBuild.notes }}</div>
+      </div>
+      <div class="row q-pb-sm">
+        <div class="col-2 prop-label">Lessons</div>
+        <div class="col">
+          <ul>
+            <li v-for="lesson in courseLessonList" :key="lesson.id">
+              <router-link :to="{ name: 'lessonPlanner', params: { id: lesson.id } }">{{
+                lesson.title
+              }}</router-link>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div class="row q-pb-sm">

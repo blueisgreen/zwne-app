@@ -29,6 +29,35 @@
             dense
             autogrow
           />
+          <q-select
+            outlined
+            v-model="draftCourse.level"
+            :options="levelOptions"
+            emit-value
+            label="Level"
+            class="lower-gap"
+            dense
+          />
+          <q-select
+            outlined
+            v-model="draftCourse.tags"
+            :options="tagOptions"
+            multiple
+            emit-value
+            clearable
+            options-dense
+            label="Tags"
+            class="lower-gap"
+            dense
+          />
+          <q-input
+            v-model="draftCourse.notes"
+            label="Notes"
+            class="lower-gap"
+            outlined
+            dense
+            autogrow
+          />
           <q-list bordered separator padding class="lower-gap">
             <q-item-label header>Lessons in Course</q-item-label>
             <q-item v-if="!lessonCount" class="text-secondary"
@@ -62,35 +91,6 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <q-select
-            outlined
-            v-model="draftCourse.level"
-            :options="levelOptions"
-            emit-value
-            label="Level"
-            class="lower-gap"
-            dense
-          />
-          <q-select
-            outlined
-            v-model="draftCourse.tags"
-            :options="tagOptions"
-            multiple
-            emit-value
-            clearable
-            options-dense
-            label="Tags"
-            class="lower-gap"
-            dense
-          />
-          <q-input
-            v-model="draftCourse.notes"
-            label="Notes"
-            class="lower-gap"
-            outlined
-            dense
-            autogrow
-          />
         </q-card-section>
         <q-card-actions align="center">
           <q-btn
@@ -221,7 +221,7 @@ function addLessonToCourse(id) {
   draftCourse.value.lessons.push(id)
 }
 function removeFromCourseLessons(index) {
-  console.log('lesson in position ' + index)
+  console.log('lesson in position', index)
   draftCourse.value.lessons.splice(index, 1)
 }
 function bumpSort(index, direction = 0) {
@@ -232,11 +232,11 @@ function bumpSort(index, direction = 0) {
   lessons.splice(toIndex, 0, value)
 }
 async function saveCourse() {
-  await builder.updateCourse(draftCourse.value)
+  await builder.onSaveCourse(draftCourse.value)
   emit('cancel')
 }
 onBeforeMount(() => {
-  console.log(JSON.stringify(CourseLevel))
+  console.log('levels', CourseLevel)
 })
 onMounted(() => {
   console.log('CourseBuilder.onMounted')

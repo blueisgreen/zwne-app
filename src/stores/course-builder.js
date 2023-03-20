@@ -1,11 +1,6 @@
 import { defineStore } from 'pinia'
-import { generateRandomKey } from 'src/components/modelTools.js'
 import {
-  goCreateCourse,
-  fetchCourses,
-  fetchCourse,
-  goUpdateCourse,
-  goDeleteCourse,
+  courseDS,
   goCreateLesson,
   fetchLessons,
   fetchLesson,
@@ -13,18 +8,8 @@ import {
   goDeleteLesson,
 } from '../api'
 
-const buildLessonPathMap = (lessonList) => {
-  const pathMap = {}
-  let previous = null
-  lessonList.map((lessonId, index) => {
-    if (index > 0) {
-      pathMap[previous] = { next: lessonId }
-    }
-    previous = lessonId
-  })
-  pathMap[previous] = { next: '--the-end--' }
-  return pathMap
-}
+const { createCourse, saveCourse, fetchCourses, fetchCourse, deleteCourse } =
+  courseDS
 
 export const useCourseBuilderStore = defineStore('courseLab', {
   state: () => ({
@@ -73,9 +58,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       }
     },
     async spawnCourse(name = 'a suitable name') {
-      const newCourse = await goCreateCourse({ name })
-      newCourse.tags = [] // TODO: add to returned payload
-      newCourse.lessons = [] // TODO: add to returned payload
+      const newCourse = await createCourse({ name })
       this.addCourseToStore(newCourse)
     },
     async loadCourses() {
@@ -97,33 +80,21 @@ export const useCourseBuilderStore = defineStore('courseLab', {
         return cached
       }
       const course = await fetchCourse(id)
-      console.log('Retrieved course => ' + JSON.stringify(course))
+      console.log('Retrieved course => ', course)
       if (course) {
         this.addCourseToStore(course)
       }
       return course
     },
-    async updateCourse(updates) {
-      const updated = await goUpdateCourse(updates)
+    async onSaveCourse(updates) {
+      const updated = await saveCourse(updates)
       if (updated) {
         this.addCourseToStore(updated)
       }
     },
-    // async updateCourse(updates) {
-    //   const current = this.course(updates.id)
-    //   if (!current) {
-    //     console.error('out of sync for update => ' + JSON.stringify(updates))
-    //     return
-    //   }
-    //   const updated = await goUpdateCourse({
-    //     ...updates,
-    //     _version: current._version,
-    //   })
-    //   this.addCourseToStore(updated)
-    // },
     async deleteCourse(id) {
       const course = this.course(id)
-      const isDeleted = await goDeleteCourse(id, course._version)
+      const isDeleted = await deleteCourse(id, course._version)
       if (isDeleted) {
         this.removeCourseFromStore(id)
       } else {
@@ -146,8 +117,13 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       course.status = 'closed'
       course.archivedAt = null
     },
+
+    // ------------------
+    // -- Lesson actions
+    // ------------------
+
     addLessonToStore(lesson) {
-      console.log('adding lesson: ' + JSON.stringify(lesson))
+      console.log('adding lesson:', lesson)
       this.lessonPlanIndex[lesson.id] = lesson
       if (!this.lessonPlans.includes(lesson.id)) {
         this.lessonPlans.push(lesson.id)
@@ -185,7 +161,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
         return cached
       }
       const lesson = await fetchLesson(id)
-      console.log('Retrieved lesson => ' + JSON.stringify(lesson))
+      console.log('Retrieved lesson => ', lesson)
       if (lesson) {
         this.addLessonToStore(lesson)
       }
@@ -193,14 +169,14 @@ export const useCourseBuilderStore = defineStore('courseLab', {
     },
     async updateLesson(updates) {
       console.log('updateLesson')
-      console.log('Given updates => ' + JSON.stringify(updates))
+      console.log('Given updates => ', updates)
       const current = this.lessonPlan(updates.id)
       if (!current) {
-        console.error('out of sync for update => ' + JSON.stringify(updates))
+        console.error('out of sync for update => ', updates)
         return
       }
       const combined = { ...updates, _version: current._version }
-      console.log('Combined updates => ' + JSON.stringify(combined))
+      console.log('Combined updates => ', combined)
       const updated = await goUpdateLesson(combined)
       this.addLessonToStore(updated)
     },
@@ -213,7 +189,6 @@ export const useCourseBuilderStore = defineStore('courseLab', {
         console.log('failed to delete')
       }
     },
-    saveLessonPlan(updates) {}, // TODO: investigate how save lesson is working
     saveLessonContent(lessonId, revision) {
       const lesson = this.lessonPlan(lessonId)
       lesson.content = revision
