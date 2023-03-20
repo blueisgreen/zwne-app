@@ -12,7 +12,6 @@ import {
   goUpdateLesson,
   goDeleteLesson,
 } from '../api'
-import { starterLessons } from './offline-data'
 
 const buildLessonPathMap = (lessonList) => {
   const pathMap = {}
@@ -105,17 +104,23 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       return course
     },
     async updateCourse(updates) {
-      const current = this.course(updates.id)
-      if (!current) {
-        console.error('out of sync for update => ' + JSON.stringify(updates))
-        return
+      const updated = await goUpdateCourse(updates)
+      if (updated) {
+        this.addCourseToStore(updated)
       }
-      const updated = await goUpdateCourse({
-        ...updates,
-        _version: current._version,
-      })
-      this.addCourseToStore(updated)
     },
+    // async updateCourse(updates) {
+    //   const current = this.course(updates.id)
+    //   if (!current) {
+    //     console.error('out of sync for update => ' + JSON.stringify(updates))
+    //     return
+    //   }
+    //   const updated = await goUpdateCourse({
+    //     ...updates,
+    //     _version: current._version,
+    //   })
+    //   this.addCourseToStore(updated)
+    // },
     async deleteCourse(id) {
       const course = this.course(id)
       const isDeleted = await goDeleteCourse(id, course._version)

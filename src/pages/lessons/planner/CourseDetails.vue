@@ -243,7 +243,8 @@ onMounted(() => {
   draftCourse.value = { ...props.course }
 
   // deep copy arrays
-  draftCourse.value.lessons = props.course.lessons ? props.course.lessons.slice() : []
+  draftCourse.value.lessons = []
+  // draftCourse.value.lessons = props.course.lessons ? props.course.lessons.slice() : []
   draftCourse.value.tags = props.course.tags ? props.course.tags.slice() : []
 })
 </script>

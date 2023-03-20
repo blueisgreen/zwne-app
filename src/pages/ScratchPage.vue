@@ -2,12 +2,7 @@
   <q-page flex flex-center>
     <div class="q-pa-md">
       <div class="text-h3 q-pt-lg q-pb-md text-primary">
-        <q-img
-          :src="Zanzibar"
-          width="50px"
-          position="0 0"
-          alt="Zanzibar, Nuclear Hero"
-        />
+        <q-img :src="Zanzibar" width="50px" position="0 0" alt="Zanzibar, Nuclear Hero" />
         Scratch Page
       </div>
       <div class="text-subtitle1 q-pb-lg text-blue-10">For trying things</div>
@@ -39,17 +34,17 @@
 
 <script setup>
 import { ref } from 'vue'
-import { fetchCoursesNew, saveCourseNew } from '../api'
+import { fetchCourses, goCreateCourse } from '../api'
 import Zanzibar from 'assets/Zanzibar.svg'
 
 const courses = ref([])
 const newCourseName = ref('')
 async function onFetchCourses() {
-  courses.value = await fetchCoursesNew()
+  courses.value = await fetchCourses()
 }
 async function onAddCourse() {
   if (newCourseName.value && newCourseName.value != '') {
-    const result = await saveCourseNew(newCourseName.value)
+    const result = await createCourse(newCourseName.value)
     courses.value.push(result)
     newCourseName.value = ''
   }
