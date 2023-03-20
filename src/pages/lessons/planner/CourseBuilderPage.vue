@@ -129,28 +129,28 @@
         <div class="col">
           <q-btn-group glossy>
             <q-btn
-              v-if="courseToBuild.status === 'closed'"
+              v-if="courseToBuild.status === 'CLOSED'"
               @click.stop="() => builder.openCourse(courseId)"
               label="Open"
               no-caps
               color="secondary"
             />
             <q-btn
-              v-if="courseToBuild.status === 'open'"
+              v-if="courseToBuild.status === 'OPEN'"
               @click.stop="() => builder.closeCourse(courseId)"
               label="Close"
               no-caps
               color="secondary"
             />
             <q-btn
-              v-if="courseToBuild.status === 'closed' || courseToBuild.status === 'open'"
+              v-if="courseToBuild.status === 'CLOSED' || courseToBuild.status === 'OPEN'"
               @click.stop="() => builder.archiveCourse(courseId)"
               label="Archive"
               no-caps
               color="accent"
             />
             <q-btn
-              v-if="courseToBuild.status === 'archived'"
+              v-if="courseToBuild.status === 'ARCHIVED'"
               @click.stop="() => builder.reviveCourse(courseId)"
               label="Restore"
               no-caps

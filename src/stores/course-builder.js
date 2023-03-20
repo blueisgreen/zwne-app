@@ -8,8 +8,17 @@ import {
   goDeleteLesson,
 } from '../api'
 
-const { createCourse, saveCourse, fetchCourses, fetchCourse, deleteCourse } =
-  courseDS
+const {
+  createCourse,
+  saveCourse,
+  fetchCourses,
+  fetchCourse,
+  openCourse,
+  closeCourse,
+  archiveCourse,
+  reviveCourse,
+  deleteCourse,
+} = courseDS
 
 export const useCourseBuilderStore = defineStore('courseLab', {
   state: () => ({
@@ -58,7 +67,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       }
     },
     async spawnCourse(name = 'a suitable name') {
-      const newCourse = await createCourse({ name })
+      const newCourse = await createCourse(name)
       this.addCourseToStore(newCourse)
     },
     async loadCourses() {
@@ -87,6 +96,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       return course
     },
     async onSaveCourse(updates) {
+      console.log('course-builder.onSaveCourse')
       const updated = await saveCourse(updates)
       if (updated) {
         this.addCourseToStore(updated)
@@ -101,21 +111,21 @@ export const useCourseBuilderStore = defineStore('courseLab', {
         console.log('failed to delete')
       }
     },
-    openCourse(id) {
-      this.course(id).status = 'open'
+    async openCourse(id) {
+      const course = await openCourse(id)
+      this.addCourseToStore(course)
     },
-    closeCourse(id) {
-      this.course(id).status = 'closed'
+    async closeCourse(id) {
+      const course = await closeCourse(id)
+      this.addCourseToStore(course)
     },
-    archiveCourse(id) {
-      const course = this.course(id)
-      course.status = 'archived'
-      course.archivedAt = new Date()
+    async archiveCourse(id) {
+      const course = await archiveCourse(id)
+      this.addCourseToStore(course)
     },
-    reviveCourse(id) {
-      const course = this.course(id)
-      course.status = 'closed'
-      course.archivedAt = null
+    async reviveCourse(id) {
+      const course = await reviveCourse(id)
+      this.addCourseToStore(course)
     },
 
     // ------------------

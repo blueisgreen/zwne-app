@@ -1,5 +1,6 @@
 import { DataStore } from 'aws-amplify'
 import { Course, CourseStatusOptions } from '../models'
+import { toAWSDateTime } from '../components/modelTools'
 
 /**
   Work through DataStore instead of GraphQL directly. DataStore adds local storage and automatic data syncing. Seems redundant with Pinia in caching aspect. Is automatic syncing worth it?
@@ -16,7 +17,7 @@ export async function createCourse(name) {
     const course = await DataStore.save(
       new Course({
         name,
-        status: 'CLOSED',
+        status: CourseStatusOptions.CLOSED,
       })
     )
     console.log('Course saved', course)
@@ -27,8 +28,21 @@ export async function createCourse(name) {
 }
 
 export async function saveCourse(updates) {
-  const { id, name, description, objectives, level, tags, notes } = updates
+  const {
+    id,
+    name,
+    description,
+    objectives,
+    level,
+    tags,
+    notes,
+    status,
+    archivedAt,
+  } = updates
   const original = await DataStore.query(Course, id)
+
+  console.log('courseDS.saveCourse', updates)
+  console.log('from:', original)
 
   const updatedCourse = await DataStore.save(
     Course.copyOf(original, (updated) => {
@@ -36,12 +50,55 @@ export async function saveCourse(updates) {
       updated.description = description
       updated.objectives = objectives
       updated.level = level
-      updated.tags = [...tags]
+      if (tags) {
+        updated.tags = [...tags]
+      }
       updated.notes = notes
+      updated.status = status
+      updated.archivedAt = archivedAt
     })
   )
+  console.log('updated course => ', updatedCourse)
   return updatedCourse
 }
+
+async function changeCourseStatus(id, toStatus, archivedAt) {
+  const original = await DataStore.query(Course, id)
+  const updatedCourse = await DataStore.save(
+    Course.copyOf(original, (updated) => {
+      updated.status = toStatus
+      updated.archivedAt = archivedAt
+    })
+  )
+  console.log('updated course => ', updatedCourse)
+  return updatedCourse
+}
+
+export async function openCourse(id) {
+  const course = await changeCourseStatus(id, CourseStatusOptions.OPEN)
+  return course
+}
+
+export async function closeCourse(id) {
+  const course = await changeCourseStatus(id, CourseStatusOptions.CLOSED)
+  return course
+}
+
+export async function archiveCourse(id) {
+  const archievedAt = toAWSDateTime(new Date())
+  const course = await changeCourseStatus(
+    id,
+    CourseStatusOptions.ARCHIVED,
+    archievedAt
+  )
+  return course
+}
+
+export async function reviveCourse(id) {
+  const course = await changeCourseStatus(id, CourseStatusOptions.CLOSED)
+  return course
+}
+
 /**
  * Retrieves a list of courses.
  * @returns [Course]

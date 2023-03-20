@@ -1,3 +1,5 @@
+import { date } from 'quasar'
+
 const generateRandomKey = (length = 12) => {
   let result = ''
   const spectrum =
@@ -8,5 +10,8 @@ const generateRandomKey = (length = 12) => {
   }
   return result
 }
+function toAWSDateTime(ts) {
+  return date.formatDate(ts, 'YYYY-MM-DDThh:mm:ss.sssZ')
+}
 
-export { generateRandomKey }
+export { generateRandomKey, toAWSDateTime }
