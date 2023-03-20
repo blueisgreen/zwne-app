@@ -161,6 +161,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
     },
     async loadLessons() {
       // TODO: find way to prevent refetching when already in store
+      // TODO: load lesson plans without content; only fetch content as needed
       const lessons = await fetchLessons()
       if (lessons) {
         lessons.forEach((lesson) => {

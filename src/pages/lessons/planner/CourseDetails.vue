@@ -213,7 +213,7 @@ const tagOptions = [
 
 function onCreateLessonFromDialog() {
   if (newLessonTitle.value && newLessonTitle.value != '') {
-    builder.spawnLesson(newLessonTitle)
+    builder.spawnLesson(newLessonTitle.value)
   }
   newLessonDialog.value = false
 }

@@ -1,7 +1,8 @@
 import { API, graphqlOperation } from 'aws-amplify'
 import { listCourses, getCourse } from '../graphql/queries'
 import { createCourse, updateCourse, deleteCourse } from '../graphql/mutations'
-import { stringify } from 'postcss'
+import { Course } from '../models'
+import { DataStore } from 'aws-amplify'
 
 function mapDataToCourse(data) {
   return {
@@ -41,6 +42,31 @@ export async function goCreateCourse(given) {
     return mapDataToCourse(results.data.createCourse)
   } catch (err) {
     console.error(err)
+  }
+}
+
+export async function saveCourseNew(name) {
+  try {
+    const course = await DataStore.save(
+      new Course({
+        name,
+      })
+    )
+    console.log('Course saved', course)
+    return course
+  } catch (err) {
+    console.log('Error saving course', err)
+  }
+}
+
+export async function fetchCoursesNew() {
+  console.log('fetchCoursesNew')
+  try {
+    const courses = await DataStore.query(Course)
+    console.log('Found', courses)
+    return courses
+  } catch (err) {
+    console.log('Error fetching courses', err)
   }
 }
 
