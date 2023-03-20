@@ -177,7 +177,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeMount } from 'vue'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
-import { CourseLevel } from '../../../models'
+import { CourseLevel, CourseStatusOptions } from '../../../models'
 
 const props = defineProps({
   course: {
@@ -246,6 +246,9 @@ onMounted(() => {
   draftCourse.value.lessons = []
   // draftCourse.value.lessons = props.course.lessons ? props.course.lessons.slice() : []
   draftCourse.value.tags = props.course.tags ? props.course.tags.slice() : []
+  if (!draftCourse.value.status) {
+    draftCourse.value.status = CourseStatusOptions.CLOSED
+  }
 })
 </script>
 
