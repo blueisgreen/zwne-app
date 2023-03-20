@@ -66,6 +66,7 @@
             outlined
             v-model="draftCourse.level"
             :options="levelOptions"
+            emit-value
             label="Level"
             class="lower-gap"
             dense
@@ -174,9 +175,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeMount } from 'vue'
 import { useCourseBuilderStore } from 'stores/course-builder.js'
-// import { CourseLevelOptions } from '../../../models'  TODO: why does this hang the page?
+import { CourseLevel } from '../../../models'
 
 const props = defineProps({
   course: {
@@ -191,13 +192,17 @@ const builder = useCourseBuilderStore()
 const newLessonDialog = ref(false)
 const newLessonTitle = ref('')
 
-const draftCourse = ref(null) // FIXME: how does this work?
+const draftCourse = ref(null)
 const courseLessons = computed(() =>
   draftCourse.value.lessons.map((id) => builder.lessonPlan(id))
 )
 const lessonCount = computed(() => draftCourse.value.lessons.length)
 
-const levelOptions = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT', 'ALL']
+// const levelOptions = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT', 'ALL']
+const levelOptions = Object.keys(CourseLevel).map((level) => ({
+  value: level,
+  label: level.substring(0, 1).toUpperCase() + level.substring(1).toLowerCase(),
+}))
 const tagOptions = [
   'science',
   'particle-physics',
@@ -230,6 +235,9 @@ async function saveCourse() {
   await builder.updateCourse(draftCourse.value)
   emit('cancel')
 }
+onBeforeMount(() => {
+  console.log(JSON.stringify(CourseLevel))
+})
 onMounted(() => {
   console.log('CourseBuilder.onMounted')
   draftCourse.value = { ...props.course }
