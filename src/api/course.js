@@ -5,7 +5,7 @@ import {
   getLesson,
   lessonCoursesByCourseId,
 } from '../graphql/queries'
-import { getCourseWithLessonPlans } from './customQueries'
+import { listCoursesLimited, getCourseWithLessonPlans } from './customQueries'
 import { createCourse, updateCourse, deleteCourse } from '../graphql/mutations'
 
 function mapDataToCourse(data) {
@@ -56,18 +56,12 @@ export async function goCreateCourse(given) {
 export async function fetchCourses() {
   console.log('fetchCourses')
   try {
-    // TODO: filter deleted items during fetch
-    const variables = {}
-    //   filter: {
-    //     _deleted: {
-    //       eq: false,
-    //     },
-    //   },
-    // }
-    const results = await API.graphql({ query: listCourses, variables })
-    const out = results.data.listCourses.items.map((data) =>
-      mapDataToCourse(data)
-    )
+    const results = await API.graphql({
+      query: listCourses,
+      variables: {},
+    })
+    console.log('courses', results)
+    const out = results.data.listCourses.items.filter((item) => !item._deleted)
     return out
   } catch (err) {
     console.error(err)
@@ -76,7 +70,7 @@ export async function fetchCourses() {
 
 /**
  * Retrieves a specific course, including lesson plans if any.
- * @returns
+ * @returns Course
  */
 export async function fetchCourse(id) {
   try {

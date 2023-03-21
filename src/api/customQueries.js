@@ -1,9 +1,9 @@
 export const getCourseWithLessonPlans = /* GraphQL */ `
   query GetCourseWithLessonPlans($id: ID!) {
     getCourse(id: $id) {
-      description
       id
       name
+      description
       level
       objectives
       tags
@@ -23,6 +23,22 @@ export const getCourseWithLessonPlans = /* GraphQL */ `
           }
         }
       }
+    }
+  }
+`
+
+export const listCoursesLimited = /* GraphQL */ `
+  query ListCoursesLimited() {
+    listCourses() {
+      items {
+        _deleted
+        id
+        name
+        description
+        status
+      }
+      nextToken
+      startedAt
     }
   }
 `

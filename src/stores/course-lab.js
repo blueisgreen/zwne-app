@@ -64,7 +64,7 @@ export const useCourseLabStore = defineStore('courseLab', {
         this.courses.push(course.id)
       }
       this.courseLessonsIndex[course.id] = []
-      if (course.lessons.items && course.lessons.items.length) {
+      if (course.lessons?.items?.length) {
         console.log('with lessons', course.lessons.items)
         course.lessons.items.forEach((item) => {
           const { lesson } = item
