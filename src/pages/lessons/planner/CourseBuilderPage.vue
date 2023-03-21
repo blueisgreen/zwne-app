@@ -181,7 +181,8 @@ const courseToBuild = computed(() => {
   return builder.course(courseId)
 })
 const courseLessonList = computed(() => {
-  return builder.courseLessons(courseId)
+  const out = builder.courseLessons(courseId)
+  return out ? out : []
 })
 const tagListDisplay = computed(() => {
   const { tags } = courseToBuild.value
@@ -206,7 +207,7 @@ onMounted(async () => {
   console.log('CourseBuilderPage.onMounted')
   if (courseId) {
     // TODO: add loading indicator
-    await builder.loadCourse(courseId)
+    await builder.loadCourse(courseId, true)
   } else {
     console.error('Failed to load. Course ID unknown.')
   }

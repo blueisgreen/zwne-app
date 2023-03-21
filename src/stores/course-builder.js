@@ -63,6 +63,8 @@ export const useCourseBuilderStore = defineStore('courseLab', {
   },
   actions: {
     addCourseToStore(course, lessons = []) {
+      console.log('addCourseToStore', course)
+      console.log('with lessons', lessons)
       this.courseIndex[course.id] = course
       if (!this.courses.includes(course.id)) {
         this.courses.push(course.id)
@@ -104,6 +106,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       console.log('which has lessons', lessonList)
       if (course) {
         this.addCourseToStore(course, lessonList)
+        lessonList.forEach(async (id) => await this.loadLesson(id))
       }
       return course
     },
