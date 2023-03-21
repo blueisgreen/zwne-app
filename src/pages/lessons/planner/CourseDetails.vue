@@ -176,7 +176,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeMount } from 'vue'
-import { useCourseBuilderStore } from 'stores/course-builder.js'
+import { useCourseLabStore } from 'src/stores/course-lab.js'
 import { CourseLevel, CourseStatusOptions } from '../../../models'
 
 const props = defineProps({
@@ -187,7 +187,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['cancel'])
 
-const builder = useCourseBuilderStore()
+const builder = useCourseLabStore()
 
 const newLessonDialog = ref(false)
 const newLessonTitle = ref('')

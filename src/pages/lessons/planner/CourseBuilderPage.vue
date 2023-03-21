@@ -170,18 +170,19 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useCourseBuilderStore } from 'stores/course-builder.js'
+import { useCourseLabStore } from 'src/stores/course-lab.js'
 import CourseDetails from './CourseDetails.vue'
 
 const route = useRoute()
 const courseId = route.params.id
 
-const builder = useCourseBuilderStore()
+const builder = useCourseLabStore()
 const courseToBuild = computed(() => {
   return builder.course(courseId)
 })
 const courseLessonList = computed(() => {
   const out = builder.courseLessons(courseId)
+  console.log('courseLessonList', out)
   return out ? out : []
 })
 const tagListDisplay = computed(() => {

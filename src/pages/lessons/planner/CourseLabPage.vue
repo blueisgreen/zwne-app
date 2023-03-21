@@ -154,10 +154,10 @@
 </template>
 
 <script setup>
-import { useCourseBuilderStore } from 'stores/course-builder'
+import { useCourseLabStore } from 'src/stores/course-lab'
 import { ref, onBeforeMount } from 'vue'
 
-const builder = useCourseBuilderStore()
+const builder = useCourseLabStore()
 
 const newCourseDialog = ref(false)
 const newCourseName = ref('')

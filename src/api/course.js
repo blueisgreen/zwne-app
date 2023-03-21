@@ -1,5 +1,11 @@
 import { API, graphqlOperation } from 'aws-amplify'
-import { listCourses, getCourse } from '../graphql/queries'
+import {
+  listCourses,
+  getCourse,
+  getLesson,
+  lessonCoursesByCourseId,
+} from '../graphql/queries'
+import { getCourseWithLessons } from './customQueries'
 import { createCourse, updateCourse, deleteCourse } from '../graphql/mutations'
 
 function mapDataToCourse(data) {
@@ -73,12 +79,51 @@ export async function fetchCourses() {
  * @returns
  */
 export async function fetchCourse(id) {
-  console.log('Fetching course with ID => ' + id)
+  console.log('Fetching course with ID => ', id)
   try {
     // const results = await API.graphql(graphqlOperation(getCourse, { id }))
     const results = await API.graphql({ query: getCourse, variables: { id } })
-    console.log(JSON.stringify(results))
+    console.log('results', results)
     return mapDataToCourse(results.data.getCourse)
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export async function fetchCourseWithLessonPlans(id) {
+  try {
+    const results = await API.graphql({
+      query: getCourseWithLessons,
+      variables: { id },
+    })
+    console.log('results', results)
+    return results
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+/* FIXME: avoid multiple trips */
+export async function fetchLessonsForCourse(courseId) {
+  console.log('fetchLessonsForCourse', courseId)
+  let lessonIds = []
+  try {
+    const lessonCourses = await API.graphql({
+      query: lessonCoursesByCourseId,
+      variables: { courseId },
+    })
+    console.log('lessonCourses', lessonCourses)
+    const { items } = lessonCourses.data.lessonCoursesByCourseId
+    lessonIds = items.map((lessonCourse) => lessonCourse.lessonId)
+
+    // TODO: try to return lesson plans instead of just IDs; maybe lazy loading is fine
+    // async (lessonCourse) =>
+    //   await API.graphql({
+    //     query: getLesson,
+    //     variables: { id: lessonCourse.lessonId },
+    //   })
+    console.log('lesson IDs', lessonIds)
+    return lessonIds
   } catch (err) {
     console.error(err)
   }
@@ -133,9 +178,25 @@ export async function goDeleteCourse(id, _version) {
       query: deleteCourse,
       variables: { input: { id, _version } },
     })
-    console.log('Deleted item => ' + JSON.stringify(result))
+    console.log('Deleted item => ', result)
     return true
   } catch (err) {
     console.error(err)
   }
+}
+
+export async function openCourse(id) {
+  console.log('openCourse: not implemented')
+}
+
+export async function closeCourse(id) {
+  console.log('openCourse: not implemented')
+}
+
+export async function archiveCourse(id) {
+  console.log('openCourse: not implemented')
+}
+
+export async function reviveCourse(id) {
+  console.log('openCourse: not implemented')
 }

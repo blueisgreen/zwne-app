@@ -41,8 +41,7 @@
           <tip-tap-editor v-model="draftContent" @save="onSave" />
         </div>
         <div v-if="!lessonPlan">
-          Loading...If this message stays longer than a few seconds, something
-          is wrong.
+          Loading...If this message stays longer than a few seconds, something is wrong.
         </div>
       </q-tab-panel>
       <q-tab-panel name="preview">
@@ -68,11 +67,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useCourseBuilderStore } from 'src/stores/course-builder.js'
+import { useCourseLabStore } from 'src/stores/course-lab.js'
 import TipTapEditor from 'components/editor/TipTapEditor.vue'
 
 const route = useRoute()
-const builder = useCourseBuilderStore()
+const builder = useCourseLabStore()
 
 const tabModel = ref('edit')
 

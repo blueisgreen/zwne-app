@@ -1,6 +1,15 @@
 import { defineStore } from 'pinia'
 import {
-  courseDS,
+  goCreateCourse,
+  fetchCourses,
+  fetchCourse,
+  fetchLessonsForCourse,
+  goUpdateCourse,
+  goDeleteCourse,
+  openCourse,
+  closeCourse,
+  archiveCourse,
+  reviveCourse,
   goCreateLesson,
   fetchLessons,
   fetchLesson,
@@ -8,20 +17,7 @@ import {
   goDeleteLesson,
 } from '../api'
 
-const {
-  createCourse,
-  saveCourse,
-  addLessonToCourse,
-  fetchCourses,
-  fetchCourse,
-  openCourse,
-  closeCourse,
-  archiveCourse,
-  reviveCourse,
-  deleteCourse,
-} = courseDS
-
-export const useCourseBuilderStore = defineStore('courseLab', {
+export const useCourseLabStore = defineStore('courseLab', {
   state: () => ({
     courses: [],
     courseIndex: {},
@@ -80,7 +76,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       }
     },
     async spawnCourse(name = 'a suitable name') {
-      const newCourse = await createCourse(name)
+      const newCourse = await goCreateCourse(name)
       this.addCourseToStore(newCourse)
     },
     async loadCourses() {
@@ -101,8 +97,9 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       if (!refresh && cached) {
         return cached
       }
-      const { course, lessonList } = await fetchCourse(id)
+      const course = await fetchCourse(id)
       console.log('Retrieved course => ', course)
+      const lessonList = await fetchLessonsForCourse(id)
       console.log('which has lessons', lessonList)
       if (course) {
         this.addCourseToStore(course, lessonList)
@@ -112,21 +109,21 @@ export const useCourseBuilderStore = defineStore('courseLab', {
     },
     async onSaveCourse(updates) {
       console.log('course-builder.onSaveCourse', updates)
-      const updated = await saveCourse(updates)
+      const updated = await goUpdateCourse(updates)
 
       // TODO: temp to see how this works
-      if (updates.lessons) {
-        updates.lessons.forEach(async (lessonId) => {
-          const wLessons = await addLessonToCourse(updated.id, lessonId)
-        })
-      }
+      // if (updates.lessons) {
+      //   updates.lessons.forEach(async (lessonId) => {
+      //     const wLessons = await addLessonToCourse(updated.id, lessonId)
+      //   })
+      // }
       if (updated) {
         this.addCourseToStore(updated)
       }
     },
     async deleteCourse(id) {
       const course = this.course(id)
-      const isDeleted = await deleteCourse(id, course._version)
+      const isDeleted = await goDeleteCourse(id, course._version)
       if (isDeleted) {
         this.removeCourseFromStore(id)
       } else {

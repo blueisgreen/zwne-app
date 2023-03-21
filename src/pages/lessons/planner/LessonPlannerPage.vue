@@ -27,13 +27,13 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { useCourseBuilderStore } from 'stores/course-builder.js'
+import { useCourseLabStore } from 'src/stores/course-lab.js'
 import LessonPlanDetails from './LessonPlanDetails.vue'
 
 const route = useRoute()
 const lessonId = route.params.id
 
-const builder = useCourseBuilderStore()
+const builder = useCourseLabStore()
 const lessonToEdit = computed(() => {
   return builder.lessonPlan(lessonId)
 })

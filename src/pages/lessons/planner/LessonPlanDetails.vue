@@ -173,7 +173,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { displayDateTime } from 'components/displayTools.js'
-import { useCourseBuilderStore } from 'stores/course-builder.js'
+import { useCourseLabStore } from 'src/stores/course-lab.js'
 
 const props = defineProps({
   lesson: {
@@ -182,7 +182,7 @@ const props = defineProps({
   },
 })
 
-const builder = useCourseBuilderStore()
+const builder = useCourseLabStore()
 const draftLesson = ref(null)
 const editMode = ref(false)
 const displayCategories = computed(() => {
