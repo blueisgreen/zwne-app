@@ -207,7 +207,7 @@ onMounted(async () => {
   console.log('CourseBuilderPage.onMounted')
   if (courseId) {
     // TODO: add loading indicator
-    await builder.loadCourse(courseId, true)
+    await builder.loadCourse(courseId)
   } else {
     console.error('Failed to load. Course ID unknown.')
   }

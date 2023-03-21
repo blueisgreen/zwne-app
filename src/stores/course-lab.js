@@ -66,11 +66,10 @@ export const useCourseLabStore = defineStore('courseLab', {
         this.courses.push(course.id)
       }
       this.courseLessonsIndex[course.id] = []
-      if (course.lessons.items) {
+      if (course.lessons.items && course.lessons.items.length) {
+        console.log('with lessons', course.lessons.items)
         course.lessons.items.forEach((item) => {
-          console.log('item', item)
           const { lesson } = item
-          console.log('lesson', lesson)
           this.addLessonToStore(lesson)
           this.courseLessonsIndex[course.id].push(lesson.id)
         })
@@ -109,6 +108,7 @@ export const useCourseLabStore = defineStore('courseLab', {
       if (!refresh && cached) {
         return cached
       }
+      console.log('loadCourse: %s', refresh ? 'forcing refresh' : 'not cached')
       const course = await fetchCourseWithLessonPlans(id)
       if (course) {
         this.addCourseToStore(course)
@@ -160,7 +160,7 @@ export const useCourseLabStore = defineStore('courseLab', {
     // ------------------
 
     addLessonToStore(lesson) {
-      console.log('adding lesson:', lesson)
+      console.log('addLessonToStore', lesson)
       this.lessonPlanIndex[lesson.id] = lesson
       if (!this.lessonPlans.includes(lesson.id)) {
         this.lessonPlans.push(lesson.id)
