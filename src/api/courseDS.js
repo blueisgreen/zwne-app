@@ -1,5 +1,5 @@
 import { DataStore } from 'aws-amplify'
-import { Course, CourseStatusOptions } from '../models'
+import { Course, CourseStatusOptions, Lesson, LessonCourse } from '../models'
 import { toAWSDateTime } from '../components/modelTools'
 
 /**
@@ -25,6 +25,22 @@ export async function createCourse(name) {
   } catch (err) {
     console.log('Error saving course', err)
   }
+}
+
+/**
+ * Associate a lesson to a course.
+ * @param {*} courseId
+ * @param {*} lessonId
+ */
+export async function addLessonToCourse(courseId, lessonId) {
+  const course = await DataStore.query(Course, courseId)
+  const lesson = await DataStore.query(Lesson, lessonId)
+
+  const lessonCourse = await DataStore.save(
+    new LessonCourse({ course, lesson })
+  )
+  console.log('Added lesson to course', lessonCourse)
+  return lessonCourse
 }
 
 export async function saveCourse(updates) {
@@ -123,7 +139,9 @@ export async function fetchCourse(id) {
   try {
     const course = await DataStore.query(Course, id)
     console.log('Found', course)
-    return course
+    const lessons = await course.lessons.toArray()
+    const lessonIds = lessons.map((lesson) => lesson.lessonId)
+    return { course, lessonList: lessonIds }
   } catch (err) {
     console.log('Error fetching courses', err)
   }

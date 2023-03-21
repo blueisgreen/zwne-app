@@ -232,6 +232,7 @@ function bumpSort(index, direction = 0) {
   lessons.splice(toIndex, 0, value)
 }
 async function saveCourse() {
+  console.log('saveCourse', draftCourse)
   await builder.onSaveCourse(draftCourse.value)
   emit('cancel')
 }

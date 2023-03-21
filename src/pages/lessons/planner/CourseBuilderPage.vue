@@ -181,11 +181,7 @@ const courseToBuild = computed(() => {
   return builder.course(courseId)
 })
 const courseLessonList = computed(() => {
-  // TODO: put this with store logic
-  // return courseToBuild.value
-  //   ? courseToBuild.value.lessons.map((lessonId) => builder.lessonPlan(lessonId))
-  //   : []
-  return []
+  return builder.courseLessons(courseId)
 })
 const tagListDisplay = computed(() => {
   const { tags } = courseToBuild.value

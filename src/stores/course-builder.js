@@ -11,6 +11,7 @@ import {
 const {
   createCourse,
   saveCourse,
+  addLessonToCourse,
   fetchCourses,
   fetchCourse,
   openCourse,
@@ -24,6 +25,7 @@ export const useCourseBuilderStore = defineStore('courseLab', {
   state: () => ({
     courses: [],
     courseIndex: {},
+    courseLessonsIndex: {},
     lessonPlans: [],
     lessonPlanIndex: {},
     activeCourse: '',
@@ -43,6 +45,13 @@ export const useCourseBuilderStore = defineStore('courseLab', {
         return state.courseIndex[id]
       }
     },
+    courseLessons: (state) => {
+      return (id) => {
+        return state.courseLessonsIndex[id].map(
+          (lessonId) => state.lessonPlanIndex[lessonId]
+        )
+      }
+    },
     lessonPlanList(state) {
       return state.lessonPlans.map((planId) => state.lessonPlanIndex[planId])
     },
@@ -53,14 +62,16 @@ export const useCourseBuilderStore = defineStore('courseLab', {
     },
   },
   actions: {
-    addCourseToStore(course) {
+    addCourseToStore(course, lessons = []) {
       this.courseIndex[course.id] = course
       if (!this.courses.includes(course.id)) {
         this.courses.push(course.id)
       }
+      this.courseLessonsIndex[course.id] = lessons
     },
     removeCourseFromStore(id) {
       delete this.courseIndex.id
+      delete this.courseLessonIndex.id
       const index = this.courses.indexOf(id)
       if (index > -1) {
         this.courses.splice(index, 1)
@@ -88,16 +99,24 @@ export const useCourseBuilderStore = defineStore('courseLab', {
       if (!refresh && cached) {
         return cached
       }
-      const course = await fetchCourse(id)
+      const { course, lessonList } = await fetchCourse(id)
       console.log('Retrieved course => ', course)
+      console.log('which has lessons', lessonList)
       if (course) {
-        this.addCourseToStore(course)
+        this.addCourseToStore(course, lessonList)
       }
       return course
     },
     async onSaveCourse(updates) {
-      console.log('course-builder.onSaveCourse')
+      console.log('course-builder.onSaveCourse', updates)
       const updated = await saveCourse(updates)
+
+      // TODO: temp to see how this works
+      if (updates.lessons) {
+        updates.lessons.forEach(async (lessonId) => {
+          const wLessons = await addLessonToCourse(updated.id, lessonId)
+        })
+      }
       if (updated) {
         this.addCourseToStore(updated)
       }
