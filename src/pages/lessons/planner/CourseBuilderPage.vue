@@ -118,7 +118,9 @@
       </div>
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Last Update</div>
-        <div class="col">{{ courseToBuild.updatedAt || 'Unknown' }}</div>
+        <div class="col">
+          {{ displayDateTime(courseToBuild._lastChangedAt, 'Unknown') }}
+        </div>
       </div>
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Status</div>
@@ -172,6 +174,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCourseLabStore } from 'src/stores/course-lab.js'
 import CourseDetails from './CourseDetails.vue'
+import { displayDateTime } from 'components/displayTools'
 
 const route = useRoute()
 const courseId = route.params.id

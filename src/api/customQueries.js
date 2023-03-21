@@ -40,3 +40,15 @@ export const listCoursesWithLimitedInfo = /* GraphQL */ `
     }
   }
 `
+
+export const createCourseWithName = `
+mutation CreateCourse($name:String!) {
+  createCourse(input: {name: $name, status: CLOSED}) {
+    _version
+    id
+    name
+    description
+    status
+  }
+}
+`

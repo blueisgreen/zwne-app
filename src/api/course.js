@@ -8,8 +8,9 @@ import {
 import {
   listCoursesWithLimitedInfo,
   getCourseWithLessonPlans,
+  createCourseWithName,
 } from './customQueries'
-import { createCourse, updateCourse, deleteCourse } from '../graphql/mutations'
+import { updateCourse, deleteCourse } from '../graphql/mutations'
 
 function mapDataToCourse(data) {
   return {
@@ -37,16 +38,33 @@ function mapDataToCourse(data) {
  * @param {*} given
  * @returns Course
  */
-export async function goCreateCourse(given) {
+// /**
+//  * Attempts to persist a new course based on given values.
+//  * @param {*} given
+//  * @returns Course
+//  */
+// export async function goCreateCourse(given) {
+//   console.log('goCreateCourse')
+//   try {
+//     const { name } = given
+//     const results = await API.graphql(
+//       graphqlOperation(createCourse, {
+//         input: { name, status: 'CLOSED', level: 'BEGINNER' },
+//       })
+//     )
+//     return mapDataToCourse(results.data.createCourse)
+//   } catch (err) {
+//     console.error(err)
+//   }
+// }
+export async function goCreateCourse(courseName) {
   console.log('goCreateCourse')
   try {
-    const { name } = given
-    const results = await API.graphql(
-      graphqlOperation(createCourse, {
-        input: { name, status: 'CLOSED', level: 'BEGINNER' },
-      })
-    )
-    return mapDataToCourse(results.data.createCourse)
+    const results = await API.graphql({
+      query: createCourseWithName,
+      variables: { name: courseName },
+    })
+    return results.data.createCourse
   } catch (err) {
     console.error(err)
   }
