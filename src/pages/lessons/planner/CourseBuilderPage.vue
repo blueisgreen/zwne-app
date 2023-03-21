@@ -182,7 +182,6 @@ const courseToBuild = computed(() => {
 })
 const courseLessonList = computed(() => {
   const out = builder.courseLessons(courseId)
-  console.log('courseLessonList', out)
   return out ? out : []
 })
 const tagListDisplay = computed(() => {

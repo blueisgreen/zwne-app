@@ -15,6 +15,7 @@ import {
   fetchLesson,
   goUpdateLesson,
   goDeleteLesson,
+  fetchCourseWithLessonPlans,
 } from '../api'
 
 export const useCourseLabStore = defineStore('courseLab', {
@@ -58,14 +59,25 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
   },
   actions: {
-    addCourseToStore(course, lessons = []) {
+    addCourseToStore(course) {
       console.log('addCourseToStore', course)
-      console.log('with lessons', lessons)
       this.courseIndex[course.id] = course
       if (!this.courses.includes(course.id)) {
         this.courses.push(course.id)
       }
-      this.courseLessonsIndex[course.id] = lessons
+      this.courseLessonsIndex[course.id] = []
+      if (course.lessons.items) {
+        course.lessons.items.forEach((item) => {
+          console.log('item', item)
+          const { lesson } = item
+          console.log('lesson', lesson)
+          this.addLessonToStore(lesson)
+          this.courseLessonsIndex[course.id].push(lesson.id)
+        })
+      }
+    },
+    patchCourseInStore(id, changes) {
+      // TODO: implement me
     },
     removeCourseFromStore(id) {
       delete this.courseIndex.id
@@ -97,13 +109,9 @@ export const useCourseLabStore = defineStore('courseLab', {
       if (!refresh && cached) {
         return cached
       }
-      const course = await fetchCourse(id)
-      console.log('Retrieved course => ', course)
-      const lessonList = await fetchLessonsForCourse(id)
-      console.log('which has lessons', lessonList)
+      const course = await fetchCourseWithLessonPlans(id)
       if (course) {
-        this.addCourseToStore(course, lessonList)
-        lessonList.forEach(async (id) => await this.loadLesson(id))
+        this.addCourseToStore(course)
       }
       return course
     },

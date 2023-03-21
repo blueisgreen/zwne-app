@@ -5,7 +5,7 @@ import {
   getLesson,
   lessonCoursesByCourseId,
 } from '../graphql/queries'
-import { getCourseWithLessons } from './customQueries'
+import { getCourseWithLessonPlans } from './customQueries'
 import { createCourse, updateCourse, deleteCourse } from '../graphql/mutations'
 
 function mapDataToCourse(data) {
@@ -93,11 +93,11 @@ export async function fetchCourse(id) {
 export async function fetchCourseWithLessonPlans(id) {
   try {
     const results = await API.graphql({
-      query: getCourseWithLessons,
+      query: getCourseWithLessonPlans,
       variables: { id },
     })
     console.log('results', results)
-    return results
+    return results.data.getCourse
   } catch (err) {
     console.error(err)
   }
