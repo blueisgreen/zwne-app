@@ -3,7 +3,7 @@ import {
   goCreateCourse,
   fetchCourses,
   fetchCourse,
-  goUpdateCourse,
+  goSaveCourse,
   goDeleteCourse,
   openCourse,
   closeCourse,
@@ -113,16 +113,18 @@ export const useCourseLabStore = defineStore('courseLab', {
       }
       return course
     },
-    async onSaveCourse(updates) {
-      console.log('course-builder.onSaveCourse', updates)
-      const updated = await goUpdateCourse(updates)
+    async onSaveCourse(courseUpdates, updatedLessonsList) {
+      console.log('course-builder.onSaveCourse', courseUpdates)
+      const updated = await goSaveCourse(courseUpdates)
 
-      // TODO: temp to see how this works
-      // if (updates.lessons) {
-      //   updates.lessons.forEach(async (lessonId) => {
-      //     const wLessons = await addLessonToCourse(updated.id, lessonId)
-      //   })
-      // }
+      if (updatedLessonsList) {
+        const { id } = courseUpdates
+        // TODO: only act if different from current list
+
+        // updatedLessonsList.forEach(async (lessonId) => {
+        //   const wLessons = await addLessonToCourse(updated.id, lessonId)
+        // })
+      }
       if (updated) {
         this.addCourseToStore(updated)
       }

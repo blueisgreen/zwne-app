@@ -38,25 +38,6 @@ function mapDataToCourse(data) {
  * @param {*} given
  * @returns Course
  */
-// /**
-//  * Attempts to persist a new course based on given values.
-//  * @param {*} given
-//  * @returns Course
-//  */
-// export async function goCreateCourse(given) {
-//   console.log('goCreateCourse')
-//   try {
-//     const { name } = given
-//     const results = await API.graphql(
-//       graphqlOperation(createCourse, {
-//         input: { name, status: 'CLOSED', level: 'BEGINNER' },
-//       })
-//     )
-//     return mapDataToCourse(results.data.createCourse)
-//   } catch (err) {
-//     console.error(err)
-//   }
-// }
 export async function goCreateCourse(courseName) {
   console.log('goCreateCourse')
   try {
@@ -109,35 +90,14 @@ export async function fetchCourse(id) {
  * @param {*} given
  * @returns
  */
-export async function goUpdateCourse(given) {
-  const {
-    id,
-    name,
-    description,
-    objectives,
-    status,
-    level,
-    tags,
-    notes,
-    _version,
-  } = given
-  const changes = {
-    id,
-    name,
-    description,
-    objectives,
-    status,
-    level,
-    tags,
-    notes,
-    _version,
-  }
+export async function goSaveCourse(deltas) {
+  console.log('saveCourse', deltas)
   try {
     const results = await API.graphql({
       query: updateCourse,
-      variables: { input: changes },
+      variables: { input: deltas },
     })
-    return mapDataToCourse(results.data.updateCourse)
+    return results.data.updateCourse
   } catch (err) {
     console.error(err)
   }

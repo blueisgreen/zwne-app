@@ -60,24 +60,28 @@
           />
           <q-list bordered separator padding class="lower-gap">
             <q-item-label header>Lessons in Course</q-item-label>
-            <q-item v-if="!lessonCount" class="text-secondary"
+            <q-item v-if="!draftLessonCount" class="text-secondary"
               >Add at least one lesson</q-item
             >
-            <q-item v-for="(lesson, index) in courseLessons" :key="lesson.id">
+            <q-item v-for="(lesson, index) in draftLessons" :key="lesson.id">
               <q-item-section>
-                <q-item-label class="text-bold">{{ lesson.title }}</q-item-label>
-                <q-item-label class="text-secondary">{{ lesson.subtitle }}</q-item-label>
+                <q-item-label class="text-bold">{{
+                  lesson.title
+                }}</q-item-label>
+                <q-item-label class="text-secondary">{{
+                  lesson.subtitle
+                }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
                 <q-btn-group push>
                   <q-btn
-                    v-if="lessonCount > 1 && index > 0"
+                    v-if="draftLessonCount > 1 && index > 0"
                     @click="() => bumpSort(index, -1)"
                     icon="arrow_upward"
                     dense
                   />
                   <q-btn
-                    v-if="lessonCount > 1 && index < lessonCount - 1"
+                    v-if="draftLessonCount > 1 && index < draftLessonCount - 1"
                     @click="() => bumpSort(index)"
                     icon="arrow_downward"
                     dense
@@ -94,7 +98,7 @@
         </q-card-section>
         <q-card-actions align="center">
           <q-btn
-            @click="saveCourse"
+            @click="onSaveCourse"
             dense
             no-caps
             icon="save"
@@ -127,11 +131,15 @@
                 @click="() => addLessonToCourse(plan.id)"
               >
                 <q-item-section top>
-                  <q-item-label class="text-bold">{{ plan.title }}</q-item-label>
+                  <q-item-label class="text-bold">{{
+                    plan.title
+                  }}</q-item-label>
                   <q-item-label caption class="text-secondary">{{
                     plan.subtitle
                   }}</q-item-label>
-                  <q-item-label lines="2"><span v-html="plan.content" /></q-item-label>
+                  <q-item-label lines="2"
+                    ><span v-html="plan.content"
+                  /></q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -141,7 +149,11 @@
       <q-separator spaced />
       <div class="text-h6">
         Or create a new lesson
-        <q-btn @click="newLessonDialog = true" icon="add_circle" color="primary" />
+        <q-btn
+          @click="newLessonDialog = true"
+          icon="add_circle"
+          color="primary"
+        />
       </div>
     </div>
   </div>
@@ -175,7 +187,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeMount } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCourseLabStore } from 'src/stores/course-lab.js'
 import { CourseLevel, CourseStatusOptions } from '../../../models'
 
@@ -188,28 +200,50 @@ const props = defineProps({
 const emit = defineEmits(['cancel'])
 
 const builder = useCourseLabStore()
-
-const newLessonDialog = ref(false)
-const newLessonTitle = ref('')
-
-const draftCourse = ref(null)
-const courseLessons = computed(() =>
-  draftCourse.value.lessons.map((id) => builder.lessonPlan(id))
+const draftCourse = ref({})
+const draftLessonIds = ref([])
+const draftLessonCount = computed(() =>
+  draftLessonIds.value ? draftLessonIds.value.length : 0
 )
-const lessonCount = computed(() => draftCourse.value.lessons.length)
-
-// const levelOptions = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT', 'ALL']
+const draftLessons = computed(() => {
+  if (!draftLessonIds.value) {
+    return []
+  }
+  const lessons = draftLessonIds.value.map((id) => builder.lessonPlan(id))
+  console.log('lessons on draft course')
+  return lessons
+})
 const levelOptions = Object.keys(CourseLevel).map((level) => ({
   value: level,
   label: level.substring(0, 1).toUpperCase() + level.substring(1).toLowerCase(),
 }))
+// TODO: build proper tag cloud
 const tagOptions = [
-  'science',
+  'physics',
+  'chemistry',
+  'thermodynamics',
+  'electrodynamics',
+  'fluids',
+  'nuclear-physics',
   'particle-physics',
   'engineering',
+  'civil-engineering',
+  'electrical-engineering',
+  'mechanical-engineering',
+  'environmental-engineering',
   'nuclear-power-plants',
-  'PWRs',
+  'boiling-water-reactor',
+  'pressurized-water-reactor',
+  'fusion-reactor',
+  'gen-iv-nuclear',
+  'liquid-salt-reactor',
+  'liquid-metal-reactor',
+  'nuclear-waste',
+  'nuclear-accidents',
 ]
+
+const newLessonDialog = ref(false)
+const newLessonTitle = ref('')
 
 function onCreateLessonFromDialog() {
   if (newLessonTitle.value && newLessonTitle.value != '') {
@@ -218,38 +252,41 @@ function onCreateLessonFromDialog() {
   newLessonDialog.value = false
 }
 function addLessonToCourse(id) {
-  draftCourse.value.lessons.push(id)
+  console.log('addLessonToCourse', id)
+  draftLessonIds.value.push(id)
+  console.log('draftLessonIds', draftLessonIds.value)
 }
 function removeFromCourseLessons(index) {
   console.log('lesson in position', index)
-  draftCourse.value.lessons.splice(index, 1)
+  draftLessonIds.value.splice(index, 1)
 }
 function bumpSort(index, direction = 0) {
-  const lessons = draftCourse.value.lessons
-  const value = lessons[index]
+  const lessonIds = draftLessonIds.value
+  const value = lessonIds[index]
   const toIndex = direction < 0 ? index - 1 : index + 1
-  lessons.splice(index, 1)
-  lessons.splice(toIndex, 0, value)
+  lessonIds.splice(index, 1)
+  lessonIds.splice(toIndex, 0, value)
 }
-async function saveCourse() {
-  console.log('saveCourse', draftCourse)
+async function onSaveCourse() {
+  console.log('saveCourse', draftCourse.value)
   await builder.onSaveCourse(draftCourse.value)
   emit('cancel')
 }
-onBeforeMount(() => {
-  console.log('levels', CourseLevel)
-})
 onMounted(() => {
   console.log('CourseBuilder.onMounted')
-  draftCourse.value = { ...props.course }
-
-  // deep copy arrays
-  draftCourse.value.lessons = []
-  // draftCourse.value.lessons = props.course.lessons ? props.course.lessons.slice() : []
-  draftCourse.value.tags = props.course.tags ? props.course.tags.slice() : []
-  if (!draftCourse.value.status) {
-    draftCourse.value.status = CourseStatusOptions.CLOSED
+  const given = props.course
+  draftCourse.value = {
+    id: given.id,
+    name: given.name,
+    description: given.description,
+    objectives: given.objectives,
+    level: given.level,
+    tags: given.tags ? [...given.tags] : [],
+    notes: given.notes,
+    trailhead: given.trailhead,
+    _version: given._version,
   }
+  draftLessonIds.value = [...builder.courseLessonsIndex[given.id]]
 })
 </script>
 
