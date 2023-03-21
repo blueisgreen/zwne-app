@@ -27,18 +27,16 @@ export const getCourseWithLessonPlans = /* GraphQL */ `
   }
 `
 
-export const listCoursesLimited = /* GraphQL */ `
-  query ListCoursesLimited() {
-    listCourses() {
+export const listCoursesWithLimitedInfo = /* GraphQL */ `
+  query ListCoursesWithLimitedInfo {
+    listCourses {
       items {
-        _deleted
         id
         name
         description
         status
+        _deleted
       }
-      nextToken
-      startedAt
     }
   }
 `
