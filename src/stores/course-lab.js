@@ -3,7 +3,6 @@ import {
   goCreateCourse,
   fetchCourses,
   fetchCourse,
-  fetchLessonsForCourse,
   goUpdateCourse,
   goDeleteCourse,
   openCourse,
@@ -15,7 +14,6 @@ import {
   fetchLesson,
   goUpdateLesson,
   goDeleteLesson,
-  fetchCourseWithLessonPlans,
 } from '../api'
 
 export const useCourseLabStore = defineStore('courseLab', {
@@ -109,7 +107,7 @@ export const useCourseLabStore = defineStore('courseLab', {
         return cached
       }
       console.log('loadCourse: %s', refresh ? 'forcing refresh' : 'not cached')
-      const course = await fetchCourseWithLessonPlans(id)
+      const course = await fetchCourse(id)
       if (course) {
         this.addCourseToStore(course)
       }

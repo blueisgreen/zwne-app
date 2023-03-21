@@ -75,55 +75,16 @@ export async function fetchCourses() {
 }
 
 /**
- * Retrieves a course instance.
+ * Retrieves a specific course, including lesson plans if any.
  * @returns
  */
 export async function fetchCourse(id) {
-  console.log('Fetching course with ID => ', id)
-  try {
-    // const results = await API.graphql(graphqlOperation(getCourse, { id }))
-    const results = await API.graphql({ query: getCourse, variables: { id } })
-    console.log('results', results)
-    return mapDataToCourse(results.data.getCourse)
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-export async function fetchCourseWithLessonPlans(id) {
   try {
     const results = await API.graphql({
       query: getCourseWithLessonPlans,
       variables: { id },
     })
-    console.log('results', results)
     return results.data.getCourse
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-/* FIXME: avoid multiple trips */
-export async function fetchLessonsForCourse(courseId) {
-  console.log('fetchLessonsForCourse', courseId)
-  let lessonIds = []
-  try {
-    const lessonCourses = await API.graphql({
-      query: lessonCoursesByCourseId,
-      variables: { courseId },
-    })
-    console.log('lessonCourses', lessonCourses)
-    const { items } = lessonCourses.data.lessonCoursesByCourseId
-    lessonIds = items.map((lessonCourse) => lessonCourse.lessonId)
-
-    // TODO: try to return lesson plans instead of just IDs; maybe lazy loading is fine
-    // async (lessonCourse) =>
-    //   await API.graphql({
-    //     query: getLesson,
-    //     variables: { id: lessonCourse.lessonId },
-    //   })
-    console.log('lesson IDs', lessonIds)
-    return lessonIds
   } catch (err) {
     console.error(err)
   }
