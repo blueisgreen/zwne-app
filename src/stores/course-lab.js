@@ -164,16 +164,15 @@ export const useCourseLabStore = defineStore('courseLab', {
 
       // iterate through lessonIdList
       const pathLength = lessonIdList.length
-      lessonIdList.forEach((lessonId, index) => {
-        if (!originalLessonIds.includes(lessonId)) {
+      lessonIdList.forEach((from, index) => {
+        if (!originalLessonIds.includes(from)) {
           // if not already on course, add it
-          console.log('adding lesson to course', lessonId)
+          console.log('adding lesson to course', from)
           // TODO: call API
         }
         // add to step path items
-        const nextLesson =
-          index < pathLength - 1 ? lessonIdList[index + 1] : null
-        const step = { from: lessonId, to: nextLesson, end: !!nextLesson }
+        const to = index < pathLength - 1 ? lessonIdList[index + 1] : null
+        const step = { from, to, end: !to }
         console.log('add to step path', step)
         nextPathSteps.push(step)
       })
