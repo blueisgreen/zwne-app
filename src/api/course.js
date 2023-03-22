@@ -5,27 +5,58 @@ import {
   getCourseForUpdate,
   createCourseWithName,
   listLessonPathSteps,
+  addLessonCourse,
 } from './customQueries'
 // import { listLessonPathSteps } from 'src/graphql/queries'
 import {
   updateCourse,
   deleteCourse,
+  deleteLessonCourse,
   createLessonPathStep,
   updateLessonPathStep,
   deleteLessonPathStep,
+  createLessonCourse,
 } from '../graphql/mutations'
 import { CourseStatusOptions } from '../models'
 import { toAWSDateTime } from '../components/modelTools'
 
-export async function fetchLessonPathSteps(courseId) {
-  console.log('fetchCourses')
+export async function fetchLessonPath(courseId) {
+  console.log('fetchLessonPath')
   try {
     const results = await API.graphql({
       query: listLessonPathSteps,
       variables: { courseId },
     })
     console.log('lesson steps', results)
-    return results.data.listLessonPathSteps
+    return results.data.listLessonPathSteps.items
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export async function addCourseLesson(courseId, lessonId) {
+  console.log('addCourseLesson')
+  try {
+    const results = await API.graphql({
+      query: addLessonCourse,
+      variables: { input: { courseId, lessonId } },
+    })
+    console.log('lesson-course', results)
+    return results.data.createLessonCourse
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export async function removeCourseLesson(lessonCourseId) {
+  console.log('removeCourseLesson')
+  try {
+    const results = await API.graphql({
+      query: deleteLessonCourse,
+      variables: { input: { id, lessonCourseId } },
+    })
+    console.log('lesson-course', results)
+    return results.data.createLessonCourse
   } catch (err) {
     console.error(err)
   }

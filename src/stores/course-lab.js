@@ -3,9 +3,10 @@ import {
   goCreateCourse,
   fetchCourses,
   fetchCourse,
-  goSaveCourse,
   patchCourse,
   goDeleteCourse,
+  addCourseLesson,
+  fetchLessonPath,
   openCourse,
   closeCourse,
   archiveCourse,
@@ -24,18 +25,7 @@ export const useCourseLabStore = defineStore('courseLab', {
     courseLessonsIndex: {},
     lessonPlans: [],
     lessonPlanIndex: {},
-    lessonPathByCourseIndex: {
-      courseA: {
-        path: ['lesson1', 'lesson2'],
-        lesson1: {
-          to: 'lesson2',
-        },
-        lesson2: {
-          end: true,
-        },
-      },
-    },
-    activeCourse: '',
+    lessonPathIndexByCourse: {},
   }),
   getters: {
     courseCount(state) {
@@ -65,7 +55,7 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
     courseLessonPath: (state) => {
       return (id) => {
-        return state.lessonPathByCourseIndex[id] || {}
+        return state.lessonPathIndexByCourse[id] || {}
       }
     },
     lessonPlanList(state) {
@@ -94,8 +84,13 @@ export const useCourseLabStore = defineStore('courseLab', {
         })
       }
     },
-    patchCourseInStore(id, changes) {
-      // TODO: implement me
+    addLessonPathToStore(courseId, pathSteps) {
+      console.log('addLessonPathToStore', pathSteps)
+      const stepIndex = pathSteps.reduce(
+        (accum, step) => (accum[step.from] = { to: step.to, end: !step.to }),
+        {}
+      )
+      this.lessonPathIndexByCourse[courseId] = { path: pathSteps, stepIndex }
     },
     removeCourseFromStore(id) {
       delete this.courseIndex.id
@@ -132,6 +127,10 @@ export const useCourseLabStore = defineStore('courseLab', {
       if (course) {
         this.addCourseToStore(course)
       }
+      const path = await fetchLessonPath(id)
+      if (path) {
+        this.addLessonPathToStore(id, path)
+      }
       return course
     },
     async onSaveCourse(courseUpdates) {
@@ -164,11 +163,13 @@ export const useCourseLabStore = defineStore('courseLab', {
 
       // iterate through lessonIdList
       const pathLength = lessonIdList.length
-      lessonIdList.forEach((from, index) => {
+      lessonIdList.forEach(async (from, index) => {
         if (!originalLessonIds.includes(from)) {
           // if not already on course, add it
           console.log('adding lesson to course', from)
-          // TODO: call API
+          await addCourseLesson(courseId, from)
+        } else {
+          console.log('not adding lesson that is already attached', from)
         }
         // add to step path items
         const to = index < pathLength - 1 ? lessonIdList[index + 1] : null

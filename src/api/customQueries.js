@@ -73,19 +73,36 @@ export const createCourseWithName = /* GraphQL */ `
 
 export const listLessonPathSteps = /* GraphQL */ `
   query ListLessonPathStepsForCourse($courseId: ID!) {
-    listLessonPathSteps(filter: { courseId: { eq: "$courseId" } }) {
+    listLessonPathSteps(filter: { courseId: { eq: $courseId } }) {
       items {
-        _deleted
-        _lastChangedAt
-        _version
         id
+        courseId
         fromLesson
         toLesson
+        _version
+        _deleted
       }
     }
   }
 `
 
+export const addLessonCourse = /* GraphQL */ `
+  mutation CreateLessonCourse(
+    $input: CreateLessonCourseInput!
+    $condition: ModelLessonCourseConditionInput
+  ) {
+    createLessonCourse(input: $input, condition: $condition) {
+      id
+      lessonId
+      courseId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`
 export const addCourseLessonPathStep = /* GraphQL */ `
   mutation AddCourseLessonPathStep(
     $courseId: ID!
