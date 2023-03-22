@@ -153,8 +153,8 @@ export const changeLessonPathStep = /* GraphQL */ `
   }
 `
 
-export const name = /* GraphQL */ `
-  mutation DeleteLessonPathStep {
-    deleteLessonPathStep(input: { id: "" })
+export const deleteLessonPathStep = /* GraphQL */ `
+  mutation DeleteLessonPathStep($stepID: ID!) {
+    deleteLessonPathStep(input: { id: $stepID })
   }
 `

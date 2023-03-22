@@ -1,3 +1,3 @@
 export * from './course'
-export * as courseDS from './courseDS'
+export * from './courseLessons'
 export * from './lesson'
