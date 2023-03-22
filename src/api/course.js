@@ -91,7 +91,7 @@ async function getCourseNow(id) {
   }
 }
 
-export async function patchCourse(id, deltas) {
+export async function saveCourse(id, deltas) {
   try {
     const original = await getCourseNow(id)
     const updated = await goSaveCourse({ ...original, ...deltas })

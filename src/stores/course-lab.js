@@ -3,14 +3,19 @@ import {
   goCreateCourse,
   fetchCourses,
   fetchCourse,
-  patchCourse,
-  goDeleteCourse,
-  addCourseLesson,
-  fetchLessonPath,
+  saveCourse,
   openCourse,
   closeCourse,
   archiveCourse,
   reviveCourse,
+  goDeleteCourse,
+  fetchLessonCourses,
+  addLessonCourse,
+  removeLessonCourse,
+  addLessonPathStep,
+  fetchLessonPath,
+  saveLessonPathStep,
+  removeLessonPathStep,
   goCreateLesson,
   fetchLessons,
   fetchLesson,
@@ -22,10 +27,11 @@ export const useCourseLabStore = defineStore('courseLab', {
   state: () => ({
     courses: [],
     courseIndex: {},
-    courseLessonsIndex: {},
+    lessonCourseJoinsIndex: {},
+    courseLessonIdsIndex: {},
+    lessonPathIndexByCourse: {},
     lessonPlans: [],
     lessonPlanIndex: {},
-    lessonPathIndexByCourse: {},
   }),
   getters: {
     courseCount(state) {
@@ -44,12 +50,12 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
     courseLessonIds: (state) => {
       return (id) => {
-        return state.courseLessonsIndex[id] || []
+        return state.courseLessonIdsIndex[id] || []
       }
     },
     courseLessons: (state) => {
       return (id) => {
-        const ids = state.courseLessonsIndex[id] || []
+        const ids = state.courseLessonIdsIndex[id] || []
         return ids.map((lessonId) => state.lessonPlanIndex[lessonId])
       }
     },
@@ -70,11 +76,14 @@ export const useCourseLabStore = defineStore('courseLab', {
   actions: {
     addCourseToStore(course) {
       console.log('addCourseToStore', course)
+      if (!course) {
+        return
+      }
       this.courseIndex[course.id] = course
       if (!this.courses.includes(course.id)) {
         this.courses.push(course.id)
       }
-      this.courseLessonsIndex[course.id] = []
+      this.courseLessonIdsIndex[course.id] = []
       if (course.lessons?.items?.length) {
         console.log('with lessons', course.lessons.items)
         course.lessons.items.forEach((item) => {
@@ -84,8 +93,21 @@ export const useCourseLabStore = defineStore('courseLab', {
         })
       }
     },
+    addLessonCourseJoinsToStore(courseId, joins) {
+      console.log('addLessonCourseJoinsToStore', { courseId, joins })
+      if (!courseId || !joins) {
+        return
+      }
+      const map = {}
+      joins.forEach((item) => (map[item.id] = item))
+      console.log('map', map)
+      this.lessonCourseJoinsIndex[courseId] = map
+    },
     addLessonPathToStore(courseId, pathSteps) {
       console.log('addLessonPathToStore', pathSteps)
+      if (!courseId || !pathSteps) {
+        return
+      }
       const stepIndex = pathSteps.reduce(
         (accum, step) => (accum[step.from] = { to: step.to, end: !step.to }),
         {}
@@ -120,23 +142,25 @@ export const useCourseLabStore = defineStore('courseLab', {
     async loadCourse(id, refresh = false) {
       const cached = this.course(id)
       if (!refresh && cached) {
+        console.log('loadCourse: found in cache', cached)
         return cached
       }
       console.log('loadCourse: %s', refresh ? 'forcing refresh' : 'not cached')
       const course = await fetchCourse(id)
-      if (course) {
-        this.addCourseToStore(course)
-      }
+      this.addCourseToStore(course)
+
+      const joins = await fetchLessonCourses(id)
+      this.addLessonCourseJoinsToStore(id, joins)
+
       const path = await fetchLessonPath(id)
-      if (path) {
-        this.addLessonPathToStore(id, path)
-      }
+      this.addLessonPathToStore(id, path)
+
       return course
     },
     async onSaveCourse(courseUpdates) {
       console.log('course-builder.onSaveCourse', courseUpdates)
       const courseId = courseUpdates.id
-      const updated = await patchCourse(courseId, courseUpdates)
+      const updated = await saveCourse(courseId, courseUpdates)
       if (updated) {
         this.addCourseToStore(updated)
       }
@@ -167,7 +191,7 @@ export const useCourseLabStore = defineStore('courseLab', {
         if (!originalLessonIds.includes(from)) {
           // if not already on course, add it
           console.log('adding lesson to course', from)
-          await addCourseLesson(courseId, from)
+          await addLessonCourse(courseId, from)
         } else {
           console.log('not adding lesson that is already attached', from)
         }

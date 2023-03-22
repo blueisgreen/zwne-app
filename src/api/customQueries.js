@@ -86,7 +86,7 @@ export const listLessonPathSteps = /* GraphQL */ `
   }
 `
 
-export const addLessonCourse = /* GraphQL */ `
+export const createLessonCourse = /* GraphQL */ `
   mutation CreateLessonCourse(
     $input: CreateLessonCourseInput!
     $condition: ModelLessonCourseConditionInput
