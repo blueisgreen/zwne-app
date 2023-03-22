@@ -177,7 +177,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useCourseLabStore } from 'src/stores/course-lab.js'
-import { CourseLevel, CourseStatusOptions } from '../../../models'
+import { CourseLevel } from '../../../models'
 
 const props = defineProps({
   course: {
@@ -257,7 +257,13 @@ function bumpSort(index, direction = 0) {
 }
 async function onSaveCourse() {
   console.log('saveCourse', draftCourse.value)
+
+  // set trailhead
+  if (draftLessonIds.value.length > 0) {
+    draftCourse.value.trailhead = draftLessonIds.value[0]
+  }
   await builder.onSaveCourse(draftCourse.value)
+  await builder.onSaveCourseLessons(draftCourse.value.id, draftLessonIds.value)
   emit('cancel')
 }
 onMounted(() => {

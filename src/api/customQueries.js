@@ -70,3 +70,74 @@ export const createCourseWithName = /* GraphQL */ `
     }
   }
 `
+
+export const listLessonPathSteps = /* GraphQL */ `
+  query ListLessonPathStepsForCourse($courseId: ID!) {
+    listLessonPathSteps(filter: { courseId: { eq: "$courseId" } }) {
+      items {
+        _deleted
+        _lastChangedAt
+        _version
+        id
+        fromLesson
+        toLesson
+      }
+    }
+  }
+`
+
+export const addCourseLessonPathStep = /* GraphQL */ `
+  mutation AddCourseLessonPathStep(
+    $courseId: ID!
+    $fromLessonId: ID!
+    $toLessonId: ID!
+  ) {
+    createLessonPathStep(
+      input: {
+        courseId: "$courseId"
+        fromLesson: "$fromLessonId"
+        toLesson: "$toLessonId"
+      }
+      condition: {
+        not: {
+          and: {
+            courseId: { eq: "$courseId" }
+            fromLesson: { eq: "$fromLessonId" }
+            toLesson: { eq: "$toLessonId" }
+          }
+        }
+      }
+    )
+  }
+`
+
+export const changeLessonPathStep = /* GraphQL */ `
+  mutation ChangeLessonPathStep(
+    $stepId: ID!
+    $version: int
+    $courseId: ID!
+    $fromLessonId: ID!
+    $toLessonId: ID!
+  ) {
+    updateLessonPathStep(
+      input: {
+        id: "$stepId"
+        _version: $version
+        courseId: "$courseId"
+        fromLesson: "$fromLessonId"
+        toLesson: "$toLessonId"
+      }
+    ) {
+      _version
+      id
+      fromLesson
+      toLesson
+    }
+  }
+`
+
+export const name = /* GraphQL */ `
+  mutation DeleteLessonPathStep {
+    deleteLessonPathStep(input: { id: "" })
+  }
+`

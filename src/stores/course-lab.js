@@ -24,6 +24,17 @@ export const useCourseLabStore = defineStore('courseLab', {
     courseLessonsIndex: {},
     lessonPlans: [],
     lessonPlanIndex: {},
+    lessonPathByCourseIndex: {
+      courseA: {
+        path: ['lesson1', 'lesson2'],
+        lesson1: {
+          to: 'lesson2',
+        },
+        lesson2: {
+          end: true,
+        },
+      },
+    },
     activeCourse: '',
   }),
   getters: {
@@ -41,11 +52,20 @@ export const useCourseLabStore = defineStore('courseLab', {
         return state.courseIndex[id]
       }
     },
+    courseLessonIds: (state) => {
+      return (id) => {
+        return state.courseLessonsIndex[id] || []
+      }
+    },
     courseLessons: (state) => {
       return (id) => {
-        return state.courseLessonsIndex[id].map(
-          (lessonId) => state.lessonPlanIndex[lessonId]
-        )
+        const ids = state.courseLessonsIndex[id] || []
+        return ids.map((lessonId) => state.lessonPlanIndex[lessonId])
+      }
+    },
+    courseLessonPath: (state) => {
+      return (id) => {
+        return state.lessonPathByCourseIndex[id] || {}
       }
     },
     lessonPlanList(state) {
@@ -70,7 +90,7 @@ export const useCourseLabStore = defineStore('courseLab', {
         course.lessons.items.forEach((item) => {
           const { lesson } = item
           this.addLessonToStore(lesson)
-          this.courseLessonsIndex[course.id].push(lesson.id)
+          this.courseLessonIds(course.id).push(lesson.id)
         })
       }
     },
@@ -114,21 +134,81 @@ export const useCourseLabStore = defineStore('courseLab', {
       }
       return course
     },
-    async onSaveCourse(courseUpdates, updatedLessonsList) {
+    async onSaveCourse(courseUpdates) {
       console.log('course-builder.onSaveCourse', courseUpdates)
-      const updated = await patchCourse(courseUpdates.id, courseUpdates)
-
-      if (updatedLessonsList) {
-        const { id } = courseUpdates
-        // TODO: only act if different from current list
-
-        // updatedLessonsList.forEach(async (lessonId) => {
-        //   const wLessons = await addLessonToCourse(updated.id, lessonId)
-        // })
-      }
+      const courseId = courseUpdates.id
+      const updated = await patchCourse(courseId, courseUpdates)
       if (updated) {
         this.addCourseToStore(updated)
       }
+    },
+    async onSaveCourseLessons(courseId, lessonIdList) {
+      console.log('course-builder.onSaveCourseLessons', {
+        courseId,
+        lessonIdList,
+      })
+      // do nothing if list if null; use empty array to mean no lessons
+      if (!courseId || !lessonIdList) {
+        console.warn('forgot to pass course ID or list of lesson IDs')
+        return
+      }
+
+      const originalLessonIds = this.courseLessonIds(courseId)
+      const originalPath = this.courseLessonPath(courseId)
+      const nextPathSteps = []
+
+      if (!originalLessonIds.length && !lessonIdList) {
+        console.log('no lessons and nothing changed; do nothing')
+        return
+      }
+
+      // iterate through lessonIdList
+      const pathLength = lessonIdList.length
+      lessonIdList.forEach((lessonId, index) => {
+        if (!originalLessonIds.includes(lessonId)) {
+          // if not already on course, add it
+          console.log('adding lesson to course', lessonId)
+          // TODO: call API
+        }
+        // add to step path items
+        const nextLesson =
+          index < pathLength - 1 ? lessonIdList[index + 1] : null
+        const step = { from: lessonId, to: nextLesson, end: !!nextLesson }
+        console.log('add to step path', step)
+        nextPathSteps.push(step)
+      })
+
+      // iterate through current step path items
+      nextPathSteps.forEach((nextStep) => {
+        // update existing as needed
+        const currentFromStep = originalPath[nextStep.from]
+        if (currentFromStep) {
+          if (currentFromStep.to !== nextStep.to) {
+            console.log('update step', {
+              currentFromStep,
+              nextStep,
+            })
+            // TODO: call API
+          } else {
+            console.log('step has not changed', {
+              currentFromStep,
+              nextStep,
+            })
+          }
+        } else {
+          // add new step
+          console.log('add step', nextStep)
+          // TODO: call API
+        }
+      })
+
+      // remove unused step path items
+      // TODO: build list of unused steps
+
+      // remove lessons that are no longer associated
+      // TODO: build list of unused lessons
+
+      console.log('finished processing lessons and path')
     },
     async deleteCourse(id) {
       const course = this.course(id)

@@ -4,10 +4,45 @@ import {
   getCourseWithLessonPlans,
   getCourseForUpdate,
   createCourseWithName,
+  listLessonPathSteps,
 } from './customQueries'
-import { updateCourse, deleteCourse } from '../graphql/mutations'
+// import { listLessonPathSteps } from 'src/graphql/queries'
+import {
+  updateCourse,
+  deleteCourse,
+  createLessonPathStep,
+  updateLessonPathStep,
+  deleteLessonPathStep,
+} from '../graphql/mutations'
 import { CourseStatusOptions } from '../models'
 import { toAWSDateTime } from '../components/modelTools'
+
+export async function fetchLessonPathSteps(courseId) {
+  console.log('fetchCourses')
+  try {
+    const results = await API.graphql({
+      query: listLessonPathSteps,
+      variables: { courseId },
+    })
+    console.log('lesson steps', results)
+    return results.data.listLessonPathSteps
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export async function addLessonPathStep(courseId, fromLesson, toLesson) {
+  console.log('goCreateCourse')
+  try {
+    const results = await API.graphql({
+      query: createLessonPathStep,
+      variables: { courseId, fromLesson, toLesson },
+    })
+    return results.data.createLessonPathStep
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 /**
  * Attempts to persist a new course based on given values.

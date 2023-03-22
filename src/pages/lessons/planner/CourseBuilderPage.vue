@@ -170,7 +170,7 @@
     </div>
 
     <div v-if="courseToBuild && editMode">
-      <course-details :course="courseToBuild" @cancel="onCancelEdit" />
+      <course-detail-edit :course="courseToBuild" @cancel="onCancelEdit" />
     </div>
   </q-page>
 </template>
@@ -179,7 +179,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCourseLabStore } from 'src/stores/course-lab.js'
-import CourseDetails from './CourseDetails.vue'
+import CourseDetailEdit from './CourseDetailEdit.vue'
 import { displayDateTime } from 'components/displayTools'
 
 const route = useRoute()
