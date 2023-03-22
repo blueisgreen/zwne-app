@@ -279,7 +279,7 @@ onMounted(() => {
     notes: given.notes,
     trailhead: given.trailhead,
   }
-  draftLessonIds.value = [...builder.courseLessonsIndex[given.id]]
+  draftLessonIds.value = [...builder.courseLessonIds(given.id)]
 })
 </script>
 

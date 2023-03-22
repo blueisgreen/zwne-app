@@ -12,9 +12,6 @@ export const onCreateLessonPathStep = /* GraphQL */ `
       toLesson
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -29,9 +26,6 @@ export const onUpdateLessonPathStep = /* GraphQL */ `
       toLesson
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -46,9 +40,6 @@ export const onDeleteLessonPathStep = /* GraphQL */ `
       toLesson
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -65,13 +56,9 @@ export const onCreateLesson = /* GraphQL */ `
       publishedAt
       courses {
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -88,13 +75,9 @@ export const onUpdateLesson = /* GraphQL */ `
       publishedAt
       courses {
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -111,13 +94,9 @@ export const onDeleteLesson = /* GraphQL */ `
       publishedAt
       courses {
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -136,13 +115,9 @@ export const onCreateCourse = /* GraphQL */ `
       archivedAt
       lessons {
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -161,13 +136,9 @@ export const onUpdateCourse = /* GraphQL */ `
       archivedAt
       lessons {
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -186,13 +157,9 @@ export const onDeleteCourse = /* GraphQL */ `
       archivedAt
       lessons {
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -215,9 +182,6 @@ export const onCreateLessonCourse = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       course {
         id
@@ -232,15 +196,9 @@ export const onCreateLessonCourse = /* GraphQL */ `
         archivedAt
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -263,9 +221,6 @@ export const onUpdateLessonCourse = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       course {
         id
@@ -280,15 +235,9 @@ export const onUpdateLessonCourse = /* GraphQL */ `
         archivedAt
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -311,9 +260,6 @@ export const onDeleteLessonCourse = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       course {
         id
@@ -328,15 +274,9 @@ export const onDeleteLessonCourse = /* GraphQL */ `
         archivedAt
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;

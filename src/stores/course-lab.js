@@ -230,6 +230,16 @@ export const useCourseLabStore = defineStore('courseLab', {
       // TODO: build list of unused steps
 
       // remove lessons that are no longer associated
+      if (lessonIdList.length === 0) {
+        const joinsToDelete = Object.values(
+          this.lessonCourseJoinsIndex[courseId]
+        )
+        joinsToDelete.forEach((join) => {
+          console.log('removing', join)
+          removeLessonCourse(join)
+        })
+      }
+
       // TODO: build list of unused lessons
 
       console.log('finished processing lessons and path')

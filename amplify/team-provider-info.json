@@ -10,6 +10,11 @@
       "StackName": "amplify-amplify37ffde61d5174-staging-42635",
       "StackId": "arn:aws:cloudformation:us-west-2:686693387580:stack/amplify-amplify37ffde61d5174-staging-42635/c0574280-ba44-11ed-88c5-0693ab6b4031",
       "AmplifyAppId": "d7jlxtl7mre58"
+    },
+    "categories": {
+      "api": {
+        "zwapp": {}
+      }
     }
   }
 }

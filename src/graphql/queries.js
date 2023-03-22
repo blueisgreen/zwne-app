@@ -10,9 +10,6 @@ export const getLessonPathStep = /* GraphQL */ `
       toLesson
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -30,41 +27,8 @@ export const listLessonPathSteps = /* GraphQL */ `
         toLesson
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncLessonPathSteps = /* GraphQL */ `
-  query SyncLessonPathSteps(
-    $filter: ModelLessonPathStepFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncLessonPathSteps(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        courseId
-        fromLesson
-        toLesson
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -81,13 +45,9 @@ export const getLesson = /* GraphQL */ `
       publishedAt
       courses {
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -109,45 +69,8 @@ export const listLessons = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncLessons = /* GraphQL */ `
-  query SyncLessons(
-    $filter: ModelLessonFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncLessons(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        title
-        subtitle
-        version
-        categories
-        content
-        archivedAt
-        publishedAt
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -166,13 +89,9 @@ export const getCourse = /* GraphQL */ `
       archivedAt
       lessons {
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -196,47 +115,8 @@ export const listCourses = /* GraphQL */ `
         archivedAt
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncCourses = /* GraphQL */ `
-  query SyncCourses(
-    $filter: ModelCourseFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncCourses(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        name
-        description
-        objectives
-        status
-        level
-        tags
-        notes
-        trailhead
-        archivedAt
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -257,9 +137,6 @@ export const getLessonCourse = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       course {
         id
@@ -274,15 +151,9 @@ export const getLessonCourse = /* GraphQL */ `
         archivedAt
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -299,40 +170,8 @@ export const listLessonCourses = /* GraphQL */ `
         courseId
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncLessonCourses = /* GraphQL */ `
-  query SyncLessonCourses(
-    $filter: ModelLessonCourseFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncLessonCourses(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        lessonId
-        courseId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -357,12 +196,8 @@ export const lessonCoursesByLessonId = /* GraphQL */ `
         courseId
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
     }
   }
 `;
@@ -387,12 +222,8 @@ export const lessonCoursesByCourseId = /* GraphQL */ `
         courseId
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
     }
   }
 `;
