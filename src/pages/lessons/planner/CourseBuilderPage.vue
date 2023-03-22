@@ -126,6 +126,12 @@
         <div class="col-2 prop-label">Status</div>
         <div class="col">{{ courseToBuild.status || 'Unknown' }}</div>
       </div>
+      <div v-if="courseToBuild.archivedAt" class="row q-pb-sm">
+        <div class="col-2 prop-label">Archived</div>
+        <div class="col">
+          {{ displayDateTime(courseToBuild.archivedAt, 'n/a') }}
+        </div>
+      </div>
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Change Availability</div>
         <div class="col">

@@ -101,11 +101,11 @@ export async function closeCourse(id) {
 }
 
 export async function archiveCourse(id) {
-  const archievedAt = toAWSDateTime(new Date())
+  const archivedAt = toAWSDateTime(new Date())
   const course = await changeCourseStatus(
     id,
     CourseStatusOptions.ARCHIVED,
-    archievedAt
+    archivedAt
   )
   return course
 }

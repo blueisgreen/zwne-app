@@ -4,6 +4,7 @@ import {
   fetchCourses,
   fetchCourse,
   goSaveCourse,
+  patchCourse,
   goDeleteCourse,
   openCourse,
   closeCourse,
@@ -115,7 +116,7 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
     async onSaveCourse(courseUpdates, updatedLessonsList) {
       console.log('course-builder.onSaveCourse', courseUpdates)
-      const updated = await goSaveCourse(courseUpdates)
+      const updated = await patchCourse(courseUpdates.id, courseUpdates)
 
       if (updatedLessonsList) {
         const { id } = courseUpdates

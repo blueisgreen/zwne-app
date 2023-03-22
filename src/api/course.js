@@ -1,37 +1,13 @@
-import { API, graphqlOperation } from 'aws-amplify'
-import {
-  listCourses,
-  getCourse,
-  getLesson,
-  lessonCoursesByCourseId,
-} from '../graphql/queries'
+import { API } from 'aws-amplify'
 import {
   listCoursesWithLimitedInfo,
   getCourseWithLessonPlans,
+  getCourseForUpdate,
   createCourseWithName,
 } from './customQueries'
 import { updateCourse, deleteCourse } from '../graphql/mutations'
-
-function mapDataToCourse(data) {
-  return {
-    id: data.id,
-    name: data.name || '',
-    description: data.description || '',
-    objectives: data.objectives || '',
-    status: data.status || '',
-    level: data.level || '',
-    tags: data.tags || [],
-    notes: data.notes || '',
-    lessons: [],
-    trailhead: data.trailhead,
-    archivedAt: data.archivedAt,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
-    _version: data._version,
-    _deleted: data._deleted,
-    _lastChangedAt: data._lastChangedAt,
-  }
-}
+import { CourseStatusOptions } from '../models'
+import { toAWSDateTime } from '../components/modelTools'
 
 /**
  * Attempts to persist a new course based on given values.
@@ -103,6 +79,28 @@ export async function goSaveCourse(deltas) {
   }
 }
 
+async function getCourseNow(id) {
+  try {
+    const original = await API.graphql({
+      query: getCourseForUpdate,
+      variables: { id },
+    })
+    return original.data.getCourse
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export async function patchCourse(id, deltas) {
+  try {
+    const original = await getCourseNow(id)
+    const updated = await goSaveCourse({ ...original, ...deltas })
+    return updated
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 /**
  * Wipes out a course. Kersplat!
  * @param {*} id
@@ -121,17 +119,24 @@ export async function goDeleteCourse(id, _version) {
 }
 
 export async function openCourse(id) {
-  console.log('openCourse: not implemented')
+  return await patchCourse(id, { status: CourseStatusOptions.OPEN })
 }
 
 export async function closeCourse(id) {
-  console.log('openCourse: not implemented')
+  return await patchCourse(id, { status: CourseStatusOptions.CLOSED })
 }
 
 export async function archiveCourse(id) {
-  console.log('openCourse: not implemented')
+  const archivedAt = toAWSDateTime(new Date())
+  return await patchCourse(id, {
+    status: CourseStatusOptions.ARCHIVED,
+    archivedAt,
+  })
 }
 
 export async function reviveCourse(id) {
-  console.log('openCourse: not implemented')
+  return await patchCourse(id, {
+    status: CourseStatusOptions.CLOSED,
+    archivedAt: null,
+  })
 }
