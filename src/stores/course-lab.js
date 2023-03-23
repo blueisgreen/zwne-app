@@ -22,13 +22,14 @@ import {
   goUpdateLesson,
   goDeleteLesson,
 } from '../api'
+import { difference } from 'components/modelTools'
 
 export const useCourseLabStore = defineStore('courseLab', {
   state: () => ({
     courses: [],
     courseIndex: {},
-    lessonCourseJoinsIndex: {},
-    courseLessonIdsIndex: {},
+    courseLessonIdsIndex: {}, // arrays of lessonIds, indexed by course
+    lessonCourseJoinsIndex: {}, // arrays of joins, indexed by course
     lessonPathIndexByCourse: {},
     lessonPlans: [],
     lessonPlanIndex: {},
@@ -50,13 +51,31 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
     courseLessonIds: (state) => {
       return (id) => {
-        return state.courseLessonIdsIndex[id] || []
+        return state.courseLessonIdsIndex[id]
       }
     },
     courseLessons: (state) => {
       return (id) => {
         const ids = state.courseLessonIdsIndex[id] || []
         return ids.map((lessonId) => state.lessonPlanIndex[lessonId])
+      }
+    },
+    lessonCourseJoins: (state) => {
+      return (id) => {
+        return this.lessonCourseJoinsIndex[id] || []
+      }
+    },
+    lessonCourseJoinsForLesson: (state) => {
+      return (courseId, lessonId) => {
+        const courseJoins = state.lessonCourseJoinsIndex[courseId]
+        if (!courseJoins) {
+          return []
+        }
+        const joinsOut = courseJoins.filter(
+          (join) => join.lessonId === lessonId
+        )
+        console.log('lessonCourseJoinsForLesson', joinsOut)
+        return joinsOut
       }
     },
     courseLessonPath: (state) => {
@@ -95,13 +114,11 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
     addLessonCourseJoinsToStore(courseId, joins) {
       console.log('addLessonCourseJoinsToStore', { courseId, joins })
-      if (!courseId || !joins) {
+      if (!courseId || !joins || !Array.isArray(joins)) {
         return
       }
-      const map = {}
-      joins.forEach((item) => (map[item.id] = item))
-      console.log('map', map)
-      this.lessonCourseJoinsIndex[courseId] = map
+
+      this.lessonCourseJoinsIndex[courseId] = joins
     },
     addLessonPathToStore(courseId, pathSteps) {
       console.log('addLessonPathToStore', pathSteps)
@@ -173,84 +190,82 @@ export const useCourseLabStore = defineStore('courseLab', {
         this.addCourseToStore(updated)
       }
     },
+    async syncLessonsForCourse(courseId, nextLessons) {
+      console.log('syncLessonsForCourse', { courseId, nextLessons })
+      const originalLessonIds = this.courseLessonIds(courseId)
+      const alt = this.courseLessonIdsIndex[courseId]
+
+      console.log('originalLessonIds', originalLessonIds)
+      console.log('alt', alt)
+
+      const lessonsToAdd = difference(nextLessons, originalLessonIds)
+      const lessonsToRemove = difference(originalLessonIds, nextLessons)
+
+      console.log('differences', { lessonsToAdd, lessonsToRemove })
+
+      lessonsToAdd.forEach(async (lessonId) => {
+        await addLessonCourse(courseId, lessonId)
+      })
+
+      lessonsToRemove.forEach(async (lessonId) => {
+        console.log('intend to remove lessonCourse(s) for', lessonId)
+        const lessonCourseJoins = this.lessonCourseJoinsForLesson(
+          courseId,
+          lessonId
+        )
+        lessonCourseJoins.forEach((join) => removeLessonCourse(join))
+      })
+
+      if (lessonsToAdd.length || lessonsToRemove.length) {
+        await this.loadCourse(courseId, true)
+      }
+    },
+    async rebuildLessonPath(courseId, nextLessons) {
+      const originalPath = this.courseLessonPath(courseId)
+      const nextPathSteps = []
+
+      // if different, delete and redo, or try to adjust?
+
+      // iterate through current step path items
+      // nextPathSteps.forEach((nextStep) => {
+      //   // update existing as needed
+      //   const currentFromStep = originalPath[nextStep.from]
+      //   if (currentFromStep) {
+      //     if (currentFromStep.to !== nextStep.to) {
+      //       console.log('update step', {
+      //         currentFromStep,
+      //         nextStep,
+      //       })
+      //       // TODO: call API
+      //     } else {
+      //       console.log('step has not changed', {
+      //         currentFromStep,
+      //         nextStep,
+      //       })
+      //     }
+      //   } else {
+      //     // add new step
+      //     console.log('add step', nextStep)
+      //     // TODO: call API
+      //   }
+      // })
+    },
     async onSaveCourseLessons(courseId, lessonIdList) {
       console.log('course-builder.onSaveCourseLessons', {
         courseId,
         lessonIdList,
       })
-      // do nothing if list if null; use empty array to mean no lessons
-      if (!courseId || !lessonIdList) {
-        console.warn('forgot to pass course ID or list of lesson IDs')
+
+      // guard against bad arguments
+      if (!courseId || !lessonIdList || !Array.isArray(lessonIdList)) {
+        console.warn('forgot to pass course ID or proper list of lesson IDs')
         return
       }
 
-      const originalLessonIds = this.courseLessonIds(courseId)
-      const originalPath = this.courseLessonPath(courseId)
-      const nextPathSteps = []
+      await this.syncLessonsForCourse(courseId, lessonIdList)
+      await this.rebuildLessonPath(courseId, lessonIdList)
 
-      if (!originalLessonIds.length && !lessonIdList) {
-        console.log('no lessons and nothing changed; do nothing')
-        return
-      }
-
-      // iterate through lessonIdList
-      const pathLength = lessonIdList.length
-      lessonIdList.forEach(async (from, index) => {
-        if (!originalLessonIds.includes(from)) {
-          // if not already on course, add it
-          console.log('adding lesson to course', from)
-          await addLessonCourse(courseId, from)
-        } else {
-          console.log('not adding lesson that is already attached', from)
-        }
-        // add to step path items
-        const to = index < pathLength - 1 ? lessonIdList[index + 1] : null
-        const step = { from, to, end: !to }
-        console.log('add to step path', step)
-        nextPathSteps.push(step)
-      })
-
-      // iterate through current step path items
-      nextPathSteps.forEach((nextStep) => {
-        // update existing as needed
-        const currentFromStep = originalPath[nextStep.from]
-        if (currentFromStep) {
-          if (currentFromStep.to !== nextStep.to) {
-            console.log('update step', {
-              currentFromStep,
-              nextStep,
-            })
-            // TODO: call API
-          } else {
-            console.log('step has not changed', {
-              currentFromStep,
-              nextStep,
-            })
-          }
-        } else {
-          // add new step
-          console.log('add step', nextStep)
-          // TODO: call API
-        }
-      })
-
-      // remove unused step path items
-      // TODO: build list of unused steps
-
-      // remove lessons that are no longer associated
-      if (lessonIdList.length === 0) {
-        const joinsToDelete = Object.values(
-          this.lessonCourseJoinsIndex[courseId]
-        )
-        joinsToDelete.forEach((join) => {
-          console.log('asked to remove lesson from course', join)
-          removeLessonCourse(join)
-        })
-      }
-
-      // TODO: build list of unused lessons
-
-      console.log('finished processing lessons and path')
+      console.log('finished processing course lessons and path')
     },
     async deleteCourse(id) {
       console.log('deleteCourse', id)

@@ -210,7 +210,6 @@ const draftLessons = computed(() => {
     return []
   }
   const lessons = draftLessonIds.value.map((id) => builder.lessonPlan(id))
-  console.log('lessons on draft course', lessons)
   return lessons
 })
 const levelOptions = Object.keys(CourseLevel).map((level) => ({
@@ -254,28 +253,32 @@ function onCreateLessonFromDialog() {
 function addLessonToCourse(id) {
   console.log('addLessonToCourse', id)
   draftLessonIds.value.push(id)
-  console.log('draftLessonIds', draftLessonIds.value)
 }
 function removeFromCourseLessons(index) {
   console.log('lesson in position', index)
   draftLessonIds.value.splice(index, 1)
 }
 function bumpSort(index, direction = 0) {
+  console.log('bumpSort, { index, direction }')
   const lessonIds = draftLessonIds.value
   const value = lessonIds[index]
   const toIndex = direction < 0 ? index - 1 : index + 1
   lessonIds.splice(index, 1)
   lessonIds.splice(toIndex, 0, value)
 }
-async function onSaveCourse() {
-  console.log('saveCourse', draftCourse.value)
-
-  // set trailhead
+function updateTrailheadOnDraft() {
   if (draftLessonIds.value.length > 0) {
     draftCourse.value.trailhead = draftLessonIds.value[0]
   }
-  await builder.onSaveCourse(draftCourse.value)
+  if (draftLessonIds.value.length == 0) {
+    draftCourse.value.trailhead = null
+  }
+}
+async function onSaveCourse() {
+  console.log('onSaveCourse', draftCourse.value)
+  updateTrailheadOnDraft()
   await builder.onSaveCourseLessons(draftCourse.value.id, draftLessonIds.value)
+  await builder.onSaveCourse(draftCourse.value)
   emit('cancel')
 }
 onMounted(() => {

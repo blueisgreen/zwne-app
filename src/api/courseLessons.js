@@ -29,7 +29,7 @@ export async function addLessonCourse(courseId, lessonId) {
       query: createLessonCourse,
       variables: { input: { courseId, lessonId } },
     })
-    console.log('lesson-course', results)
+    console.log('lesson-course added', results)
     return results.data.createLessonCourse
   } catch (err) {
     console.error(err)
@@ -43,7 +43,7 @@ export async function removeLessonCourse(join) {
       query: deleteLessonCourse,
       variables: { input: { id: join.id } },
     })
-    console.log('lesson-course', results)
+    console.log('lesson-course removed', results)
     return results.data.deleteLessonCourse
   } catch (err) {
     console.error(err)

@@ -14,4 +14,10 @@ function toAWSDateTime(ts) {
   return date.formatDate(ts, 'YYYY-MM-DDThh:mm:ss.sssZ')
 }
 
-export { generateRandomKey, toAWSDateTime }
+const difference = (first, second) => {
+  console.log('difference', { first, second })
+  let arrays = [first, second]
+  return arrays.reduce((a, b) => a.filter((c) => !b.includes(c)))
+}
+
+export { generateRandomKey, toAWSDateTime, difference }
