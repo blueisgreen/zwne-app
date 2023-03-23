@@ -116,10 +116,18 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
     removeCourseFromStore(id) {
       delete this.courseIndex.id
-      delete this.courseLessonIndex.id
       const index = this.courses.indexOf(id)
       if (index > -1) {
         this.courses.splice(index, 1)
+      }
+      if (this.courseLessonIdsIndex.id) {
+        delete this.courseLessonIdsIndex.id
+      }
+      if (this.lessonCourseJoinsIndex.id) {
+        delete this.lessonCourseJoinsIndex.id
+      }
+      if (this.lessonPathIndexByCourse.id) {
+        delete this.lessonPathIndexByCourse.id
       }
     },
     async spawnCourse(name = 'a suitable name') {
@@ -235,7 +243,7 @@ export const useCourseLabStore = defineStore('courseLab', {
           this.lessonCourseJoinsIndex[courseId]
         )
         joinsToDelete.forEach((join) => {
-          console.log('removing', join)
+          console.log('asked to remove lesson from course', join)
           removeLessonCourse(join)
         })
       }
@@ -245,6 +253,10 @@ export const useCourseLabStore = defineStore('courseLab', {
       console.log('finished processing lessons and path')
     },
     async deleteCourse(id) {
+      console.log('deleteCourse', id)
+
+      // FIXME: true purge has to remove all associations with the course: lessonCourse, lessonPath
+
       const isDeleted = await goDeleteCourse(id)
       if (isDeleted) {
         this.removeCourseFromStore(id)
