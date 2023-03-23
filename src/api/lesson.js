@@ -16,8 +16,6 @@ function mapDataToLesson(data) {
     archivedAt: data.archivedAt,
     content: data.content,
     updatedAt: data._lastChangedAt,
-    _version: data._version,
-    _deleted: data._deleted,
   }
 }
 
@@ -87,14 +85,13 @@ export async function fetchLesson(id) {
  * @returns
  */
 export async function goUpdateLesson(given) {
-  const { id, title, subtitle, categories, content, _version } = given
+  const { id, title, subtitle, categories, content } = given
   const changes = {
     id,
     title,
     subtitle,
     categories,
     content,
-    _version,
   }
   try {
     console.log('lessonAPI.goUpdateLesson: given=' + JSON.stringify(changes))
@@ -113,11 +110,11 @@ export async function goUpdateLesson(given) {
  * Wipes out a lesson. Kersplat!
  * @param {*} id
  */
-export async function goDeleteLesson(id, _version) {
+export async function goDeleteLesson(id) {
   try {
     const result = await API.graphql({
       query: deleteLesson,
-      variables: { input: { id, _version } },
+      variables: { input: { id } },
     })
     console.log('Deleted item => ' + JSON.stringify(result))
     return true

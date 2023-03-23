@@ -5,9 +5,6 @@
 }
 
 type Course @aws_api_key @aws_iam {
-  _deleted: Boolean
-  _lastChangedAt: AWSTimestamp!
-  _version: Int!
   archivedAt: AWSDateTime
   createdAt: AWSDateTime!
   description: String
@@ -24,9 +21,6 @@ type Course @aws_api_key @aws_iam {
 }
 
 type Lesson @aws_api_key @aws_iam {
-  _deleted: Boolean
-  _lastChangedAt: AWSTimestamp!
-  _version: Int!
   archivedAt: AWSDateTime
   categories: [String]
   content: String
@@ -41,9 +35,6 @@ type Lesson @aws_api_key @aws_iam {
 }
 
 type LessonCourse @aws_api_key @aws_iam {
-  _deleted: Boolean
-  _lastChangedAt: AWSTimestamp!
-  _version: Int!
   course: Course!
   courseId: ID!
   createdAt: AWSDateTime!
@@ -54,9 +45,6 @@ type LessonCourse @aws_api_key @aws_iam {
 }
 
 type LessonPathStep @aws_api_key @aws_iam {
-  _deleted: Boolean
-  _lastChangedAt: AWSTimestamp!
-  _version: Int!
   courseId: ID
   createdAt: AWSDateTime!
   fromLesson: ID
@@ -68,25 +56,21 @@ type LessonPathStep @aws_api_key @aws_iam {
 type ModelCourseConnection @aws_api_key @aws_iam {
   items: [Course]!
   nextToken: String
-  startedAt: AWSTimestamp
 }
 
 type ModelLessonConnection @aws_api_key @aws_iam {
   items: [Lesson]!
   nextToken: String
-  startedAt: AWSTimestamp
 }
 
 type ModelLessonCourseConnection @aws_api_key @aws_iam {
   items: [LessonCourse]!
   nextToken: String
-  startedAt: AWSTimestamp
 }
 
 type ModelLessonPathStepConnection @aws_api_key @aws_iam {
   items: [LessonPathStep]!
   nextToken: String
-  startedAt: AWSTimestamp
 }
 
 type Mutation {
@@ -115,10 +99,6 @@ type Query {
   listLessonCourses(filter: ModelLessonCourseFilterInput, limit: Int, nextToken: String): ModelLessonCourseConnection @aws_api_key @aws_iam
   listLessonPathSteps(filter: ModelLessonPathStepFilterInput, limit: Int, nextToken: String): ModelLessonPathStepConnection @aws_api_key @aws_iam
   listLessons(filter: ModelLessonFilterInput, limit: Int, nextToken: String): ModelLessonConnection @aws_api_key @aws_iam
-  syncCourses(filter: ModelCourseFilterInput, lastSync: AWSTimestamp, limit: Int, nextToken: String): ModelCourseConnection @aws_api_key @aws_iam
-  syncLessonCourses(filter: ModelLessonCourseFilterInput, lastSync: AWSTimestamp, limit: Int, nextToken: String): ModelLessonCourseConnection @aws_api_key @aws_iam
-  syncLessonPathSteps(filter: ModelLessonPathStepFilterInput, lastSync: AWSTimestamp, limit: Int, nextToken: String): ModelLessonPathStepConnection @aws_api_key @aws_iam
-  syncLessons(filter: ModelLessonFilterInput, lastSync: AWSTimestamp, limit: Int, nextToken: String): ModelLessonConnection @aws_api_key @aws_iam
 }
 
 type Subscription {
@@ -169,7 +149,6 @@ enum ModelSortDirection {
 }
 
 input CreateCourseInput {
-  _version: Int
   archivedAt: AWSDateTime
   description: String
   id: ID
@@ -183,14 +162,12 @@ input CreateCourseInput {
 }
 
 input CreateLessonCourseInput {
-  _version: Int
   courseId: ID!
   id: ID
   lessonId: ID!
 }
 
 input CreateLessonInput {
-  _version: Int
   archivedAt: AWSDateTime
   categories: [String]
   content: String
@@ -202,7 +179,6 @@ input CreateLessonInput {
 }
 
 input CreateLessonPathStepInput {
-  _version: Int
   courseId: ID
   fromLesson: ID
   id: ID
@@ -210,22 +186,18 @@ input CreateLessonPathStepInput {
 }
 
 input DeleteCourseInput {
-  _version: Int
   id: ID!
 }
 
 input DeleteLessonCourseInput {
-  _version: Int
   id: ID!
 }
 
 input DeleteLessonInput {
-  _version: Int
   id: ID!
 }
 
 input DeleteLessonPathStepInput {
-  _version: Int
   id: ID!
 }
 
@@ -511,7 +483,6 @@ input ModelSubscriptionStringInput {
 }
 
 input UpdateCourseInput {
-  _version: Int
   archivedAt: AWSDateTime
   description: String
   id: ID!
@@ -525,14 +496,12 @@ input UpdateCourseInput {
 }
 
 input UpdateLessonCourseInput {
-  _version: Int
   courseId: ID
   id: ID!
   lessonId: ID
 }
 
 input UpdateLessonInput {
-  _version: Int
   archivedAt: AWSDateTime
   categories: [String]
   content: String
@@ -544,7 +513,6 @@ input UpdateLessonInput {
 }
 
 input UpdateLessonPathStepInput {
-  _version: Int
   courseId: ID
   fromLesson: ID
   id: ID!

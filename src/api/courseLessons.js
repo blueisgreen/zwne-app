@@ -41,7 +41,7 @@ export async function removeLessonCourse(join) {
   try {
     const results = await API.graphql({
       query: deleteLessonCourse,
-      variables: { input: { id: join.id, _version: join._version } },
+      variables: { input: { id: join.id } },
     })
     console.log('lesson-course', results)
     return results.data.deleteLessonCourse

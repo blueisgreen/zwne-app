@@ -245,8 +245,7 @@ export const useCourseLabStore = defineStore('courseLab', {
       console.log('finished processing lessons and path')
     },
     async deleteCourse(id) {
-      const course = this.course(id)
-      const isDeleted = await goDeleteCourse(id, course._version)
+      const isDeleted = await goDeleteCourse(id)
       if (isDeleted) {
         this.removeCourseFromStore(id)
       } else {
@@ -307,7 +306,7 @@ export const useCourseLabStore = defineStore('courseLab', {
       }
     },
     async loadLesson(id, refresh = false) {
-      console.log('loadLesson')
+      console.log('loadLesson', { id, refresh })
       const cached = this.lessonPlan(id)
       if (!refresh && cached) {
         return cached
@@ -320,21 +319,13 @@ export const useCourseLabStore = defineStore('courseLab', {
       return lesson
     },
     async updateLesson(updates) {
-      console.log('updateLesson')
-      console.log('Given updates => ', updates)
-      const current = this.lessonPlan(updates.id)
-      if (!current) {
-        console.error('out of sync for update => ', updates)
-        return
-      }
-      const combined = { ...updates, _version: current._version }
-      console.log('Combined updates => ', combined)
-      const updated = await goUpdateLesson(combined)
-      this.addLessonToStore(updated)
+      console.log('updateLesson', updates)
+      const next = await goUpdateLesson(updates)
+      this.addLessonToStore(next)
     },
     async deleteLesson(id) {
-      const lesson = this.lessonPlan(id)
-      const isDeleted = await goDeleteLesson(id, lesson._version)
+      console.log('deleteLesson', id)
+      const isDeleted = await goDeleteLesson(id)
       if (isDeleted) {
         this.removeLessonFromStore(id)
       } else {

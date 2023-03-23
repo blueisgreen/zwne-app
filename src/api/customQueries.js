@@ -6,7 +6,6 @@ export const listCoursesWithLimitedInfo = /* GraphQL */ `
         name
         description
         status
-        _deleted
       }
     }
   }
@@ -24,8 +23,6 @@ export const getCourseWithLessonPlans = /* GraphQL */ `
       trailhead
       notes
       status
-      _version
-      _lastChangedAt
       lessons {
         items {
           lesson {
@@ -44,7 +41,6 @@ export const getCourseWithLessonPlans = /* GraphQL */ `
 export const getCourseForUpdate = /* GraphQL */ `
   query GetCourseForUpdate($id: ID!) {
     getCourse(id: $id) {
-      _version
       id
       name
       description
@@ -62,7 +58,6 @@ export const getCourseForUpdate = /* GraphQL */ `
 export const createCourseWithName = /* GraphQL */ `
   mutation CreateCourse($name: String!) {
     createCourse(input: { name: $name, status: CLOSED }) {
-      _version
       id
       name
       description
@@ -79,8 +74,6 @@ export const listLessonPathSteps = /* GraphQL */ `
         courseId
         fromLesson
         toLesson
-        _version
-        _deleted
       }
     }
   }
@@ -97,9 +90,6 @@ export const createLessonCourse = /* GraphQL */ `
       courseId
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `
@@ -139,13 +129,11 @@ export const changeLessonPathStep = /* GraphQL */ `
     updateLessonPathStep(
       input: {
         id: "$stepId"
-        _version: $version
         courseId: "$courseId"
         fromLesson: "$fromLessonId"
         toLesson: "$toLessonId"
       }
     ) {
-      _version
       id
       fromLesson
       toLesson

@@ -128,11 +128,11 @@ export async function reviveCourse(id) {
  * Wipes out a course. Kersplat!
  * @param {*} id
  */
-export async function goDeleteCourse(id, _version) {
+export async function goDeleteCourse(id) {
   try {
     const result = await API.graphql({
       query: deleteCourse,
-      variables: { input: { id, _version } },
+      variables: { input: { id } },
     })
     console.log('Deleted item => ', result)
     return true
