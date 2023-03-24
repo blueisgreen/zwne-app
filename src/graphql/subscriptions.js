@@ -1,48 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateLessonPathStep = /* GraphQL */ `
-  subscription OnCreateLessonPathStep(
-    $filter: ModelSubscriptionLessonPathStepFilterInput
-  ) {
-    onCreateLessonPathStep(filter: $filter) {
-      id
-      courseId
-      fromLesson
-      toLesson
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onUpdateLessonPathStep = /* GraphQL */ `
-  subscription OnUpdateLessonPathStep(
-    $filter: ModelSubscriptionLessonPathStepFilterInput
-  ) {
-    onUpdateLessonPathStep(filter: $filter) {
-      id
-      courseId
-      fromLesson
-      toLesson
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onDeleteLessonPathStep = /* GraphQL */ `
-  subscription OnDeleteLessonPathStep(
-    $filter: ModelSubscriptionLessonPathStepFilterInput
-  ) {
-    onDeleteLessonPathStep(filter: $filter) {
-      id
-      courseId
-      fromLesson
-      toLesson
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const onCreateLesson = /* GraphQL */ `
   subscription OnCreateLesson($filter: ModelSubscriptionLessonFilterInput) {
     onCreateLesson(filter: $filter) {
@@ -107,15 +65,15 @@ export const onCreateCourse = /* GraphQL */ `
       name
       description
       objectives
-      status
       level
+      lessonPath
+      status
+      statusChangedAt
       tags
-      notes
-      trailhead
-      archivedAt
       lessons {
         nextToken
       }
+      notes
       createdAt
       updatedAt
     }
@@ -128,15 +86,15 @@ export const onUpdateCourse = /* GraphQL */ `
       name
       description
       objectives
-      status
       level
+      lessonPath
+      status
+      statusChangedAt
       tags
-      notes
-      trailhead
-      archivedAt
       lessons {
         nextToken
       }
+      notes
       createdAt
       updatedAt
     }
@@ -149,15 +107,15 @@ export const onDeleteCourse = /* GraphQL */ `
       name
       description
       objectives
-      status
       level
+      lessonPath
+      status
+      statusChangedAt
       tags
-      notes
-      trailhead
-      archivedAt
       lessons {
         nextToken
       }
+      notes
       createdAt
       updatedAt
     }
@@ -188,12 +146,12 @@ export const onCreateLessonCourse = /* GraphQL */ `
         name
         description
         objectives
-        status
         level
+        lessonPath
+        status
+        statusChangedAt
         tags
         notes
-        trailhead
-        archivedAt
         createdAt
         updatedAt
       }
@@ -227,12 +185,12 @@ export const onUpdateLessonCourse = /* GraphQL */ `
         name
         description
         objectives
-        status
         level
+        lessonPath
+        status
+        statusChangedAt
         tags
         notes
-        trailhead
-        archivedAt
         createdAt
         updatedAt
       }
@@ -266,12 +224,12 @@ export const onDeleteLessonCourse = /* GraphQL */ `
         name
         description
         objectives
-        status
         level
+        lessonPath
+        status
+        statusChangedAt
         tags
         notes
-        trailhead
-        archivedAt
         createdAt
         updatedAt
       }

@@ -1,37 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getLessonPathStep = /* GraphQL */ `
-  query GetLessonPathStep($id: ID!) {
-    getLessonPathStep(id: $id) {
-      id
-      courseId
-      fromLesson
-      toLesson
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listLessonPathSteps = /* GraphQL */ `
-  query ListLessonPathSteps(
-    $filter: ModelLessonPathStepFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listLessonPathSteps(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        courseId
-        fromLesson
-        toLesson
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
 export const getLesson = /* GraphQL */ `
   query GetLesson($id: ID!) {
     getLesson(id: $id) {
@@ -81,15 +50,15 @@ export const getCourse = /* GraphQL */ `
       name
       description
       objectives
-      status
       level
+      lessonPath
+      status
+      statusChangedAt
       tags
-      notes
-      trailhead
-      archivedAt
       lessons {
         nextToken
       }
+      notes
       createdAt
       updatedAt
     }
@@ -107,12 +76,12 @@ export const listCourses = /* GraphQL */ `
         name
         description
         objectives
-        status
         level
+        lessonPath
+        status
+        statusChangedAt
         tags
         notes
-        trailhead
-        archivedAt
         createdAt
         updatedAt
       }
@@ -143,12 +112,12 @@ export const getLessonCourse = /* GraphQL */ `
         name
         description
         objectives
-        status
         level
+        lessonPath
+        status
+        statusChangedAt
         tags
         notes
-        trailhead
-        archivedAt
         createdAt
         updatedAt
       }

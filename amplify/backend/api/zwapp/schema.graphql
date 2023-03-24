@@ -1,10 +1,3 @@
-type LessonPathStep @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  courseId: ID
-  fromLesson: ID
-  toLesson: ID
-}
-
 type Lesson @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String
@@ -18,8 +11,9 @@ type Lesson @model @auth(rules: [{allow: public}]) {
 }
 
 enum CourseStatusOptions {
-  CLOSED
+  DRAFT
   OPEN
+  CLOSED
   ARCHIVED
 }
 
@@ -36,11 +30,12 @@ type Course @model @auth(rules: [{allow: public}]) {
   name: String
   description: String
   objectives: String
-  status: CourseStatusOptions
   level: CourseLevel
+  lessonPath: [ID]
+  status: CourseStatusOptions
+  statusChangedAt: AWSDateTime
   tags: [String]
-  notes: String
-  trailhead: String
-  archivedAt: AWSDateTime
   lessons: [Lesson] @manyToMany(relationName: "LessonCourse")
+  notes: String
 }
+ 
