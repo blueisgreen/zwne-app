@@ -44,7 +44,7 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
     lessonCourseJoins: (state) => {
       return (courseId) => {
-        return this.lessonCourseJoinsIndex[courseId] || []
+        return state.lessonCourseJoinsIndex[courseId] || []
       }
     },
     courseLessonIds: (state) => {
@@ -65,58 +65,37 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
   },
   actions: {
-    addCourseToStore(course) {
+    addCourseToStore(course, joins) {
       console.log('addCourseToStore', course)
+      // course is required
       if (!course) {
         return
       }
-      this.courseIndex[course.id] = course
-      if (!this.courses.includes(course.id)) {
-        this.courses.push(course.id)
-      }
-      this.courseLessonIdsIndex[course.id] = []
+
+      const courseId = course.id
+      this.courseIndex[courseId] = course
+
+      // may have lessons
       if (course.lessons?.items?.length) {
         console.log('with lessons', course.lessons.items)
         course.lessons.items.forEach((item) => {
           const { lesson } = item
           this.addLessonToStore(lesson)
-          this.courseLessonIds(course.id).push(lesson.id)
         })
       }
-    },
-    addLessonCourseJoinsToStore(courseId, joins) {
-      console.log('addLessonCourseJoinsToStore', { courseId, joins })
-      if (!courseId || !joins || !Array.isArray(joins)) {
-        return
-      }
 
-      this.lessonCourseJoinsIndex[courseId] = joins
+      // should have joins to match lessons - needed for verification, delete
+      if (joins) {
+        console.log('with lesson joins', joins)
+        this.lessonCourseJoinsIndex[courseId] = joins
+      }
     },
-    addLessonPathToStore(courseId, pathSteps) {
-      console.log('addLessonPathToStore', pathSteps)
-      if (!courseId || !pathSteps) {
-        return
+    removeCourseFromStore(courseId) {
+      if (this.courseIndex[courseId]) {
+        delete this.courseIndex[courseId]
       }
-      const stepIndex = pathSteps.reduce(
-        (accum, step) => (accum[step.from] = { to: step.to, end: !step.to }),
-        {}
-      )
-      this.lessonPathIndexByCourse[courseId] = { path: pathSteps, stepIndex }
-    },
-    removeCourseFromStore(id) {
-      delete this.courseIndex.id
-      const index = this.courses.indexOf(id)
-      if (index > -1) {
-        this.courses.splice(index, 1)
-      }
-      if (this.courseLessonIdsIndex.id) {
-        delete this.courseLessonIdsIndex.id
-      }
-      if (this.lessonCourseJoinsIndex.id) {
-        delete this.lessonCourseJoinsIndex.id
-      }
-      if (this.lessonPathIndexByCourse.id) {
-        delete this.lessonPathIndexByCourse.id
+      if (this.lessonCourseJoinsIndex[courseId]) {
+        delete this.lessonCourseJoinsIndex[courseId]
       }
     },
     async spawnCourse(name = 'a suitable name') {
@@ -136,22 +115,17 @@ export const useCourseLabStore = defineStore('courseLab', {
         console.log('Curious. We did not find any courses.')
       }
     },
-    async loadCourse(id, refresh = false) {
-      const cached = this.course(id)
+    async loadCourse(courseId, refresh = false) {
+      const cached = this.course(courseId)
       if (!refresh && cached) {
         console.log('loadCourse: found in cache', cached)
         return cached
       }
       console.log('loadCourse: %s', refresh ? 'forcing refresh' : 'not cached')
-      const course = await fetchCourse(id)
-      this.addCourseToStore(course)
 
-      const joins = await fetchLessonCourses(id)
-      this.addLessonCourseJoinsToStore(id, joins)
-
-      const path = await fetchLessonPath(id)
-      this.addLessonPathToStore(id, path)
-
+      const course = await fetchCourse(courseId)
+      const joins = await fetchLessonCoursesForCourse(courseId)
+      this.addCourseToStore(course, joins)
       return course
     },
     async onSaveCourse(courseUpdates) {

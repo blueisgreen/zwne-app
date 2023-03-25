@@ -184,7 +184,7 @@ export async function fetchLessonCoursesForCourse(courseId) {
       variables: { filter: { courseId: { eq: courseId } } },
     })
     console.log('LessonCourse joins', results)
-    return results.data.listLessonCourseJoins.items
+    return results.data.listLessonCourses.items
   } catch (err) {
     console.error(err)
   }
