@@ -118,7 +118,6 @@ export const listLessonCourseJoins = /* GraphQL */ `
     $nextToken: String
   ) {
     listLessonCourses(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      listLessonCourses(filter: { courseId: { eq: "blargy" } })
       items {
         id
         lessonId

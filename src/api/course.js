@@ -164,7 +164,7 @@ export async function goDeleteCourse(id) {
       query: deleteCourseAbridged,
       variables: { input: { id } },
     })
-    console.log('Deleted item => ', result)
+    console.log('Deleted course', result)
     return true
   } catch (err) {
     console.error(err)
@@ -183,8 +183,8 @@ export async function fetchLessonCoursesForCourse(courseId) {
       query: listLessonCourseJoins,
       variables: { filter: { courseId: { eq: courseId } } },
     })
-    console.log('lesson-courses', results)
-    return results.data.lessonCoursesByCourseId.items
+    console.log('LessonCourse joins', results)
+    return results.data.listLessonCourseJoins.items
   } catch (err) {
     console.error(err)
   }
@@ -203,8 +203,8 @@ export async function addLessonCourse(courseId, lessonId) {
       query: createLessonCourseJoin,
       variables: { input: { courseId, lessonId } },
     })
-    console.log('lesson-course added', results)
-    return results.data.createLessonCourse
+    console.log('LessonCourse added', results)
+    return results.data.createLessonCourseJoin
   } catch (err) {
     console.error(err)
   }
@@ -222,8 +222,8 @@ export async function removeLessonCourse(joinId) {
       query: deleteLessonCourseJoin,
       variables: { input: { id: joinId } },
     })
-    console.log('lesson-course removed', results)
-    return results.data.deleteLessonCourse
+    console.log('LessonCourse removed', results)
+    return results.data.deleteLessonCourseJoin
   } catch (err) {
     console.error(err)
   }

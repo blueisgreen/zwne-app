@@ -9,7 +9,7 @@ import {
   archiveCourse,
   reviveCourse,
   goDeleteCourse,
-  fetchLessonCourses,
+  fetchLessonCoursesForCourse,
   addLessonCourse,
   removeLessonCourse,
   goCreateLesson,
@@ -22,62 +22,38 @@ import { difference } from 'components/modelTools'
 
 export const useCourseLabStore = defineStore('courseLab', {
   state: () => ({
-    courses: [],
     courseIndex: {},
-    courseLessonIdsIndex: {}, // arrays of lessonIds, indexed by course
-    lessonCourseJoinsIndex: {}, // arrays of joins, indexed by course
-    lessonPathIndexByCourse: {},
+    lessonCourseJoinsIndex: {},
     lessonPlans: [],
     lessonPlanIndex: {},
   }),
   getters: {
+    courses(state) {
+      return Object.keys(state.courseIndex)
+    },
     courseCount(state) {
       return state.courses.length
     },
-    planCount(state) {
-      return state.lessonPlans.length
-    },
     courseList(state) {
-      return state.courses.map((id) => state.courseIndex[id])
+      return state.courses.map((courseId) => state.courseIndex[courseId])
     },
     course: (state) => {
-      return (id) => {
-        return state.courseIndex[id]
-      }
-    },
-    courseLessonIds: (state) => {
-      return (id) => {
-        return state.courseLessonIdsIndex[id]
-      }
-    },
-    courseLessons: (state) => {
-      return (id) => {
-        const ids = state.courseLessonIdsIndex[id] || []
-        return ids.map((lessonId) => state.lessonPlanIndex[lessonId])
+      return (courseId) => {
+        return state.courseIndex[courseId]
       }
     },
     lessonCourseJoins: (state) => {
-      return (id) => {
-        return this.lessonCourseJoinsIndex[id] || []
+      return (courseId) => {
+        return this.lessonCourseJoinsIndex[courseId] || []
       }
     },
-    lessonCourseJoinsForLesson: (state) => {
-      return (courseId, lessonId) => {
-        const courseJoins = state.lessonCourseJoinsIndex[courseId]
-        if (!courseJoins) {
-          return []
-        }
-        const joinsOut = courseJoins.filter(
-          (join) => join.lessonId === lessonId
-        )
-        console.log('lessonCourseJoinsForLesson', joinsOut)
-        return joinsOut
+    courseLessonIds: (state) => {
+      return (courseId) => {
+        return state.lessonCouresJoins(courseId).map((join) => join.lessonId)
       }
     },
-    courseLessonPath: (state) => {
-      return (id) => {
-        return state.lessonPathIndexByCourse[id] || {}
-      }
+    planCount(state) {
+      return state.lessonPlans.length
     },
     lessonPlanList(state) {
       return state.lessonPlans.map((planId) => state.lessonPlanIndex[planId])
