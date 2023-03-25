@@ -28,14 +28,14 @@ export const useCourseLabStore = defineStore('courseLab', {
     lessonPlanIndex: {},
   }),
   getters: {
-    courses(state) {
+    courseIds(state) {
       return Object.keys(state.courseIndex)
     },
     courseCount(state) {
-      return state.courses.length
+      return state.courseIds.length
     },
     courseList(state) {
-      return state.courses.map((courseId) => state.courseIndex[courseId])
+      return state.courseIds.map((courseId) => state.courseIndex[courseId])
     },
     course: (state) => {
       return (courseId) => {
@@ -49,7 +49,7 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
     courseLessonIds: (state) => {
       return (courseId) => {
-        return state.lessonCouresJoins(courseId).map((join) => join.lessonId)
+        return state.lessonCourseJoins(courseId).map((join) => join.lessonId)
       }
     },
     planCount(state) {
@@ -129,24 +129,33 @@ export const useCourseLabStore = defineStore('courseLab', {
       return course
     },
     async onSaveCourse(courseUpdates) {
-      console.log('course-builder.onSaveCourse', courseUpdates)
-      const courseId = courseUpdates.id
-      const updated = await saveCourse(courseId, courseUpdates)
+      console.log('onSaveCourse', courseUpdates)
+      const { id, lessonPath } = courseUpdates
+      await this.syncLessonsForCourse(id, lessonPath)
+      const updated = await saveCourse(id, courseUpdates)
       if (updated) {
         this.addCourseToStore(updated)
       }
     },
-    async syncLessonsForCourse(courseId, nextLessons) {
-      console.log('syncLessonsForCourse', { courseId, nextLessons })
-      const originalLessonIds = this.courseLessonIds(courseId)
-      const alt = this.courseLessonIdsIndex[courseId]
+    async syncLessonsForCourse(courseId, lessonPath) {
+      console.log('syncLessonsForCourse', { courseId, lessonPath })
+      // FIXME:
+      const nextLessonIds = lessonPath.reduce((accum, nextId) => {
+        if (!accum.includes(nextId)) {
+          accum.push(nextId)
+        }
+        return accum
+      }, [])
 
-      console.log('originalLessonIds', originalLessonIds)
-      console.log('alt', alt)
+      const originalLessonPath = this.course(courseId).lessonPath
+      const originalLessonIds = originalLessonPath.reduce((accum, nextId) => {
+        if (!accum.includes(nextId)) {
+          accum.push(nextId)
+        }
+      }, [])
 
-      const lessonsToAdd = difference(nextLessons, originalLessonIds)
-      const lessonsToRemove = difference(originalLessonIds, nextLessons)
-
+      const lessonsToAdd = difference(nextLessonIds, originalLessonIds)
+      const lessonsToRemove = difference(originalLessonIds, nextLessonIds)
       console.log('differences', { lessonsToAdd, lessonsToRemove })
 
       lessonsToAdd.forEach(async (lessonId) => {
@@ -154,65 +163,61 @@ export const useCourseLabStore = defineStore('courseLab', {
       })
 
       lessonsToRemove.forEach(async (lessonId) => {
-        console.log('intend to remove lessonCourse(s) for', lessonId)
-        const lessonCourseJoins = this.lessonCourseJoinsForLesson(
-          courseId,
-          lessonId
-        )
-        lessonCourseJoins.forEach((join) => removeLessonCourse(join))
+        console.log('implement remove course', lessonId)
+        // const lessonCourseJoins = this.lessonCourseJoinsForLesson(
+        //   courseId,
+        //   lessonId
+        // )
+        // lessonCourseJoins.forEach((join) => removeLessonCourse(join))
       })
-
-      if (lessonsToAdd.length || lessonsToRemove.length) {
-        await this.loadCourse(courseId, true)
-      }
     },
-    async rebuildLessonPath(courseId, nextLessons) {
-      const originalPath = this.courseLessonPath(courseId)
-      const nextPathSteps = []
+    // async rebuildLessonPath(courseId, nextLessons) {
+    //   const originalPath = this.courseLessonPath(courseId)
+    //   const nextPathSteps = []
 
-      // if different, delete and redo, or try to adjust?
+    // if different, delete and redo, or try to adjust?
 
-      // iterate through current step path items
-      // nextPathSteps.forEach((nextStep) => {
-      //   // update existing as needed
-      //   const currentFromStep = originalPath[nextStep.from]
-      //   if (currentFromStep) {
-      //     if (currentFromStep.to !== nextStep.to) {
-      //       console.log('update step', {
-      //         currentFromStep,
-      //         nextStep,
-      //       })
-      //       // TODO: call API
-      //     } else {
-      //       console.log('step has not changed', {
-      //         currentFromStep,
-      //         nextStep,
-      //       })
-      //     }
-      //   } else {
-      //     // add new step
-      //     console.log('add step', nextStep)
-      //     // TODO: call API
-      //   }
-      // })
-    },
-    async onSaveCourseLessons(courseId, lessonIdList) {
-      console.log('course-builder.onSaveCourseLessons', {
-        courseId,
-        lessonIdList,
-      })
+    // iterate through current step path items
+    // nextPathSteps.forEach((nextStep) => {
+    //   // update existing as needed
+    //   const currentFromStep = originalPath[nextStep.from]
+    //   if (currentFromStep) {
+    //     if (currentFromStep.to !== nextStep.to) {
+    //       console.log('update step', {
+    //         currentFromStep,
+    //         nextStep,
+    //       })
+    //       // TODO: call API
+    //     } else {
+    //       console.log('step has not changed', {
+    //         currentFromStep,
+    //         nextStep,
+    //       })
+    //     }
+    //   } else {
+    //     // add new step
+    //     console.log('add step', nextStep)
+    //     // TODO: call API
+    //   }
+    // })
+    // },
+    // async onSaveCourseLessons(courseId, lessonIdList) {
+    //   console.log('course-builder.onSaveCourseLessons', {
+    //     courseId,
+    //     lessonIdList,
+    //   })
 
-      // guard against bad arguments
-      if (!courseId || !lessonIdList || !Array.isArray(lessonIdList)) {
-        console.warn('forgot to pass course ID or proper list of lesson IDs')
-        return
-      }
+    //   // guard against bad arguments
+    //   if (!courseId || !lessonIdList || !Array.isArray(lessonIdList)) {
+    //     console.warn('forgot to pass course ID or proper list of lesson IDs')
+    //     return
+    //   }
 
-      await this.syncLessonsForCourse(courseId, lessonIdList)
-      await this.rebuildLessonPath(courseId, lessonIdList)
+    //   await this.syncLessonsForCourse(courseId, lessonIdList)
+    //   await this.rebuildLessonPath(courseId, lessonIdList)
 
-      console.log('finished processing course lessons and path')
-    },
+    //   console.log('finished processing course lessons and path')
+    // },
     async deleteCourse(id) {
       console.log('deleteCourse', id)
 
@@ -261,7 +266,7 @@ export const useCourseLabStore = defineStore('courseLab', {
       }
     },
     async spawnLesson(title = 'a suitable title') {
-      const newLesson = await goCreateLesson({ title })
+      const newLesson = await goCreateLesson(title)
       this.addLessonToStore(newLesson)
     },
     async loadLessons() {

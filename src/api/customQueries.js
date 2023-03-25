@@ -40,6 +40,15 @@ export const createCourseWithName = /* GraphQL */ `
   }
 `
 
+export const createLessonWithTitle = /* GraphQL */ `
+  mutation CreateCourse($title: String!) {
+    createLesson(input: { title: $title }) {
+      id
+      title
+    }
+  }
+`
+
 export const getCourseWithLessonMarkers = /* GraphQL */ `
   query GetCourseWithLessonMarkers($id: ID!) {
     getCourse(id: $id) {

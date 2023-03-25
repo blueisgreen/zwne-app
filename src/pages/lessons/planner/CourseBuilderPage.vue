@@ -191,7 +191,7 @@ const courseToBuild = computed(() => {
 })
 const courseLessonList = computed(() => {
   const path = courseToBuild.value.lessonPath || []
-  return path.map((lessonId) => builder.lesson(lessonId))
+  return path.map((lessonId) => builder.lessonPlan(lessonId))
 })
 const tagListDisplay = computed(() => {
   const { tags } = courseToBuild.value

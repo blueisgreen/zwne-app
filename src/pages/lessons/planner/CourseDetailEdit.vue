@@ -65,12 +65,8 @@
             >
             <q-item v-for="(lesson, index) in draftLessons" :key="lesson.id">
               <q-item-section>
-                <q-item-label class="text-bold">{{
-                  lesson.title
-                }}</q-item-label>
-                <q-item-label class="text-secondary">{{
-                  lesson.subtitle
-                }}</q-item-label>
+                <q-item-label class="text-bold">{{ lesson.title }}</q-item-label>
+                <q-item-label class="text-secondary">{{ lesson.subtitle }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
                 <q-btn-group push>
@@ -131,15 +127,11 @@
                 @click="() => addLessonToCourse(plan.id)"
               >
                 <q-item-section top>
-                  <q-item-label class="text-bold">{{
-                    plan.title
-                  }}</q-item-label>
+                  <q-item-label class="text-bold">{{ plan.title }}</q-item-label>
                   <q-item-label caption class="text-secondary">{{
                     plan.subtitle
                   }}</q-item-label>
-                  <q-item-label lines="2"
-                    ><span v-html="plan.content"
-                  /></q-item-label>
+                  <q-item-label lines="2"><span v-html="plan.content" /></q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -149,11 +141,7 @@
       <q-separator spaced />
       <div class="text-h6">
         Or create a new lesson
-        <q-btn
-          @click="newLessonDialog = true"
-          icon="add_circle"
-          color="primary"
-        />
+        <q-btn @click="newLessonDialog = true" icon="add_circle" color="primary" />
       </div>
     </div>
   </div>
@@ -201,15 +189,15 @@ const emit = defineEmits(['cancel'])
 
 const builder = useCourseLabStore()
 const draftCourse = ref({})
-const draftLessonIds = ref([])
+const draftLessonPath = computed(() => draftCourse.value.lessonPath)
 const draftLessonCount = computed(() =>
-  draftLessonIds.value ? draftLessonIds.value.length : 0
+  draftCourse.value.lessonPath ? draftLessonPath.value.length : 0
 )
 const draftLessons = computed(() => {
-  if (!draftLessonIds.value) {
+  if (!draftLessonPath.value) {
     return []
   }
-  const lessons = draftLessonIds.value.map((id) => builder.lessonPlan(id))
+  const lessons = draftLessonPath.value.map((id) => builder.lessonPlan(id))
   return lessons
 })
 const levelOptions = Object.keys(CourseLevel).map((level) => ({
@@ -252,49 +240,47 @@ function onCreateLessonFromDialog() {
 }
 function addLessonToCourse(id) {
   console.log('addLessonToCourse', id)
-  draftLessonIds.value.push(id)
+  draftLessonPath.value.push(id)
 }
 function removeFromCourseLessons(index) {
   console.log('lesson in position', index)
-  draftLessonIds.value.splice(index, 1)
+  draftLessonPath.value.splice(index, 1)
 }
 function bumpSort(index, direction = 0) {
   console.log('bumpSort, { index, direction }')
-  const lessonIds = draftLessonIds.value
+  const lessonIds = draftLessonPath.value
   const value = lessonIds[index]
   const toIndex = direction < 0 ? index - 1 : index + 1
   lessonIds.splice(index, 1)
   lessonIds.splice(toIndex, 0, value)
 }
-function updateTrailheadOnDraft() {
-  if (draftLessonIds.value.length > 0) {
-    draftCourse.value.trailhead = draftLessonIds.value[0]
-  }
-  if (draftLessonIds.value.length == 0) {
-    draftCourse.value.trailhead = null
-  }
-}
 async function onSaveCourse() {
   console.log('onSaveCourse', draftCourse.value)
-  updateTrailheadOnDraft()
-  await builder.onSaveCourseLessons(draftCourse.value.id, draftLessonIds.value)
   await builder.onSaveCourse(draftCourse.value)
   emit('cancel')
 }
 onMounted(() => {
   console.log('CourseBuilder.onMounted')
-  const given = props.course
+  const {
+    id,
+    name,
+    description,
+    objectives,
+    level,
+    tags,
+    notes,
+    lessonPath,
+  } = props.course
   draftCourse.value = {
-    id: given.id,
-    name: given.name,
-    description: given.description,
-    objectives: given.objectives,
-    level: given.level,
-    tags: given.tags ? [...given.tags] : [],
-    notes: given.notes,
-    trailhead: given.trailhead,
+    id,
+    name,
+    description,
+    objectives,
+    level,
+    notes,
+    tags: tags ? [...tags] : [],
+    lessonPath: lessonPath ? [...lessonPath] : [],
   }
-  draftLessonIds.value = [...builder.courseLessonIds(given.id)]
 })
 </script>
 
