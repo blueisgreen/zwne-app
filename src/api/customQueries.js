@@ -1,28 +1,58 @@
-export const listCoursesWithLimitedInfo = /* GraphQL */ `
-  query ListCoursesWithLimitedInfo {
+export const listCourseMarkers = /* GraphQL */ `
+  query ListCourseMarkers {
     listCourses {
       items {
         id
         name
         description
+        level
         status
       }
     }
   }
 `
 
-export const getCourseWithLessonPlans = /* GraphQL */ `
-  query GetCourseWithLessonPlans($id: ID!) {
-    getCourse(id: $id) {
+/*
+  createdAt: AWSDateTime!
+  id: ID!
+  name: String
+  description: String
+  objectives: String
+  level: CourseLevel
+  tags: [String]
+  notes: String
+  status: CourseStatusOptions
+  statusChangedAt: AWSDateTime
+  updatedAt: AWSDateTime!
+  lessonPath: [ID]
+  lessons(filter: ModelLessonCourseFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonCourseConnection
+*/
+
+export const createCourseWithName = /* GraphQL */ `
+  mutation CreateCourse($name: String!) {
+    createCourse(input: { name: $name, status: DRAFT }) {
       id
       name
       description
       level
+      status
+    }
+  }
+`
+
+export const getCourseWithLessonMarkers = /* GraphQL */ `
+  query GetCourseWithLessonMarkers($id: ID!) {
+    getCourse(id: $id) {
+      id
+      name
+      description
       objectives
+      level
       tags
-      trailhead
       notes
       status
+      statusChangedAt
+      lessonPath
       lessons {
         items {
           lesson {
@@ -30,7 +60,6 @@ export const getCourseWithLessonPlans = /* GraphQL */ `
             title
             subtitle
             version
-            categories
           }
         }
       }
@@ -46,40 +75,30 @@ export const getCourseForUpdate = /* GraphQL */ `
       description
       objectives
       level
-      trailhead
-      status
       tags
       notes
-      archivedAt
-    }
-  }
-`
-
-export const createCourseWithName = /* GraphQL */ `
-  mutation CreateCourse($name: String!) {
-    createCourse(input: { name: $name, status: CLOSED }) {
-      id
-      name
-      description
       status
+      statusChangedAt
+      lessonPath
     }
   }
 `
 
-export const listLessonPathSteps = /* GraphQL */ `
-  query ListLessonPathStepsForCourse($courseId: ID!) {
-    listLessonPathSteps(filter: { courseId: { eq: $courseId } }) {
-      items {
-        id
-        courseId
-        fromLesson
-        toLesson
+export const deleteCourseAbridged = /* GraphQL */ `
+  mutation DeleteCourse(
+    $input: DeleteCourseInput!
+    $condition: ModelCourseConditionInput
+  ) {
+    deleteCourse(input: $input, condition: $condition) {
+      id
+      lessons {
+        nextToken
       }
     }
   }
 `
 
-export const createLessonCourse = /* GraphQL */ `
+export const createLessonCourseJoin = /* GraphQL */ `
   mutation CreateLessonCourse(
     $input: CreateLessonCourseInput!
     $condition: ModelLessonCourseConditionInput
@@ -88,61 +107,39 @@ export const createLessonCourse = /* GraphQL */ `
       id
       lessonId
       courseId
-      createdAt
-      updatedAt
     }
   }
 `
-export const addCourseLessonPathStep = /* GraphQL */ `
-  mutation AddCourseLessonPathStep(
-    $courseId: ID!
-    $fromLessonId: ID!
-    $toLessonId: ID!
+
+export const listLessonCourseJoins = /* GraphQL */ `
+  query ListLessonCourses(
+    $filter: ModelLessonCourseFilterInput
+    $limit: Int
+    $nextToken: String
   ) {
-    createLessonPathStep(
-      input: {
-        courseId: "$courseId"
-        fromLesson: "$fromLessonId"
-        toLesson: "$toLessonId"
+    listLessonCourses(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      listLessonCourses(filter: { courseId: { eq: "blargy" } })
+      items {
+        id
+        lessonId
+        courseId
+        createdAt
+        updatedAt
       }
-      condition: {
-        not: {
-          and: {
-            courseId: { eq: "$courseId" }
-            fromLesson: { eq: "$fromLessonId" }
-            toLesson: { eq: "$toLessonId" }
-          }
-        }
-      }
-    )
+      nextToken
+    }
   }
 `
 
-export const changeLessonPathStep = /* GraphQL */ `
-  mutation ChangeLessonPathStep(
-    $stepId: ID!
-    $version: int
-    $courseId: ID!
-    $fromLessonId: ID!
-    $toLessonId: ID!
+export const deleteLessonCourseJoin = /* GraphQL */ `
+  mutation DeleteLessonCourse(
+    $input: DeleteLessonCourseInput!
+    $condition: ModelLessonCourseConditionInput
   ) {
-    updateLessonPathStep(
-      input: {
-        id: "$stepId"
-        courseId: "$courseId"
-        fromLesson: "$fromLessonId"
-        toLesson: "$toLessonId"
-      }
-    ) {
+    deleteLessonCourse(input: $input, condition: $condition) {
       id
-      fromLesson
-      toLesson
+      lessonId
+      courseId
     }
-  }
-`
-
-export const deleteLessonPathStep = /* GraphQL */ `
-  mutation DeleteLessonPathStep($stepID: ID!) {
-    deleteLessonPathStep(input: { id: $stepID })
   }
 `
