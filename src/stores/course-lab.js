@@ -109,7 +109,7 @@ export const useCourseLabStore = defineStore('courseLab', {
       const course = await fetchCourse(courseId)
       this.cacheCourse(course)
     },
-    async onSaveCourse(deltas) {
+    async handleSaveCourse(deltas) {
       console.log('onSaveCourse', deltas)
       const { id, lessonPath } = deltas
 
@@ -140,11 +140,9 @@ export const useCourseLabStore = defineStore('courseLab', {
         await removeLessonFromCourse(lessonId)
       })
     },
-    async onDeleteCourse(id) {
+    async handleDeleteCourse(id) {
       console.log('deleteCourse', id)
-
-      // FIXME: true purge has to remove all associations with the course: lessonCourse, lessonPath
-
+      // FIXME: cascade to lessons - at least detach them
       const isDeleted = await deleteCourse(id)
       if (isDeleted) {
         this.removeCourseFromCache(id)
@@ -201,12 +199,12 @@ export const useCourseLabStore = defineStore('courseLab', {
       const lesson = await fetchLesson(lessonId)
       this.cacheLesson(lesson)
     },
-    async onSaveLesson(deltas) {
+    async handleSaveLesson(deltas) {
       console.log('onSaveLesson', deltas)
       const afterSave = await saveLesson(deltas)
       this.cacheLesson(afterSave)
     },
-    async deleteLesson(id) {
+    async handleDeleteLesson(id) {
       console.log('deleteLesson', id)
       const deleted = await goDeleteLesson(id)
       if (deleted) {

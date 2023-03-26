@@ -27,7 +27,9 @@
             >
               <q-item-section>
                 <q-item-label>{{ course.name }}</q-item-label>
-                <q-item-label caption lines="2">{{ course.description }}</q-item-label>
+                <q-item-label caption lines="2">{{
+                  course.description
+                }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
                 <q-item-label>{{ course.status }}</q-item-label>
@@ -58,7 +60,9 @@
             >
               <q-item-section>
                 <q-item-label>{{ lessonPlan.title }}</q-item-label>
-                <q-item-label caption lines="2">{{ lessonPlan.subtitle }}</q-item-label>
+                <q-item-label caption lines="2">{{
+                  lessonPlan.subtitle
+                }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
                 <q-item-label>{{ getStatus(lessonPlan) }}</q-item-label>
@@ -81,7 +85,9 @@
             <q-item v-for="course in builder.courseList" :key="course.id">
               <q-item-section>
                 <q-item-label class="text-bold">{{ course.name }}</q-item-label>
-                <q-item-label caption lines="2">{{ course.description }}</q-item-label>
+                <q-item-label caption lines="2">{{
+                  course.description
+                }}</q-item-label>
               </q-item-section>
               <q-item-section side>
                 <q-btn
@@ -170,10 +176,14 @@ onBeforeMount(async () => {
 })
 
 async function onDeleteCourse(id) {
-  await builder.deleteCourse(id)
+  await builder.handleDeleteCourse(id)
 }
 function getStatus(lesson) {
-  return lesson.archivedAt ? 'archived' : lesson.publishedAt ? 'published' : 'draft'
+  return lesson.archivedAt
+    ? 'archived'
+    : lesson.publishedAt
+    ? 'published'
+    : 'draft'
 }
 
 async function onCreateCourseFromDialog() {
