@@ -15,9 +15,7 @@ export const createLesson = /* GraphQL */ `
       content
       archivedAt
       publishedAt
-      courses {
-        nextToken
-      }
+      courseID
       createdAt
       updatedAt
     }
@@ -37,9 +35,7 @@ export const updateLesson = /* GraphQL */ `
       content
       archivedAt
       publishedAt
-      courses {
-        nextToken
-      }
+      courseID
       createdAt
       updatedAt
     }
@@ -59,9 +55,7 @@ export const deleteLesson = /* GraphQL */ `
       content
       archivedAt
       publishedAt
-      courses {
-        nextToken
-      }
+      courseID
       createdAt
       updatedAt
     }
@@ -134,126 +128,6 @@ export const deleteCourse = /* GraphQL */ `
         nextToken
       }
       notes
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const createLessonCourse = /* GraphQL */ `
-  mutation CreateLessonCourse(
-    $input: CreateLessonCourseInput!
-    $condition: ModelLessonCourseConditionInput
-  ) {
-    createLessonCourse(input: $input, condition: $condition) {
-      id
-      lessonId
-      courseId
-      lesson {
-        id
-        title
-        subtitle
-        version
-        categories
-        content
-        archivedAt
-        publishedAt
-        createdAt
-        updatedAt
-      }
-      course {
-        id
-        name
-        description
-        objectives
-        level
-        lessonPath
-        status
-        statusChangedAt
-        tags
-        notes
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateLessonCourse = /* GraphQL */ `
-  mutation UpdateLessonCourse(
-    $input: UpdateLessonCourseInput!
-    $condition: ModelLessonCourseConditionInput
-  ) {
-    updateLessonCourse(input: $input, condition: $condition) {
-      id
-      lessonId
-      courseId
-      lesson {
-        id
-        title
-        subtitle
-        version
-        categories
-        content
-        archivedAt
-        publishedAt
-        createdAt
-        updatedAt
-      }
-      course {
-        id
-        name
-        description
-        objectives
-        level
-        lessonPath
-        status
-        statusChangedAt
-        tags
-        notes
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteLessonCourse = /* GraphQL */ `
-  mutation DeleteLessonCourse(
-    $input: DeleteLessonCourseInput!
-    $condition: ModelLessonCourseConditionInput
-  ) {
-    deleteLessonCourse(input: $input, condition: $condition) {
-      id
-      lessonId
-      courseId
-      lesson {
-        id
-        title
-        subtitle
-        version
-        categories
-        content
-        archivedAt
-        publishedAt
-        createdAt
-        updatedAt
-      }
-      course {
-        id
-        name
-        description
-        objectives
-        level
-        lessonPath
-        status
-        statusChangedAt
-        tags
-        notes
-        createdAt
-        updatedAt
-      }
       createdAt
       updatedAt
     }

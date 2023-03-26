@@ -12,9 +12,7 @@ export const onCreateLesson = /* GraphQL */ `
       content
       archivedAt
       publishedAt
-      courses {
-        nextToken
-      }
+      courseID
       createdAt
       updatedAt
     }
@@ -31,9 +29,7 @@ export const onUpdateLesson = /* GraphQL */ `
       content
       archivedAt
       publishedAt
-      courses {
-        nextToken
-      }
+      courseID
       createdAt
       updatedAt
     }
@@ -50,9 +46,7 @@ export const onDeleteLesson = /* GraphQL */ `
       content
       archivedAt
       publishedAt
-      courses {
-        nextToken
-      }
+      courseID
       createdAt
       updatedAt
     }
@@ -116,123 +110,6 @@ export const onDeleteCourse = /* GraphQL */ `
         nextToken
       }
       notes
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onCreateLessonCourse = /* GraphQL */ `
-  subscription OnCreateLessonCourse(
-    $filter: ModelSubscriptionLessonCourseFilterInput
-  ) {
-    onCreateLessonCourse(filter: $filter) {
-      id
-      lessonId
-      courseId
-      lesson {
-        id
-        title
-        subtitle
-        version
-        categories
-        content
-        archivedAt
-        publishedAt
-        createdAt
-        updatedAt
-      }
-      course {
-        id
-        name
-        description
-        objectives
-        level
-        lessonPath
-        status
-        statusChangedAt
-        tags
-        notes
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onUpdateLessonCourse = /* GraphQL */ `
-  subscription OnUpdateLessonCourse(
-    $filter: ModelSubscriptionLessonCourseFilterInput
-  ) {
-    onUpdateLessonCourse(filter: $filter) {
-      id
-      lessonId
-      courseId
-      lesson {
-        id
-        title
-        subtitle
-        version
-        categories
-        content
-        archivedAt
-        publishedAt
-        createdAt
-        updatedAt
-      }
-      course {
-        id
-        name
-        description
-        objectives
-        level
-        lessonPath
-        status
-        statusChangedAt
-        tags
-        notes
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onDeleteLessonCourse = /* GraphQL */ `
-  subscription OnDeleteLessonCourse(
-    $filter: ModelSubscriptionLessonCourseFilterInput
-  ) {
-    onDeleteLessonCourse(filter: $filter) {
-      id
-      lessonId
-      courseId
-      lesson {
-        id
-        title
-        subtitle
-        version
-        categories
-        content
-        archivedAt
-        publishedAt
-        createdAt
-        updatedAt
-      }
-      course {
-        id
-        name
-        description
-        objectives
-        level
-        lessonPath
-        status
-        statusChangedAt
-        tags
-        notes
-        createdAt
-        updatedAt
-      }
       createdAt
       updatedAt
     }

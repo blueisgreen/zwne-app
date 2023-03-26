@@ -204,7 +204,7 @@ export async function addLessonCourse(courseId, lessonId) {
       variables: { input: { courseId, lessonId } },
     })
     console.log('LessonCourse added', results)
-    return results.data.createLessonCourseJoin
+    return results.data.createLessonCourse
   } catch (err) {
     console.error(err)
   }

@@ -12,9 +12,7 @@ export const getLesson = /* GraphQL */ `
       content
       archivedAt
       publishedAt
-      courses {
-        nextToken
-      }
+      courseID
       createdAt
       updatedAt
     }
@@ -36,6 +34,39 @@ export const listLessons = /* GraphQL */ `
         content
         archivedAt
         publishedAt
+        courseID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const lessonsByCourseID = /* GraphQL */ `
+  query LessonsByCourseID(
+    $courseID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelLessonFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    lessonsByCourseID(
+      courseID: $courseID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        title
+        subtitle
+        version
+        categories
+        content
+        archivedAt
+        publishedAt
+        courseID
         createdAt
         updatedAt
       }
@@ -82,113 +113,6 @@ export const listCourses = /* GraphQL */ `
         statusChangedAt
         tags
         notes
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const getLessonCourse = /* GraphQL */ `
-  query GetLessonCourse($id: ID!) {
-    getLessonCourse(id: $id) {
-      id
-      lessonId
-      courseId
-      lesson {
-        id
-        title
-        subtitle
-        version
-        categories
-        content
-        archivedAt
-        publishedAt
-        createdAt
-        updatedAt
-      }
-      course {
-        id
-        name
-        description
-        objectives
-        level
-        lessonPath
-        status
-        statusChangedAt
-        tags
-        notes
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listLessonCourses = /* GraphQL */ `
-  query ListLessonCourses(
-    $filter: ModelLessonCourseFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listLessonCourses(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        lessonId
-        courseId
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const lessonCoursesByLessonId = /* GraphQL */ `
-  query LessonCoursesByLessonId(
-    $lessonId: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelLessonCourseFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    lessonCoursesByLessonId(
-      lessonId: $lessonId
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        lessonId
-        courseId
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const lessonCoursesByCourseId = /* GraphQL */ `
-  query LessonCoursesByCourseId(
-    $courseId: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelLessonCourseFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    lessonCoursesByCourseId(
-      courseId: $courseId
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        lessonId
-        courseId
         createdAt
         updatedAt
       }

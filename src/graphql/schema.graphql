@@ -9,7 +9,7 @@ type Course @aws_api_key @aws_iam {
   description: String
   id: ID!
   lessonPath: [ID]
-  lessons(filter: ModelLessonCourseFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonCourseConnection
+  lessons(filter: ModelLessonFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonConnection
   level: CourseLevel
   name: String
   notes: String
@@ -24,7 +24,7 @@ type Lesson @aws_api_key @aws_iam {
   archivedAt: AWSDateTime
   categories: [String]
   content: String
-  courses(filter: ModelLessonCourseFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonCourseConnection
+  courseID: ID!
   createdAt: AWSDateTime!
   id: ID!
   publishedAt: AWSDateTime
@@ -32,16 +32,6 @@ type Lesson @aws_api_key @aws_iam {
   title: String
   updatedAt: AWSDateTime!
   version: Int
-}
-
-type LessonCourse @aws_api_key @aws_iam {
-  course: Course!
-  courseId: ID!
-  createdAt: AWSDateTime!
-  id: ID!
-  lesson: Lesson!
-  lessonId: ID!
-  updatedAt: AWSDateTime!
 }
 
 type ModelCourseConnection @aws_api_key @aws_iam {
@@ -54,44 +44,30 @@ type ModelLessonConnection @aws_api_key @aws_iam {
   nextToken: String
 }
 
-type ModelLessonCourseConnection @aws_api_key @aws_iam {
-  items: [LessonCourse]!
-  nextToken: String
-}
-
 type Mutation {
   createCourse(condition: ModelCourseConditionInput, input: CreateCourseInput!): Course @aws_api_key @aws_iam
   createLesson(condition: ModelLessonConditionInput, input: CreateLessonInput!): Lesson @aws_api_key @aws_iam
-  createLessonCourse(condition: ModelLessonCourseConditionInput, input: CreateLessonCourseInput!): LessonCourse @aws_api_key @aws_iam
   deleteCourse(condition: ModelCourseConditionInput, input: DeleteCourseInput!): Course @aws_api_key @aws_iam
   deleteLesson(condition: ModelLessonConditionInput, input: DeleteLessonInput!): Lesson @aws_api_key @aws_iam
-  deleteLessonCourse(condition: ModelLessonCourseConditionInput, input: DeleteLessonCourseInput!): LessonCourse @aws_api_key @aws_iam
   updateCourse(condition: ModelCourseConditionInput, input: UpdateCourseInput!): Course @aws_api_key @aws_iam
   updateLesson(condition: ModelLessonConditionInput, input: UpdateLessonInput!): Lesson @aws_api_key @aws_iam
-  updateLessonCourse(condition: ModelLessonCourseConditionInput, input: UpdateLessonCourseInput!): LessonCourse @aws_api_key @aws_iam
 }
 
 type Query {
   getCourse(id: ID!): Course @aws_api_key @aws_iam
   getLesson(id: ID!): Lesson @aws_api_key @aws_iam
-  getLessonCourse(id: ID!): LessonCourse @aws_api_key @aws_iam
-  lessonCoursesByCourseId(courseId: ID!, filter: ModelLessonCourseFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonCourseConnection @aws_api_key @aws_iam
-  lessonCoursesByLessonId(filter: ModelLessonCourseFilterInput, lessonId: ID!, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonCourseConnection @aws_api_key @aws_iam
+  lessonsByCourseID(courseID: ID!, filter: ModelLessonFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonConnection @aws_api_key @aws_iam
   listCourses(filter: ModelCourseFilterInput, limit: Int, nextToken: String): ModelCourseConnection @aws_api_key @aws_iam
-  listLessonCourses(filter: ModelLessonCourseFilterInput, limit: Int, nextToken: String): ModelLessonCourseConnection @aws_api_key @aws_iam
   listLessons(filter: ModelLessonFilterInput, limit: Int, nextToken: String): ModelLessonConnection @aws_api_key @aws_iam
 }
 
 type Subscription {
   onCreateCourse(filter: ModelSubscriptionCourseFilterInput): Course @aws_api_key @aws_iam @aws_subscribe(mutations : ["createCourse"])
   onCreateLesson(filter: ModelSubscriptionLessonFilterInput): Lesson @aws_api_key @aws_iam @aws_subscribe(mutations : ["createLesson"])
-  onCreateLessonCourse(filter: ModelSubscriptionLessonCourseFilterInput): LessonCourse @aws_api_key @aws_iam @aws_subscribe(mutations : ["createLessonCourse"])
   onDeleteCourse(filter: ModelSubscriptionCourseFilterInput): Course @aws_api_key @aws_iam @aws_subscribe(mutations : ["deleteCourse"])
   onDeleteLesson(filter: ModelSubscriptionLessonFilterInput): Lesson @aws_api_key @aws_iam @aws_subscribe(mutations : ["deleteLesson"])
-  onDeleteLessonCourse(filter: ModelSubscriptionLessonCourseFilterInput): LessonCourse @aws_api_key @aws_iam @aws_subscribe(mutations : ["deleteLessonCourse"])
   onUpdateCourse(filter: ModelSubscriptionCourseFilterInput): Course @aws_api_key @aws_iam @aws_subscribe(mutations : ["updateCourse"])
   onUpdateLesson(filter: ModelSubscriptionLessonFilterInput): Lesson @aws_api_key @aws_iam @aws_subscribe(mutations : ["updateLesson"])
-  onUpdateLessonCourse(filter: ModelSubscriptionLessonCourseFilterInput): LessonCourse @aws_api_key @aws_iam @aws_subscribe(mutations : ["updateLessonCourse"])
 }
 
 enum CourseLevel {
@@ -140,16 +116,11 @@ input CreateCourseInput {
   tags: [String]
 }
 
-input CreateLessonCourseInput {
-  courseId: ID!
-  id: ID
-  lessonId: ID!
-}
-
 input CreateLessonInput {
   archivedAt: AWSDateTime
   categories: [String]
   content: String
+  courseID: ID!
   id: ID
   publishedAt: AWSDateTime
   subtitle: String
@@ -158,10 +129,6 @@ input CreateLessonInput {
 }
 
 input DeleteCourseInput {
-  id: ID!
-}
-
-input DeleteLessonCourseInput {
   id: ID!
 }
 
@@ -262,6 +229,7 @@ input ModelLessonConditionInput {
   archivedAt: ModelStringInput
   categories: ModelStringInput
   content: ModelStringInput
+  courseID: ModelIDInput
   not: ModelLessonConditionInput
   or: [ModelLessonConditionInput]
   publishedAt: ModelStringInput
@@ -270,28 +238,12 @@ input ModelLessonConditionInput {
   version: ModelIntInput
 }
 
-input ModelLessonCourseConditionInput {
-  and: [ModelLessonCourseConditionInput]
-  courseId: ModelIDInput
-  lessonId: ModelIDInput
-  not: ModelLessonCourseConditionInput
-  or: [ModelLessonCourseConditionInput]
-}
-
-input ModelLessonCourseFilterInput {
-  and: [ModelLessonCourseFilterInput]
-  courseId: ModelIDInput
-  id: ModelIDInput
-  lessonId: ModelIDInput
-  not: ModelLessonCourseFilterInput
-  or: [ModelLessonCourseFilterInput]
-}
-
 input ModelLessonFilterInput {
   and: [ModelLessonFilterInput]
   archivedAt: ModelStringInput
   categories: ModelStringInput
   content: ModelStringInput
+  courseID: ModelIDInput
   id: ModelIDInput
   not: ModelLessonFilterInput
   or: [ModelLessonFilterInput]
@@ -386,19 +338,12 @@ input ModelSubscriptionIntInput {
   notIn: [Int]
 }
 
-input ModelSubscriptionLessonCourseFilterInput {
-  and: [ModelSubscriptionLessonCourseFilterInput]
-  courseId: ModelSubscriptionIDInput
-  id: ModelSubscriptionIDInput
-  lessonId: ModelSubscriptionIDInput
-  or: [ModelSubscriptionLessonCourseFilterInput]
-}
-
 input ModelSubscriptionLessonFilterInput {
   and: [ModelSubscriptionLessonFilterInput]
   archivedAt: ModelSubscriptionStringInput
   categories: ModelSubscriptionStringInput
   content: ModelSubscriptionStringInput
+  courseID: ModelSubscriptionIDInput
   id: ModelSubscriptionIDInput
   or: [ModelSubscriptionLessonFilterInput]
   publishedAt: ModelSubscriptionStringInput
@@ -435,16 +380,11 @@ input UpdateCourseInput {
   tags: [String]
 }
 
-input UpdateLessonCourseInput {
-  courseId: ID
-  id: ID!
-  lessonId: ID
-}
-
 input UpdateLessonInput {
   archivedAt: AWSDateTime
   categories: [String]
   content: String
+  courseID: ID
   id: ID!
   publishedAt: AWSDateTime
   subtitle: String
