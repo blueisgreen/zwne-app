@@ -12,21 +12,31 @@ export const listCourseMarkers = /* GraphQL */ `
   }
 `
 
-/*
-  createdAt: AWSDateTime!
-  id: ID!
-  name: String
-  description: String
-  objectives: String
-  level: CourseLevel
-  tags: [String]
-  notes: String
-  status: CourseStatusOptions
-  statusChangedAt: AWSDateTime
-  updatedAt: AWSDateTime!
-  lessonPath: [ID]
-  lessons(filter: ModelLessonCourseFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonCourseConnection
-*/
+export const listLessonMarkers = `
+query ListLessonMarkers {
+  listLessons() {
+    items {
+      id
+      title
+      subtitle
+      courseID
+    }
+  }
+}
+`
+
+export const listLessonMarkersForCourse = `
+query ListLessonMarkers($courseId) {
+  listLessons(filter: {courseID: {eq: $courseId}}) {
+    items {
+      id
+      title
+      subtitle
+      courseID
+    }
+  }
+}
+`
 
 export const createCourseWithName = /* GraphQL */ `
   mutation CreateCourse($name: String!) {
@@ -68,7 +78,7 @@ export const getCourseWithLessonMarkers = /* GraphQL */ `
             id
             title
             subtitle
-            version
+            courseID
           }
         }
       }
@@ -100,54 +110,6 @@ export const deleteCourseAbridged = /* GraphQL */ `
   ) {
     deleteCourse(input: $input, condition: $condition) {
       id
-      lessons {
-        nextToken
-      }
-    }
-  }
-`
-
-export const createLessonCourseJoin = /* GraphQL */ `
-  mutation CreateLessonCourse(
-    $input: CreateLessonCourseInput!
-    $condition: ModelLessonCourseConditionInput
-  ) {
-    createLessonCourse(input: $input, condition: $condition) {
-      id
-      lessonId
-      courseId
-    }
-  }
-`
-
-export const listLessonCourseJoins = /* GraphQL */ `
-  query ListLessonCourses(
-    $filter: ModelLessonCourseFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listLessonCourses(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        lessonId
-        courseId
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`
-
-export const deleteLessonCourseJoin = /* GraphQL */ `
-  mutation DeleteLessonCourse(
-    $input: DeleteLessonCourseInput!
-    $condition: ModelLessonCourseConditionInput
-  ) {
-    deleteLessonCourse(input: $input, condition: $condition) {
-      id
-      lessonId
-      courseId
     }
   }
 `

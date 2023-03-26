@@ -5,9 +5,6 @@ import {
   getCourseWithLessonMarkers,
   getCourseForUpdate,
   deleteCourseAbridged,
-  listLessonCourseJoins,
-  createLessonCourseJoin,
-  deleteLessonCourseJoin,
 } from './customQueries'
 import { updateCourse } from '../graphql/mutations'
 import { CourseStatusOptions } from '../models'
@@ -15,11 +12,11 @@ import { toAWSDateTime } from '../components/modelTools'
 
 /**
  * Attempts to persist a new course based on given values.
- * @param {*} given
+ * @param {String} courseName
  * @returns Course
  */
-export async function goCreateCourse(courseName) {
-  console.log('goCreateCourse')
+export async function createCourse(courseName) {
+  console.log('createCourse')
   try {
     const results = await API.graphql({
       query: createCourseWithName,
@@ -100,8 +97,8 @@ async function goSaveCourse(deltas) {
  * @returns
  */
 export async function saveCourse(id, deltas) {
+  console.log('saveCourse', { id, deltas })
   try {
-    // prevent null by omission
     const original = await getCourseNow(id)
     const updated = await goSaveCourse({ ...original, ...deltas })
     return updated
@@ -158,7 +155,7 @@ export async function reviveCourse(id) {
  * Wipes out a course. Kersplat!
  * @param {*} id
  */
-export async function goDeleteCourse(id) {
+export async function deleteCourse(id) {
   try {
     const result = await API.graphql({
       query: deleteCourseAbridged,
@@ -166,64 +163,6 @@ export async function goDeleteCourse(id) {
     })
     console.log('Deleted course', result)
     return true
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-/**
- * Retrieves joins to Lesson for given Course.
- * @param {*} courseId
- * @returns
- */
-export async function fetchLessonCoursesForCourse(courseId) {
-  console.log('fetchLessonCourses', courseId)
-  try {
-    const results = await API.graphql({
-      query: listLessonCourseJoins,
-      variables: { filter: { courseId: { eq: courseId } } },
-    })
-    console.log('LessonCourse joins', results)
-    return results.data.listLessonCourses.items
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-/**
- * Joins given Lesson for given Course.
- * @param {*} courseId
- * @param {*} lessonId
- * @returns
- */
-export async function addLessonCourse(courseId, lessonId) {
-  console.log('addLessonCourse')
-  try {
-    const results = await API.graphql({
-      query: createLessonCourseJoin,
-      variables: { input: { courseId, lessonId } },
-    })
-    console.log('LessonCourse added', results)
-    return results.data.createLessonCourse
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-/**
- * Remove given LessonCourse join.
- * @param {*} joinId
- * @returns
- */
-export async function removeLessonCourse(joinId) {
-  console.log('removeLessonCourse')
-  try {
-    const results = await API.graphql({
-      query: deleteLessonCourseJoin,
-      variables: { input: { id: joinId } },
-    })
-    console.log('LessonCourse removed', results)
-    return results.data.deleteLessonCourseJoin
   } catch (err) {
     console.error(err)
   }

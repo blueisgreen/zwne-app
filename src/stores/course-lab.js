@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import {
-  goCreateCourse,
+  createCourse,
   fetchCourses,
   fetchCourse,
   saveCourse,
@@ -8,14 +8,18 @@ import {
   closeCourse,
   archiveCourse,
   reviveCourse,
-  goDeleteCourse,
-  fetchLessonCoursesForCourse,
-  addLessonCourse,
-  removeLessonCourse,
-  goCreateLesson,
+  deleteCourse,
+  createLesson,
   fetchLessons,
+  fetchLessonsForCourse,
   fetchLesson,
-  goUpdateLesson,
+  saveLesson,
+  addLessonToCourse,
+  removeLessonFromCourse,
+  publishLesson,
+  retractLesson,
+  archiveLesson,
+  reviveLesson,
   goDeleteLesson,
 } from '../api'
 import { difference } from 'components/modelTools'
@@ -23,284 +27,215 @@ import { difference } from 'components/modelTools'
 export const useCourseLabStore = defineStore('courseLab', {
   state: () => ({
     courseIndex: {},
-    lessonCourseJoinsIndex: {},
-    lessonPlans: [],
-    lessonPlanIndex: {},
+    lessonIndex: {},
   }),
   getters: {
-    courseIds(state) {
+    cachedCourseIds(state) {
       return Object.keys(state.courseIndex)
     },
-    courseCount(state) {
-      return state.courseIds.length
+    cachedCourseList(state) {
+      return state.cachedCourseIds.map((id) => state.courseIndex[id])
     },
-    courseList(state) {
-      return state.courseIds.map((courseId) => state.courseIndex[courseId])
-    },
-    course: (state) => {
-      return (courseId) => {
-        return state.courseIndex[courseId]
+    cachedCourse: (state) => {
+      return (id) => {
+        return state.courseIndex[id]
       }
     },
-    lessonCourseJoins: (state) => {
-      return (courseId) => {
-        return state.lessonCourseJoinsIndex[courseId] || []
-      }
+    cachedLessonIds(state) {
+      return Object.keys(state.lessonIndex)
     },
-    lessonCourseJoinForLesson: (state) => {
-      return (courseId, lessonId) => {
-        const joins = state.lessonCourseJoinsIndex[courseId]
-        const joinOut = joins.find((join) => join.lessonId === lessonId)
-        return joinOut
-      }
+    cachedLessonList(state) {
+      return state.lessonPlans.map((planId) => state.lessonIndex[planId])
     },
-    courseLessonIds: (state) => {
-      return (courseId) => {
-        return state.lessonCourseJoins(courseId).map((join) => join.lessonId)
-      }
-    },
-    planCount(state) {
-      return state.lessonPlans.length
-    },
-    lessonPlanList(state) {
-      return state.lessonPlans.map((planId) => state.lessonPlanIndex[planId])
-    },
-    lessonPlan: (state) => {
+    cachedLesson: (state) => {
       return (lessonId) => {
-        return state.lessonPlanIndex[lessonId]
+        return state.lessonIndex[lessonId]
       }
     },
   },
   actions: {
-    cacheCourseInStore(course, joins) {
-      console.log('cacheCourseInStore', { course, joins })
-      // course is required
+    cacheCourse(course) {
+      console.log('cacheCourse', course)
+      const { id } = course
       if (!course) {
+        console.warn('Not caching - course is null')
         return
+      } else if (!id) {
+        console.warn('Not caching - course has no ID')
       }
-
-      const courseId = course.id
-      this.courseIndex[courseId] = course
-
-      // may have lessons
-      if (course.lessons?.items?.length) {
-        console.log('with lessons', course.lessons.items)
-        course.lessons.items.forEach((item) => {
-          const { lesson } = item
-          this.addLessonToStore(lesson)
-        })
-      }
-
-      // should have joins to match lessons - needed for verification, delete
-      if (joins) {
-        console.log('with lesson joins', joins)
-        this.lessonCourseJoinsIndex[courseId] = joins
-      }
+      this.courseIndex[id] = course
     },
-    cacheLessonCourseInStore(courseId, join) {
-      console.log('cacheLessonCourseInStore', { courseId, join })
-      if (!this.lessonCourseJoinsIndex[courseId]) {
-        this.lessonCourseJoinsIndex[courseId] = []
-      }
-      this.lessonCourseJoinsIndex[courseId].push(join)
-    },
-    removeCourseFromStore(courseId) {
-      console.log('removeCourseFromStore', courseId)
+    removeCourseFromCache(courseId) {
+      console.log('removeCourseFromCache', courseId)
       if (this.courseIndex[courseId]) {
         delete this.courseIndex[courseId]
       }
-      if (this.lessonCourseJoinsIndex[courseId]) {
-        delete this.lessonCourseJoinsIndex[courseId]
+    },
+
+    cacheLesson(lesson) {
+      console.log('cacheLesson', lesson)
+      const { id } = lesson
+      if (!lesson) {
+        console.warn('Not caching - lesson is null')
+        return
+      } else if (!id) {
+        console.warn('Not caching - lesson has no ID')
+      }
+      this.lessonIndex[id] = lesson
+    },
+    removeLessonFromCache(lessonId) {
+      console.log('removeLessonFromCache', lessonId)
+      if (this.lessonIndex[lessonId]) {
+        delete this.lessonIndex[lessonId]
       }
     },
-    removeLessonCourseJoinFromStore(courseId, lessonId) {
-      console.log('removeLessonCourseJoinFromStore', { courseId, lessonId })
-      const joins = this.lessonCourseJoinsIndex[courseId]
-      const indexOfJoin = joins.findIndex((join) => join.lessonId === lessonId)
-      joins.splice(indexOfJoin, 0)
-    },
+
     async spawnCourse(name = 'a suitable name') {
-      const newCourse = await goCreateCourse(name)
-      this.cacheCourseInStore(newCourse)
+      console.log('spawnCourse', name)
+      const newborn = await createCourse(name)
+      this.cacheCourse(newborn)
     },
     async loadCourses() {
-      // TODO: find way to prevent refetching when already in store
+      console.log('loadCourses')
       const courses = await fetchCourses()
       if (courses) {
-        courses.forEach((course) => {
-          if (!course._deleted) {
-            this.cacheCourseInStore(course)
-          }
-        })
+        courses.forEach((course) => this.cacheCourse(course))
       } else {
         console.log('Curious. We did not find any courses.')
       }
     },
-    async loadCourse(courseId, refresh = false) {
-      const cached = this.course(courseId)
-      if (!refresh && cached) {
-        console.log('loadCourse: found in cache', cached)
-        return cached
-      }
-      console.log('loadCourse: %s', refresh ? 'forcing refresh' : 'not cached')
-
+    async loadCourse(courseId) {
+      console.log('loadCourse', courseId)
       const course = await fetchCourse(courseId)
-      const joins = await fetchLessonCoursesForCourse(courseId)
-      this.cacheCourseInStore(course, joins)
-      return course
+      this.cacheCourse(course)
     },
-    async onSaveCourse(courseUpdates) {
-      console.log('onSaveCourse', courseUpdates)
-      const { id, lessonPath } = courseUpdates
-      await this.syncLessonsForCourse(id, lessonPath)
-      const updated = await saveCourse(id, courseUpdates)
-      if (updated) {
-        this.cacheCourseInStore(updated)
+    async onSaveCourse(deltas) {
+      console.log('onSaveCourse', deltas)
+      const { id, lessonPath } = deltas
+
+      const startingPath = this.course(id).lessonPath || []
+
+      await this.syncLessonsForCourse(courseId, startingPath, lessonPath)
+
+      const afterSave = await saveCourse(id, deltas)
+      if (afterSave) {
+        this.cacheCourse(afterSave)
       }
-      await this.loadCourse(id)
     },
-    async syncLessonsForCourse(courseId, lessonPath) {
-      console.log('syncLessonsForCourse', { courseId, lessonPath })
+    async syncLessonsForCourse(courseId, startingPath, nextPath) {
+      console.log('syncLessonsForCourse', { courseId, startingPath, nextPath })
 
-      // make sure we have the right lessons attached to the course
-      const nextLessonIds = [...new Set(lessonPath)]
-      const startLessonIds = this.courseLessonIds(courseId)
+      const startingIds = [...new Set(nextPath)]
+      const nextIds = [...new Set(nextPath)]
 
-      const lessonsToAdd = difference(nextLessonIds, startLessonIds)
-      const lessonsToRemove = difference(startLessonIds, nextLessonIds)
+      const lessonsToAdd = difference(nextIds, startingIds)
+      const lessonsToRemove = difference(startingIds, nextIds)
       console.log('differences', { lessonsToAdd, lessonsToRemove })
 
+      // FIXME: make sure API methods work correctly with new schema
       lessonsToAdd.forEach(async (lessonId) => {
-        const result = await addLessonCourse(courseId, lessonId)
+        const result = await addLessonToCourse(courseId, lessonId)
       })
       lessonsToRemove.forEach(async (lessonId) => {
-        const joinToRemove = this.lessonCourseJoinForLesson(courseId, lessonId)
-        await removeLessonCourse(joinToRemove.id)
+        await removeLessonFromCourse(lessonId)
       })
     },
-    async deleteCourse(id) {
+    async onDeleteCourse(id) {
       console.log('deleteCourse', id)
 
       // FIXME: true purge has to remove all associations with the course: lessonCourse, lessonPath
 
-      const isDeleted = await goDeleteCourse(id)
+      const isDeleted = await deleteCourse(id)
       if (isDeleted) {
-        this.removeCourseFromStore(id)
+        this.removeCourseFromCache(id)
       } else {
         console.log('failed to delete')
       }
     },
-    async openCourse(id) {
+    async handleOpenCourse(id) {
       const course = await openCourse(id)
-      this.cacheCourseInStore(course)
+      this.cacheCourse(course)
     },
-    async closeCourse(id) {
+    async handleCloseCourse(id) {
       const course = await closeCourse(id)
-      this.cacheCourseInStore(course)
+      this.cacheCourse(course)
     },
-    async archiveCourse(id) {
+    async handleArchiveCourse(id) {
       const course = await archiveCourse(id)
-      this.cacheCourseInStore(course)
+      this.cacheCourse(course)
     },
-    async reviveCourse(id) {
+    async handleReviveCourse(id) {
       const course = await reviveCourse(id)
-      this.cacheCourseInStore(course)
+      this.cacheCourse(course)
     },
 
     // ------------------
     // -- Lesson actions
     // ------------------
 
-    addLessonToStore(lesson) {
-      console.log('addLessonToStore', lesson)
-      this.lessonPlanIndex[lesson.id] = lesson
-      if (!this.lessonPlans.includes(lesson.id)) {
-        this.lessonPlans.push(lesson.id)
-      }
-    },
-    removeLessonFromStore(id) {
-      delete this.lessonPlanIndex.id
-      const index = this.lessonPlans.indexOf(id)
-      if (index > -1) {
-        this.courses.splice(index, 1)
-      }
-    },
     async spawnLesson(title = 'a suitable title') {
-      const newLesson = await goCreateLesson(title)
-      this.addLessonToStore(newLesson)
+      const newborn = await createLesson(title)
+      this.cacheLesson(newborn)
     },
     async loadLessons() {
+      console.log('loadLessons')
       // TODO: find way to prevent refetching when already in store
-      // TODO: load lesson plans without content; only fetch content as needed
       const lessons = await fetchLessons()
       if (lessons) {
-        lessons.forEach((lesson) => {
-          if (!lesson._deleted) {
-            this.addLessonToStore(lesson)
-          }
-        })
+        lessons.forEach((lesson) => this.cacheLesson(lesson))
       } else {
         console.log('Curious. We did not find any lessons.')
       }
     },
-    async loadLesson(id, refresh = false) {
-      console.log('loadLesson', { id, refresh })
-      const cached = this.lessonPlan(id)
-      if (!refresh && cached) {
-        return cached
+    async loadLessonsForCourse(courseId) {
+      console.log('loadLessonsForCourse', courseId)
+      const lessons = await fetchLessonsForCourse(courseId)
+      if (lessons) {
+        lessons.forEach((lesson) => this.cacheLesson(lesson))
+      } else {
+        console.log('No lessons found for course.')
       }
-      const lesson = await fetchLesson(id)
-      console.log('Retrieved lesson => ', lesson)
-      if (lesson) {
-        this.addLessonToStore(lesson)
-      }
-      return lesson
     },
-    async updateLesson(updates) {
-      console.log('updateLesson', updates)
-      const next = await goUpdateLesson(updates)
-      this.addLessonToStore(next)
+    async loadLesson(lessonId) {
+      console.log('loadLesson', lessonId)
+      const lesson = await fetchLesson(lessonId)
+      this.cacheLesson(lesson)
+    },
+    async onSaveLesson(deltas) {
+      console.log('onSaveLesson', deltas)
+      const afterSave = await saveLesson(deltas)
+      this.cacheLesson(afterSave)
     },
     async deleteLesson(id) {
       console.log('deleteLesson', id)
-      const isDeleted = await goDeleteLesson(id)
-      if (isDeleted) {
-        this.removeLessonFromStore(id)
+      const deleted = await goDeleteLesson(id)
+      if (deleted) {
+        // FIXME: does this cause trouble with associated course
+        this.removeLessonFromCache(id)
       } else {
         console.log('failed to delete')
       }
     },
-    saveLessonContent(lessonId, revision) {
-      const lesson = this.lessonPlan(lessonId)
-      lesson.content = revision
+    async handlePublishLesson(id) {
+      const after = await publishLesson(id)
+      this.cacheLesson(after)
     },
-    publishLesson(id) {
-      const lesson = this.lessonPlan(id)
-      lesson.publishedAt = new Date()
-      lesson.updatedAt = new Date()
+    async handleRetractLesson(id) {
+      const after = await retractLesson(id)
+      this.cacheLesson(after)
     },
-    reviseLesson(id) {
-      const lesson = this.lessonPlan(id)
-      lesson.publishedAt = null
-      lesson.createdAt = new Date()
-      lesson.updatedAt = new Date()
-      lesson.version++
+    // TODO: implement revisioning
+    // async handleReviseLesson(id) {
+    //   const after = await reviseLesson(id)
+    //   this.cacheLesson(after)
+    // },
+    async handleArchiveLesson(id) {
+      const after = await archiveLesson(id)
+      this.cacheLesson(after)
     },
-    retractLesson(id) {
-      const lesson = this.lessonPlan(id)
-      lesson.publishedAt = null
-      lesson.updatedAt = new Date()
-    },
-    archiveLesson(id) {
-      const lesson = this.lessonPlan(id)
-      lesson.publishedAt = null
-      lesson.archivedAt = new Date()
-      lesson.updatedAt = new Date()
-    },
-    reviveLesson(id) {
-      const lesson = this.lessonPlan(id)
-      lesson.archivedAt = null
-      lesson.updatedAt = new Date()
+    async handleReviveLesson(id) {
+      const after = await reviveLesson(id)
+      this.cacheLesson(after)
     },
   },
 })

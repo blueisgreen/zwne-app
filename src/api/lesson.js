@@ -1,15 +1,19 @@
 import { API } from 'aws-amplify'
-import { listLessons, getLesson } from '../graphql/queries'
-import { createLesson, updateLesson, deleteLesson } from '../graphql/mutations'
-import { createLessonWithTitle } from './customQueries'
+import { getLesson } from '../graphql/queries'
+import { updateLesson, deleteLesson } from '../graphql/mutations'
+import {
+  listLessonMarkers,
+  listLessonMarkersForCourse,
+  createLessonWithTitle,
+} from './customQueries'
 
 /**
  * Attempts to persist a new lesson based on given values.
  * @param {*} given
  * @returns Lesson
  */
-export async function goCreateLesson(lessonTitle) {
-  console.log('goCreateLesson')
+export async function createLesson(lessonTitle) {
+  console.log('createLesson')
   try {
     const results = await API.graphql({
       query: createLessonWithTitle,
@@ -28,7 +32,25 @@ export async function goCreateLesson(lessonTitle) {
 export async function fetchLessons() {
   console.log('fetchLessons')
   try {
-    const results = await API.graphql({ query: listLessons })
+    const results = await API.graphql({ query: listLessonMarkers })
+    const out = results.data.listLessons.items
+    return out
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+/**
+ * Retrieves a list of lessons.
+ * @returns
+ */
+export async function fetchLessonsForCourse(courseId) {
+  console.log('fetchLessons')
+  try {
+    const results = await API.graphql({
+      query: listLessonMarkersForCourse,
+      variables: { courseId },
+    })
     const out = results.data.listLessons.items
     return out
   } catch (err) {
@@ -55,22 +77,25 @@ export async function fetchLesson(id) {
  * @param {*} given
  * @returns
  */
-export async function goUpdateLesson(given) {
-  const { id, title, subtitle, categories, content } = given
-  const changes = {
-    id,
-    title,
-    subtitle,
-    categories,
-    content,
-  }
+async function goSaveLesson(deltas) {
+  console.log('goSaveLesson', deltas)
   try {
-    console.log('lessonAPI.goUpdateLesson: given=' + JSON.stringify(changes))
     const results = await API.graphql({
       query: updateLesson,
-      variables: { input: changes },
+      variables: { input: deltas },
     })
     return results.data.updateLesson
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export async function saveLesson(id, deltas) {
+  console.log('saveLesson', { id, deltas })
+  try {
+    const original = await getLesson(id)
+    const updated = await goSaveLesson({ ...original, ...deltas })
+    return updated
   } catch (err) {
     console.error(err)
   }
@@ -86,8 +111,51 @@ export async function goDeleteLesson(id) {
       query: deleteLesson,
       variables: { input: { id } },
     })
-    return true
+    return result.data.deleteLesson
   } catch (err) {
     console.error(err)
   }
+}
+
+export async function addLessonToCourse(courseId, lessonId) {
+  return await saveLesson(lessonId, {
+    courseId: courseId,
+  })
+}
+
+export async function removeLessonFromCourse(lessonId) {
+  return await saveLesson(lessonId, {
+    courseId: null,
+  })
+}
+
+export async function publishLesson(lessonId) {
+  return await saveLesson(lessonId, {
+    publishedAt: new Date(),
+  })
+}
+
+export async function retractLesson(lessonId) {
+  return await saveLesson(lessonId, {
+    publishedAt: null,
+  })
+}
+
+// TODO: handle revisions - clone and edit copy
+// export async function reviseLesson(lessonId) {
+//   return await saveLesson(lessonId, {
+//     publishedAt: null,
+//   })
+// }
+
+export async function archiveLesson(lessonId) {
+  return await saveLesson(lessonId, {
+    archivedAt: new Date(),
+  })
+}
+
+export async function reviveLesson(lessonId) {
+  return await saveLesson(lessonId, {
+    archivedAt: null,
+  })
 }
