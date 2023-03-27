@@ -2,7 +2,6 @@ import { API } from 'aws-amplify'
 import {
   listCourseMarkers,
   createCourseWithName,
-  getCourseWithLessonMarkers,
   getCourseForUpdate,
   deleteCourseAbridged,
 } from './customQueries'
@@ -56,6 +55,7 @@ export async function fetchCourse(id) {
       query: getCourse,
       variables: { id },
     })
+    console.log('course', results)
     return results.data.getCourse
   } catch (err) {
     console.error(err)

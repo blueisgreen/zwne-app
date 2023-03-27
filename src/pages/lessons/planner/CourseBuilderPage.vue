@@ -68,11 +68,6 @@
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Lessons</div>
         <div class="col">
-          <q-btn
-            @click="newLessonDialog = true"
-            icon="add_circle"
-            color="primary"
-          />
           <ul>
             <li v-for="lesson in courseLessonList" :key="lesson.id">
               <router-link
@@ -81,6 +76,16 @@
               >
             </li>
           </ul>
+        </div>
+        <div class="col-2">
+          <q-btn
+            @click="newLessonDialog = true"
+            icon="add_circle"
+            label="New Lesson"
+            color="primary"
+            dense
+            no-caps
+          />
         </div>
       </div>
 

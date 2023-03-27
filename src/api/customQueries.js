@@ -59,33 +59,6 @@ export const createLessonWithTitle = /* GraphQL */ `
   }
 `
 
-export const getCourseWithLessonMarkers = /* GraphQL */ `
-  query GetCourseWithLessonMarkers($id: ID!) {
-    getCourse(id: $id) {
-      id
-      name
-      description
-      objectives
-      level
-      tags
-      notes
-      status
-      statusChangedAt
-      lessonPath
-      lessons {
-        items {
-          lesson {
-            id
-            title
-            subtitle
-            courseID
-          }
-        }
-      }
-    }
-  }
-`
-
 export const getCourseForUpdate = /* GraphQL */ `
   query GetCourseForUpdate($id: ID!) {
     getCourse(id: $id) {
