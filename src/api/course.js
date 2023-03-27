@@ -63,7 +63,7 @@ export async function fetchCourse(id) {
 }
 
 export async function fetchCourseLessons(courseID) {
-  console.log('fetchCourse', courseID)
+  console.log('fetchCourseLessons', courseID)
   try {
     const results = await API.graphql({
       query: lessonsByCourseID,

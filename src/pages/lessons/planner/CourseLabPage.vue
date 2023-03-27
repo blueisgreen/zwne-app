@@ -1,10 +1,17 @@
 <template>
   <q-page padding>
+    <q-toolbar>
+      <q-toolbar-title>
+        <div class="text-h2 text-primary">Course Lab</div>
+        <div class="text-caption text-secondary q-pl-xs">
+          Where idealized knowledge sharing is discovered
+        </div>
+      </q-toolbar-title>
+      <q-btn :to="{ name: 'lessonBuilder' }" color="primary" no-caps
+        >To Lessons</q-btn
+      >
+    </q-toolbar>
     <div class="q-pa-md q-gutter-md">
-      <div class="text-h2 text-primary">Course Laboratory</div>
-      <div class="text-subtitle1 text-secondary">
-        Where idealized knowledge sharing is discovered
-      </div>
       <div class="section-style shadow-3">
         <q-toolbar>
           <q-toolbar-title>Courses</q-toolbar-title>
@@ -12,13 +19,6 @@
             label="Add Course"
             icon="add_circle"
             @click="newCourseDialog = true"
-            color="primary"
-            dense
-            no-caps
-          />
-          <q-btn
-            label="See Lessons"
-            :to="{ name: 'lessonBuilder' }"
             color="primary"
             dense
             no-caps
@@ -146,7 +146,7 @@ const newLessonTitle = ref('')
 const dangerZoneExpanded = ref(false)
 
 onBeforeMount(async () => {
-  await Promise.all([builder.loadCourses(), builder.loadLessons()])
+  await builder.loadCourses()
 })
 
 async function onCreateCourseFromDialog() {

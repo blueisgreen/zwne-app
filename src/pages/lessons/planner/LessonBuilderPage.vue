@@ -1,10 +1,17 @@
 <template>
   <q-page padding>
+    <q-toolbar>
+      <q-toolbar-title>
+        <div class="text-h2 text-primary">Lesson Builder</div>
+        <div class="text-caption text-secondary q-pl-xs">
+          One kernel of knowledge at a time
+        </div>
+      </q-toolbar-title>
+      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps
+        >To Course Lab</q-btn
+      >
+    </q-toolbar>
     <div class="q-pa-md q-gutter-md">
-      <div class="text-h2 text-primary">Lesson Builder</div>
-      <div class="text-subtitle1 text-secondary">
-        One kernel of knowledge at a time
-      </div>
       <div class="section-style shadow-3">
         <q-toolbar>
           <q-toolbar-title>Lessons</q-toolbar-title>
@@ -27,26 +34,30 @@
                 }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
-                <q-btn
-                  v-if="lesson.courseID"
-                  label="on course"
-                  :to="{
-                    name: 'courseBuilder',
-                    params: { id: lesson.courseID },
-                  }"
-                  dense
-                  no-caps
-                />
-                <q-btn
-                  label="edit"
-                  icon="edit"
-                  :to="{
-                    name: 'lessonPlanner',
-                    params: { id: lesson.id },
-                  }"
-                  dense
-                  no-caps
-                />
+                <q-btn-group push>
+                  <q-btn
+                    v-if="lesson.courseID"
+                    label="on course"
+                    :to="{
+                      name: 'courseBuilder',
+                      params: { id: lesson.courseID },
+                    }"
+                    color="primary"
+                    dense
+                    no-caps
+                  />
+                  <q-btn
+                    label="edit"
+                    icon="edit"
+                    :to="{
+                      name: 'lessonPlanner',
+                      params: { id: lesson.id },
+                    }"
+                    color="secondary"
+                    dense
+                    no-caps
+                  />
+                </q-btn-group>
               </q-item-section>
             </q-item>
           </q-list>
@@ -63,20 +74,20 @@
             Be careful! Actions taken here are irreversible.
           </div>
           <q-list>
-            <q-item v-for="course in builder.cachedLessonList" :key="course.id">
+            <q-item v-for="item in builder.cachedLessonList" :key="item.id">
               <q-item-section>
-                <q-item-label class="text-bold">{{ course.name }}</q-item-label>
+                <q-item-label>{{ item.title }}</q-item-label>
                 <q-item-label caption lines="2">{{
-                  course.description
+                  item.subtitle
                 }}</q-item-label>
               </q-item-section>
               <q-item-section side>
                 <q-btn
-                  @click="() => onDeleteLesson(lesson.id)"
+                  @click="() => onDeleteLesson(item.id)"
                   icon="delete"
                   dense
                   color="accent"
-                  label="Delete Course"
+                  label="Delete Lesson"
                 />
               </q-item-section> </q-item
           ></q-list>
