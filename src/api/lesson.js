@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
 import { getLesson } from '../graphql/queries'
-import { updateLesson, deleteLesson } from '../graphql/mutations'
+import { createLesson, updateLesson, deleteLesson } from '../graphql/mutations'
 import {
   listLessonMarkers,
   listLessonMarkersForCourse,
@@ -12,12 +12,12 @@ import {
  * @param {*} given
  * @returns Lesson
  */
-export async function createLesson(title) {
-  console.log('createLesson', title)
+export async function doCreateLesson(title, courseId) {
+  console.log('doCreateLesson', { title, courseId })
   try {
     const results = await API.graphql({
-      query: createLessonWithTitle,
-      variables: { title },
+      query: createLesson,
+      variables: { input: { courseID: courseId, title } },
     })
     return results.data.createLesson
   } catch (err) {

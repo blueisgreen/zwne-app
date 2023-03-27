@@ -68,6 +68,11 @@
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Lessons</div>
         <div class="col">
+          <q-btn
+            @click="newLessonDialog = true"
+            icon="add_circle"
+            color="primary"
+          />
           <ul>
             <li v-for="lesson in courseLessonList" :key="lesson.id">
               <router-link
@@ -183,6 +188,34 @@
     <div v-if="courseToBuild && editMode">
       <course-detail-edit :course="courseToBuild" @cancel="onCancelEdit" />
     </div>
+
+    <q-dialog v-model="newLessonDialog" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Give the lesson a title</div>
+          <div class="text-subtitle1">You can change it later.</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input
+            dense
+            v-model="newLessonTitle"
+            autofocus
+            @keyup.enter="onCreateLessonFromDialog"
+          />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn
+            flat
+            label="Create Lesson"
+            @click="onCreateLessonFromDialog"
+            v-close-popup
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -201,9 +234,9 @@ const courseToBuild = computed(() => {
   return builder.cachedCourse(courseId)
 })
 const courseLessonList = computed(() => {
-  return []
-  // const path = courseToBuild.value.lessonPath || []
-  // return path.map((lessonId) => builder.lessonPlan(lessonId))
+  return builder.cachedLessonList.filter(
+    (lesson) => lesson.courseID === courseId
+  )
 })
 const tagListDisplay = computed(() => {
   const { tags } = courseToBuild.value
@@ -213,9 +246,22 @@ const tagListDisplay = computed(() => {
 })
 const editMode = ref(false)
 
+const newLessonDialog = ref(false)
+const newLessonTitle = ref('')
+async function onCreateLessonFromDialog() {
+  try {
+    if (newLessonTitle.value && newLessonTitle.value != '') {
+      await builder.spawnLesson(newLessonTitle.value, courseId)
+    }
+  } catch (err) {
+    console.log(err)
+  }
+  newLessonDialog.value = false
+}
+
 function onEditCourse() {
-  builder.loadLessons()
-  editMode.value = true
+  // builder.loadLessons()
+  // editMode.value = true
 }
 function onCancelEdit() {
   editMode.value = false

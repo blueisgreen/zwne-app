@@ -10,7 +10,7 @@ import {
   archiveCourse,
   reviveCourse,
   deleteCourse,
-  createLesson,
+  doCreateLesson,
   fetchLessons,
   fetchLessonsForCourse,
   fetchLesson,
@@ -177,8 +177,8 @@ export const useCourseLabStore = defineStore('courseLab', {
     // -- Lesson actions
     // ------------------
 
-    async spawnLesson(title = 'a suitable title') {
-      const newborn = await createLesson(title)
+    async spawnLesson(title = 'a suitable title', courseId) {
+      const newborn = await doCreateLesson(title, courseId)
       this.cacheLesson(newborn)
     },
     async loadLessons() {

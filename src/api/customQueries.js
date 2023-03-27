@@ -51,8 +51,8 @@ export const createCourseWithName = /* GraphQL */ `
 `
 
 export const createLessonWithTitle = /* GraphQL */ `
-  mutation CreateCourse($title: String!) {
-    createLesson(input: { title: $title }) {
+  mutation CreateCourse($title: String!, $courseId: ID!) {
+    createLesson(input: { title: $title, courseID: $courseId }) {
       id
       title
     }
