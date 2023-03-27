@@ -20,7 +20,7 @@
         <q-scroll-area class="scroller-style">
           <q-list>
             <q-item
-              v-for="course in builder.courseList"
+              v-for="course in builder.cachedCourseList"
               :key="course.id"
               clickable
               :to="{ name: 'courseBuilder', params: { id: course.id } }"
@@ -33,39 +33,6 @@
               </q-item-section>
               <q-item-section side top>
                 <q-item-label>{{ course.status }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-scroll-area>
-      </div>
-      <div class="section-style shadow-3">
-        <q-toolbar>
-          <q-toolbar-title>Lessons</q-toolbar-title>
-          <q-btn
-            label="Add Lesson"
-            icon="add_circle"
-            @click="newLessonDialog = true"
-            color="primary"
-            dense
-            no-caps
-          />
-        </q-toolbar>
-        <q-scroll-area class="scroller-style">
-          <q-list>
-            <q-item
-              v-for="lessonPlan in builder.lessonPlanList"
-              :key="lessonPlan.id"
-              clickable
-              :to="{ name: 'lessonPlanner', params: { id: lessonPlan.id } }"
-            >
-              <q-item-section>
-                <q-item-label>{{ lessonPlan.title }}</q-item-label>
-                <q-item-label caption lines="2">{{
-                  lessonPlan.subtitle
-                }}</q-item-label>
-              </q-item-section>
-              <q-item-section side top>
-                <q-item-label>{{ getStatus(lessonPlan) }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -175,17 +142,6 @@ onBeforeMount(async () => {
   await Promise.all([builder.loadCourses(), builder.loadLessons()])
 })
 
-async function onDeleteCourse(id) {
-  await builder.handleDeleteCourse(id)
-}
-function getStatus(lesson) {
-  return lesson.archivedAt
-    ? 'archived'
-    : lesson.publishedAt
-    ? 'published'
-    : 'draft'
-}
-
 async function onCreateCourseFromDialog() {
   try {
     if (newCourseName.value && newCourseName.value != '') {
@@ -196,15 +152,9 @@ async function onCreateCourseFromDialog() {
   }
   newCourseDialog.value = false
 }
-async function onCreateLessonFromDialog() {
-  try {
-    if (newLessonTitle.value && newLessonTitle.value != '') {
-      await builder.spawnLesson(newLessonTitle.value)
-    }
-  } catch (err) {
-    console.log(err)
-  }
-  newLessonDialog.value = false
+
+async function onDeleteCourse(id) {
+  await builder.handleDeleteCourse(id)
 }
 </script>
 

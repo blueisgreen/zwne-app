@@ -3,6 +3,7 @@ import {
   createCourse,
   fetchCourses,
   fetchCourse,
+  fetchCourseLessons,
   saveCourse,
   openCourse,
   closeCourse,
@@ -45,7 +46,7 @@ export const useCourseLabStore = defineStore('courseLab', {
       return Object.keys(state.lessonIndex)
     },
     cachedLessonList(state) {
-      return state.lessonPlans.map((planId) => state.lessonIndex[planId])
+      return state.cachedLessonIds.map((planId) => state.lessonIndex[planId])
     },
     cachedLesson: (state) => {
       return (lessonId) => {
@@ -108,6 +109,11 @@ export const useCourseLabStore = defineStore('courseLab', {
       console.log('loadCourse', courseId)
       const course = await fetchCourse(courseId)
       this.cacheCourse(course)
+      const lessons = await fetchCourseLessons(courseId)
+      console.log('lessons', lessons)
+      if (Array.isArray(lessons)) {
+        lessons.forEach((lesson) => this.cacheLesson(lesson))
+      }
     },
     async handleSaveCourse(deltas) {
       console.log('onSaveCourse', deltas)

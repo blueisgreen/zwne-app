@@ -12,12 +12,12 @@ import {
  * @param {*} given
  * @returns Lesson
  */
-export async function createLesson(lessonTitle) {
-  console.log('createLesson')
+export async function createLesson(title) {
+  console.log('createLesson', title)
   try {
     const results = await API.graphql({
       query: createLessonWithTitle,
-      variables: { title: lessonTitle },
+      variables: { title },
     })
     return results.data.createLesson
   } catch (err) {

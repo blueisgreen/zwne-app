@@ -6,6 +6,7 @@ import {
   getCourseForUpdate,
   deleteCourseAbridged,
 } from './customQueries'
+import { getCourse, lessonsByCourseID } from '../graphql/queries'
 import { updateCourse } from '../graphql/mutations'
 import { CourseStatusOptions } from '../models'
 import { toAWSDateTime } from '../components/modelTools'
@@ -16,7 +17,7 @@ import { toAWSDateTime } from '../components/modelTools'
  * @returns Course
  */
 export async function createCourse(courseName) {
-  console.log('createCourse')
+  console.log('createCourse', courseName)
   try {
     const results = await API.graphql({
       query: createCourseWithName,
@@ -38,7 +39,6 @@ export async function fetchCourses() {
     const results = await API.graphql({
       query: listCourseMarkers,
     })
-    console.log('courses', results)
     return results.data.listCourses.items
   } catch (err) {
     console.error(err)
@@ -50,21 +50,33 @@ export async function fetchCourses() {
  * @returns Course
  */
 export async function fetchCourse(id) {
-  console.log('fetchCourse')
-
+  console.log('fetchCourse', id)
   try {
     const results = await API.graphql({
-      query: getCourseWithLessonMarkers,
+      query: getCourse,
       variables: { id },
     })
-    console.log('getCourseWithLessons', results)
     return results.data.getCourse
   } catch (err) {
     console.error(err)
   }
 }
 
+export async function fetchCourseLessons(courseID) {
+  console.log('fetchCourse', courseID)
+  try {
+    const results = await API.graphql({
+      query: lessonsByCourseID,
+      variables: { courseID },
+    })
+    return results.data.lessonsByCourseID.items
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 async function getCourseNow(id) {
+  console.log('getCourseNow', id)
   try {
     const original = await API.graphql({
       query: getCourseForUpdate,
@@ -77,7 +89,7 @@ async function getCourseNow(id) {
 }
 
 async function goSaveCourse(deltas) {
-  console.log('saveCourse', deltas)
+  console.log('goSaveCourse', deltas)
   try {
     const results = await API.graphql({
       query: updateCourse,
@@ -113,6 +125,7 @@ export async function saveCourse(id, deltas) {
  * @returns
  */
 export async function openCourse(id) {
+  console.log('openCourse', id)
   return await saveCourse(id, {
     status: CourseStatusOptions.OPEN,
     statusChangedAt: toAWSDateTime(new Date()),
@@ -125,6 +138,7 @@ export async function openCourse(id) {
  * @returns
  */
 export async function closeCourse(id) {
+  console.log('closeCourse', id)
   return await saveCourse(id, {
     status: CourseStatusOptions.CLOSED,
     statusChangedAt: toAWSDateTime(new Date()),
@@ -137,6 +151,7 @@ export async function closeCourse(id) {
  * @returns
  */
 export async function archiveCourse(id) {
+  console.log('archiveCourse', id)
   const archivedAt = toAWSDateTime(new Date())
   return await saveCourse(id, {
     status: CourseStatusOptions.ARCHIVED,
@@ -145,6 +160,7 @@ export async function archiveCourse(id) {
 }
 
 export async function reviveCourse(id) {
+  console.log('reviveCourse', id)
   return await saveCourse(id, {
     status: CourseStatusOptions.CLOSED,
     statusChangedAt: toAWSDateTime(new Date()),
@@ -156,6 +172,7 @@ export async function reviveCourse(id) {
  * @param {*} id
  */
 export async function deleteCourse(id) {
+  console.log('deleteCourse', id)
   try {
     const result = await API.graphql({
       query: deleteCourseAbridged,

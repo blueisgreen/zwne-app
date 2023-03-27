@@ -14,7 +14,7 @@ export const listCourseMarkers = /* GraphQL */ `
 
 export const listLessonMarkers = `
 query ListLessonMarkers {
-  listLessons() {
+  listLessons {
     items {
       id
       title
