@@ -49,6 +49,11 @@ const routes = [
         component: () => import('pages/lessons/planner/CourseBuilderPage.vue'),
       },
       {
+        path: 'lesson-builder',
+        name: 'lessonBuilder',
+        component: () => import('pages/lessons/planner/LessonBuilderPage.vue'),
+      },
+      {
         path: 'lesson-planner/:id',
         name: 'lessonPlanner',
         component: () => import('pages/lessons/planner/LessonPlannerPage.vue'),

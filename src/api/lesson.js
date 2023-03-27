@@ -26,6 +26,24 @@ export async function doCreateLesson(title, courseId) {
 }
 
 /**
+ * Attempts to persist a new lesson based on given values.
+ * @param {*} given
+ * @returns Lesson
+ */
+export async function doCreateDetachedLesson(title) {
+  console.log('doCreateDetachedLesson', { title })
+  try {
+    const results = await API.graphql({
+      query: createLesson,
+      variables: { input: { title } },
+    })
+    return results.data.createLesson
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+/**
  * Retrieves a list of lessons.
  * @returns
  */

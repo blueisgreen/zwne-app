@@ -22,6 +22,7 @@ import {
   archiveLesson,
   reviveLesson,
   goDeleteLesson,
+  doCreateDetachedLesson,
 } from '../api'
 import { difference } from 'components/modelTools'
 
@@ -178,7 +179,12 @@ export const useCourseLabStore = defineStore('courseLab', {
     // ------------------
 
     async spawnLesson(title = 'a suitable title', courseId) {
-      const newborn = await doCreateLesson(title, courseId)
+      let newborn = null
+      if (!courseId) {
+        newborn = await doCreateDetachedLesson(title)
+      } else {
+        newborn = await doCreateLesson(title, courseId)
+      }
       this.cacheLesson(newborn)
     },
     async loadLessons() {

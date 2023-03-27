@@ -1,4 +1,4 @@
-type Lesson @model @auth(rules: [{allow: public}]) {
+type Lesson @model @auth(rules: [{ allow: public }]) {
   id: ID!
   title: String
   subtitle: String
@@ -7,7 +7,7 @@ type Lesson @model @auth(rules: [{allow: public}]) {
   content: String
   archivedAt: AWSDateTime
   publishedAt: AWSDateTime
-  courseID: ID! @index(name: "byCourse")
+  courseID: ID @index(name: "byCourse")
 }
 
 enum CourseStatusOptions {
@@ -25,7 +25,7 @@ enum CourseLevel {
   ALL
 }
 
-type Course @model @auth(rules: [{allow: public}]) {
+type Course @model @auth(rules: [{ allow: public }]) {
   id: ID!
   name: String
   description: String
@@ -38,4 +38,3 @@ type Course @model @auth(rules: [{allow: public}]) {
   lessons: [Lesson] @hasMany(indexName: "byCourse", fields: ["id"])
   notes: String
 }
- 
