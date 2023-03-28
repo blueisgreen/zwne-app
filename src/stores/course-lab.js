@@ -54,6 +54,9 @@ export const useCourseLabStore = defineStore('courseLab', {
         return state.lessonIndex[lessonId]
       }
     },
+    lessonsWithoutCourse: (state) => {
+      return this.cachedLessonList.filter((lesson) => lesson.courseID === null)
+    },
   },
   actions: {
     cacheCourse(course) {

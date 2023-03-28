@@ -32,16 +32,25 @@
       class="q-ma-md q-pa-md course-info shadow-3"
     >
       <div class="row q-pb-sm">
+        <div class="col-2">&nbsp;</div>
         <div class="col">
           <div class="text-center text-h6">About This Course</div>
+        </div>
+        <div class="col-2 text-align-right">
+          <q-space />
+          <q-btn
+            dense
+            icon="edit"
+            no-caps
+            label="edit course"
+            color="secondary"
+            @click="onEditCourse"
+          />
         </div>
       </div>
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Name</div>
         <div class="col">{{ courseToBuild.name }}</div>
-        <q-page-sticky position="top-right" :offset="[40, 120]">
-          <q-btn fab icon="edit" color="accent" @click="onEditCourse" />
-        </q-page-sticky>
       </div>
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Description</div>
@@ -77,17 +86,31 @@
                 </router-link>
               </q-item-section>
               <q-item-section side>
-                <q-btn icon="delete" @click="() => onRemoveLesson(lesson.id)" />
+                <q-btn
+                  icon="remove_circle_outline"
+                  color="accent"
+                  dense
+                  no-caps
+                  label="remove"
+                  @click="() => onRemoveLesson(lesson.id)"
+                />
               </q-item-section>
             </q-item>
           </q-list>
         </div>
-        <div class="col-1"></div>
-        <div class="col-2">
+        <div class="col-2 q-gutter-xs">
           <q-btn
             @click="newLessonDialog = true"
-            icon="add_circle"
-            label="New Lesson"
+            icon="add_circle_outline"
+            label="new"
+            color="primary"
+            dense
+            no-caps
+          />
+          <q-btn
+            @click="newLessonDialog = true"
+            icon="add_circle_outline"
+            label="attach"
             color="primary"
             dense
             no-caps
@@ -214,6 +237,28 @@
             autofocus
             @keyup.enter="onCreateLessonFromDialog"
           />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn
+            flat
+            label="Create Lesson"
+            @click="onCreateLessonFromDialog"
+            v-close-popup
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="pickLessonDialog" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Pick an available lesson</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-select> </q-select>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
