@@ -108,7 +108,7 @@
             no-caps
           />
           <q-btn
-            @click="newLessonDialog = true"
+            @click="pickLessonDialog = true"
             icon="add_circle_outline"
             label="attach"
             color="primary"
@@ -305,6 +305,7 @@ const editMode = ref(false)
 
 const newLessonDialog = ref(false)
 const newLessonTitle = ref('')
+
 async function onCreateLessonFromDialog() {
   try {
     if (newLessonTitle.value && newLessonTitle.value != '') {
@@ -316,12 +317,14 @@ async function onCreateLessonFromDialog() {
   newLessonDialog.value = false
 }
 
+const pickLessonDialog = ref(false)
+const pickedLesson = ref(null)
+
 async function onRemoveLesson(lessonId) {
   builder.handleRemoveLessonFromCourse(courseId, lessonId)
 }
 function onEditCourse() {
-  // builder.loadLessons()
-  // editMode.value = true
+  editMode.value = true
 }
 function onCancelEdit() {
   editMode.value = false

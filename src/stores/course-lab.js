@@ -123,9 +123,9 @@ export const useCourseLabStore = defineStore('courseLab', {
       console.log('onSaveCourse', deltas)
       const { id, lessonPath } = deltas
 
-      const startingPath = this.course(id).lessonPath || []
+      // const startingPath = this.cachedCourse(id).lessonPath || []
 
-      await this.syncLessonsForCourse(courseId, startingPath, lessonPath)
+      // await this.syncLessonsForCourse(courseId, startingPath, lessonPath)
 
       const afterSave = await saveCourse(id, deltas)
       if (afterSave) {
