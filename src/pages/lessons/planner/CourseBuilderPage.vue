@@ -68,15 +68,21 @@
       <div class="row q-pb-sm">
         <div class="col-2 prop-label">Lessons</div>
         <div class="col">
-          <ul>
-            <li v-for="lesson in courseLessonList" :key="lesson.id">
-              <router-link
-                :to="{ name: 'lessonPlanner', params: { id: lesson.id } }"
-                >{{ lesson.title }}</router-link
-              >
-            </li>
-          </ul>
+          <q-list dense>
+            <q-item dense v-for="lesson in courseLessonList" :key="lesson.id">
+              <q-item-section>
+                <router-link
+                  :to="{ name: 'lessonPlanner', params: { id: lesson.id } }"
+                  >{{ lesson.title }}
+                </router-link>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn icon="delete" @click="() => onRemoveLesson(lesson.id)" />
+              </q-item-section>
+            </q-item>
+          </q-list>
         </div>
+        <div class="col-1"></div>
         <div class="col-2">
           <q-btn
             @click="newLessonDialog = true"
@@ -239,6 +245,7 @@ const courseToBuild = computed(() => {
   return builder.cachedCourse(courseId)
 })
 const courseLessonList = computed(() => {
+  // FIXME: find more direct way to list lessons on course; push into store logic
   return builder.cachedLessonList.filter(
     (lesson) => lesson.courseID === courseId
   )
@@ -264,6 +271,9 @@ async function onCreateLessonFromDialog() {
   newLessonDialog.value = false
 }
 
+async function onRemoveLesson(lessonId) {
+  builder.handleRemoveLessonFromCourse(courseId, lessonId)
+}
 function onEditCourse() {
   // builder.loadLessons()
   // editMode.value = true

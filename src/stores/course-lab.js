@@ -216,6 +216,10 @@ export const useCourseLabStore = defineStore('courseLab', {
       const afterSave = await saveLesson(deltas)
       this.cacheLesson(afterSave)
     },
+    async handleRemoveLessonFromCourse(courseId, lessonId) {
+      console.log('handleRemoveLessonFromCourse', { courseId, lessonId })
+      await removeLessonFromCourse(lessonId)
+    },
     async handleDeleteLesson(id) {
       console.log('deleteLesson', id)
       const deleted = await goDeleteLesson(id)

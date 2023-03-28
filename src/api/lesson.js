@@ -5,6 +5,7 @@ import {
   listLessonMarkers,
   listLessonMarkersForCourse,
   createLessonWithTitle,
+  getLessonForUpdate,
 } from './customQueries'
 
 /**
@@ -90,6 +91,19 @@ export async function fetchLesson(id) {
   }
 }
 
+export async function getLessonNow(id) {
+  console.log('getLessonNow', id)
+  try {
+    const original = await API.graphql({
+      query: getLessonForUpdate,
+      variables: { id },
+    })
+    return original.data.getLesson
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 /**
  * Update lesson information.
  * @param {*} given
@@ -111,7 +125,7 @@ async function goSaveLesson(deltas) {
 export async function saveLesson(id, deltas) {
   console.log('saveLesson', { id, deltas })
   try {
-    const original = await getLesson(id)
+    const original = await getLessonNow(id)
     const updated = await goSaveLesson({ ...original, ...deltas })
     return updated
   } catch (err) {
@@ -137,13 +151,13 @@ export async function goDeleteLesson(id) {
 
 export async function addLessonToCourse(courseId, lessonId) {
   return await saveLesson(lessonId, {
-    courseId: courseId,
+    courseID: courseId,
   })
 }
 
 export async function removeLessonFromCourse(lessonId) {
   return await saveLesson(lessonId, {
-    courseId: null,
+    courseID: null,
   })
 }
 

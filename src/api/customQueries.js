@@ -76,6 +76,22 @@ export const getCourseForUpdate = /* GraphQL */ `
   }
 `
 
+export const getLessonForUpdate = /* GraphQL */ `
+  query GetLessonForUpdate($id: ID!) {
+    getLesson(id: $id) {
+      archivedAt
+      categories
+      content
+      courseID
+      id
+      publishedAt
+      subtitle
+      title
+      version
+    }
+  }
+`
+
 export const deleteCourseAbridged = /* GraphQL */ `
   mutation DeleteCourse(
     $input: DeleteCourseInput!
