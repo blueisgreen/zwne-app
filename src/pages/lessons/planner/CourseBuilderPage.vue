@@ -7,30 +7,25 @@
           Bundle lessons into enjoyable courses to maximize understanding.
         </div>
       </q-toolbar-title>
-      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps
-        >To Course Lab</q-btn
-      >
+      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps>To Course Lab</q-btn>
     </q-toolbar>
     <div v-if="!courseToBuild" class="q-pa-md">
       <div class="text-h4">Loading...</div>
       <div class="q-my-md">
-        If you get stuck here for more than a few seconds, it means we did not
-        find the course with the ID of
+        If you get stuck here for more than a few seconds, it means we did not find the
+        course with the ID of
         <span class="text-bold">{{ courseId }}</span
         >. Return to
         <router-link :to="{ name: 'courseLab' }">the Lab entrance</router-link>
         and choose something from the list of courses.
       </div>
       <div class="q-my-md">
-        If you just tried that and are still stuck, something else must be
-        wrong. Sorry about that.
+        If you just tried that and are still stuck, something else must be wrong. Sorry
+        about that.
       </div>
     </div>
 
-    <div
-      v-if="courseToBuild && !editMode"
-      class="q-ma-md q-pa-md course-info shadow-3"
-    >
+    <div v-if="courseToBuild && !editMode" class="q-ma-md q-pa-md course-info shadow-3">
       <div class="row q-pb-sm">
         <div class="col-2">&nbsp;</div>
         <div class="col">
@@ -80,8 +75,7 @@
           <q-list dense>
             <q-item dense v-for="lesson in courseLessonList" :key="lesson.id">
               <q-item-section>
-                <router-link
-                  :to="{ name: 'lessonPlanner', params: { id: lesson.id } }"
+                <router-link :to="{ name: 'lessonPlanner', params: { id: lesson.id } }"
                   >{{ lesson.title }}
                 </router-link>
               </q-item-section>
@@ -143,9 +137,7 @@
         <div class="col">
           {{
             courseToBuild.bannerImageUrl ||
-            'https://cdn.zanzisworld.com/courses/images/cover' +
-              courseToBuild.id +
-              '.png'
+            'https://cdn.zanzisworld.com/courses/images/cover' + courseToBuild.id + '.png'
           }}
         </div>
         <div class="col-1">
@@ -198,10 +190,7 @@
               color="secondary"
             />
             <q-btn
-              v-if="
-                courseToBuild.status === 'CLOSED' ||
-                courseToBuild.status === 'OPEN'
-              "
+              v-if="courseToBuild.status === 'CLOSED' || courseToBuild.status === 'OPEN'"
               @click.stop="() => builder.archiveCourse(courseId)"
               label="Archive"
               no-caps
@@ -258,15 +247,15 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-select> </q-select>
+          <q-select v-model="pickedLesson" :options="unassignedLessonOptions" />
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
           <q-btn
             flat
-            label="Create Lesson"
-            @click="onCreateLessonFromDialog"
+            label="Include Lesson"
+            @click="onAttachLessonFromDialog"
             v-close-popup
           />
         </q-card-actions>
@@ -291,9 +280,7 @@ const courseToBuild = computed(() => {
 })
 const courseLessonList = computed(() => {
   // FIXME: find more direct way to list lessons on course; push into store logic
-  return builder.cachedLessonList.filter(
-    (lesson) => lesson.courseID === courseId
-  )
+  return builder.cachedLessonList.filter((lesson) => lesson.courseID === courseId)
 })
 const tagListDisplay = computed(() => {
   const { tags } = courseToBuild.value
@@ -305,7 +292,6 @@ const editMode = ref(false)
 
 const newLessonDialog = ref(false)
 const newLessonTitle = ref('')
-
 async function onCreateLessonFromDialog() {
   try {
     if (newLessonTitle.value && newLessonTitle.value != '') {
@@ -319,6 +305,25 @@ async function onCreateLessonFromDialog() {
 
 const pickLessonDialog = ref(false)
 const pickedLesson = ref(null)
+const unassignedLessonOptions = computed(() => {
+  return builder.lessonsWithoutCourse.map((lesson) => ({
+    label: lesson.title,
+    value: lesson.id,
+  }))
+})
+
+async function onAttachLessonFromDialog() {
+  try {
+    const lessonOption = pickedLesson.value
+    if (lessonOption) {
+      await builder.handleAddLessonToCourse(courseId, lessonOption.value)
+      pickedLesson.value = null
+    }
+  } catch (err) {
+    console.log(err)
+  }
+  pickLessonDialog.value = false
+}
 
 async function onRemoveLesson(lessonId) {
   builder.handleRemoveLessonFromCourse(courseId, lessonId)
@@ -337,7 +342,7 @@ onMounted(async () => {
   console.log('CourseBuilderPage.onMounted')
   if (courseId) {
     // TODO: add loading indicator
-    await builder.loadCourse(courseId, true)
+    await Promise.all([builder.loadCourse(courseId, true), builder.loadLessons()])
   } else {
     console.error('Failed to load. Course ID unknown.')
   }

@@ -55,7 +55,7 @@ export const useCourseLabStore = defineStore('courseLab', {
       }
     },
     lessonsWithoutCourse: (state) => {
-      return this.cachedLessonList.filter((lesson) => lesson.courseID === null)
+      return state.cachedLessonList.filter((lesson) => lesson.courseID === null)
     },
   },
   actions: {
@@ -219,9 +219,15 @@ export const useCourseLabStore = defineStore('courseLab', {
       const afterSave = await saveLesson(deltas)
       this.cacheLesson(afterSave)
     },
-    async handleRemoveLessonFromCourse(courseId, lessonId) {
-      console.log('handleRemoveLessonFromCourse', { courseId, lessonId })
-      await removeLessonFromCourse(lessonId)
+    async handleAddLessonToCourse(courseId, lessonId) {
+      console.log('handleAddLessonToCourse', { courseId, lessonId })
+      const next = await addLessonToCourse(courseId, lessonId)
+      this.cacheLesson(next)
+    },
+    async handleRemoveLessonFromCourse(lessonId) {
+      console.log('handleRemoveLessonFromCourse', lessonId)
+      const next = await removeLessonFromCourse(lessonId)
+      this.cacheLesson(next)
     },
     async handleDeleteLesson(id) {
       console.log('deleteLesson', id)
