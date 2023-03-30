@@ -216,7 +216,7 @@ function bumpSort(index, direction = 0) {
 }
 async function onSaveCourse() {
   console.log('onSaveCourse', draftCourse.value)
-  await builder.handleSaveCourse(draftCourse.value)
+  await builder.handleSaveCourse(draftCourse.value.id, draftCourse.value)
   emit('cancel')
 }
 onMounted(() => {

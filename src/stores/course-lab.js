@@ -119,36 +119,20 @@ export const useCourseLabStore = defineStore('courseLab', {
         lessons.forEach((lesson) => this.cacheLesson(lesson))
       }
     },
-    async handleSaveCourse(deltas) {
-      console.log('onSaveCourse', deltas)
-      const { id, lessonPath } = deltas
-
-      // const startingPath = this.cachedCourse(id).lessonPath || []
-
-      // await this.syncLessonsForCourse(courseId, startingPath, lessonPath)
-
-      const afterSave = await saveCourse(id, deltas)
+    async handleSaveCourse(courseId, deltas) {
+      console.log('onSaveCourse', { courseId, deltas })
+      const afterSave = await saveCourse(courseId, deltas)
       if (afterSave) {
         this.cacheCourse(afterSave)
       }
     },
-    async syncLessonsForCourse(courseId, startingPath, nextPath) {
-      console.log('syncLessonsForCourse', { courseId, startingPath, nextPath })
-
-      const startingIds = [...new Set(nextPath)]
-      const nextIds = [...new Set(nextPath)]
-
-      const lessonsToAdd = difference(nextIds, startingIds)
-      const lessonsToRemove = difference(startingIds, nextIds)
-      console.log('differences', { lessonsToAdd, lessonsToRemove })
-
-      // FIXME: make sure API methods work correctly with new schema
-      lessonsToAdd.forEach(async (lessonId) => {
-        const result = await addLessonToCourse(courseId, lessonId)
+    async putLessonInPath(courseId, lessonId) {
+      const pathNow = this.cachedCourse(courseId).lessonPath || []
+      pathNext = [...pathNow, lessonId]
+      const nextCourse = await this.saveCourse(courseId, {
+        lessonPath: pathNext,
       })
-      lessonsToRemove.forEach(async (lessonId) => {
-        await removeLessonFromCourse(lessonId)
-      })
+      this.cacheCourse(nextCourse)
     },
     async handleDeleteCourse(id) {
       console.log('deleteCourse', id)
@@ -187,6 +171,7 @@ export const useCourseLabStore = defineStore('courseLab', {
         newborn = await doCreateDetachedLesson(title)
       } else {
         newborn = await doCreateLesson(title, courseId)
+        await this.putLessonInPath(courseId, lessonId)
       }
       this.cacheLesson(newborn)
     },
@@ -223,11 +208,15 @@ export const useCourseLabStore = defineStore('courseLab', {
       console.log('handleAddLessonToCourse', { courseId, lessonId })
       const next = await addLessonToCourse(courseId, lessonId)
       this.cacheLesson(next)
+      await this.putLessonInPath(courseId, lessonId)
     },
     async handleRemoveLessonFromCourse(lessonId) {
       console.log('handleRemoveLessonFromCourse', lessonId)
-      const next = await removeLessonFromCourse(lessonId)
-      this.cacheLesson(next)
+      console.log('Not implemented -- issues with removing relationship')
+      // const next = await removeLessonFromCourse(lessonId)
+      // this.cacheLesson(next)
+      // TODO: consider alternatives: clone-delete? how often does reassign happen?
+      //   prefer many-to-many; PITA but at least possible
     },
     async handleDeleteLesson(id) {
       console.log('deleteLesson', id)
