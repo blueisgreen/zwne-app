@@ -54,6 +54,12 @@ export const useCourseLabStore = defineStore('courseLab', {
         return state.lessonIndex[lessonId]
       }
     },
+    cachedLessonsOnCourse: (state) => {
+      console.warn('not implemented')
+      return (courseId) => {
+        return []
+      }
+    },
     lessonsWithoutCourse: (state) => {
       return state.cachedLessonList.filter((lesson) => lesson.courseID === null)
     },
@@ -128,10 +134,11 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
     async putLessonInPath(courseId, lessonId) {
       const pathNow = this.cachedCourse(courseId).lessonPath || []
-      pathNext = [...pathNow, lessonId]
-      const nextCourse = await this.saveCourse(courseId, {
+      const pathNext = [...pathNow, lessonId]
+      const nextCourse = await this.handleSaveCourse(courseId, {
         lessonPath: pathNext,
       })
+      console.log('nextCourse', nextCourse)
       this.cacheCourse(nextCourse)
     },
     async handleDeleteCourse(id) {
@@ -171,7 +178,7 @@ export const useCourseLabStore = defineStore('courseLab', {
         newborn = await doCreateDetachedLesson(title)
       } else {
         newborn = await doCreateLesson(title, courseId)
-        await this.putLessonInPath(courseId, lessonId)
+        await this.putLessonInPath(courseId, newborn.id)
       }
       this.cacheLesson(newborn)
     },

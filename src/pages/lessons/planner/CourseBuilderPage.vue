@@ -290,9 +290,12 @@ const courseToBuild = computed(() => {
   return builder.cachedCourse(courseId)
 })
 const courseLessonList = computed(() => {
-  return this.courseToBuild.lessonPath.map((lesson) =>
-    builder.cachedLesson(lesson.id)
-  )
+  // return []
+  const path = courseToBuild?.value.lessonPath || []
+  console.log('courseLessonList path', path)
+  const lessonList = path.map((lessonId) => builder.cachedLesson(lessonId))
+  console.log('lessonList', lessonList)
+  return lessonList
 })
 const tagListDisplay = computed(() => {
   const { tags } = courseToBuild.value
