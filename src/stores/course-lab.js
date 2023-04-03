@@ -13,6 +13,7 @@ import {
   doCreateLesson,
   fetchLessons,
   fetchLessonsForCourse,
+  fetchLessonsWithoutCourse,
   fetchLesson,
   saveLesson,
   addLessonToCourse,
@@ -195,6 +196,15 @@ export const useCourseLabStore = defineStore('courseLab', {
     async loadLessonsForCourse(courseId) {
       console.log('loadLessonsForCourse', courseId)
       const lessons = await fetchLessonsForCourse(courseId)
+      if (lessons) {
+        lessons.forEach((lesson) => this.cacheLesson(lesson))
+      } else {
+        console.log('No lessons found for course.')
+      }
+    },
+    async loadLessonsWithoutCourse() {
+      console.log('loadLessonsWithoutCourse', courseId)
+      const lessons = await fetchLessonsWithoutCourse(courseId)
       if (lessons) {
         lessons.forEach((lesson) => this.cacheLesson(lesson))
       } else {

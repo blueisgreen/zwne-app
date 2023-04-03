@@ -64,11 +64,29 @@ export async function fetchLessons() {
  * @returns
  */
 export async function fetchLessonsForCourse(courseId) {
-  console.log('fetchLessons')
+  console.log('fetchLessonsForCourse')
   try {
     const results = await API.graphql({
       query: listLessonMarkersForCourse,
       variables: { courseId },
+    })
+    const out = results.data.listLessons.items
+    return out
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+/**
+ * Retrieves a list of lessons.
+ * @returns
+ */
+export async function fetchLessonsWithoutCourse() {
+  console.log('fetchLessonsWithoutCourse')
+  try {
+    const results = await API.graphql({
+      query: listLessonMarkersForCourse,
+      variables: { courseId: null },
     })
     const out = results.data.listLessons.items
     return out
