@@ -1,7 +1,10 @@
 <template>
-  <div v-if="!loaded">
-    Loading...please hold tight...but if you see this for longer than a few
-    seconds, something went wrong.
+  <div class="row" v-if="!loaded">
+    <div class="col-2 prop-label">Lessons</div>
+    <div class="col">
+      Loading lessons...please hold tight. However, if you see this for longer than a few
+      seconds, something went wrong.
+    </div>
   </div>
   <div class="row" v-else>
     <div class="col-2 prop-label">Lessons</div>
@@ -9,20 +12,7 @@
       <q-list dense>
         <q-item dense v-for="lesson in lessonsInPath" :key="lesson.id">
           <q-item-section>
-            <router-link
-              :to="{ name: 'lessonPlanner', params: { id: lesson.id } }"
-              >{{ lesson.title }}
-            </router-link>
-          </q-item-section>
-          <q-item-section side>
-            <q-btn
-              icon="remove_circle_outline"
-              color="accent"
-              dense
-              no-caps
-              label="remove"
-              @click="() => onRemoveLesson(lesson.id)"
-            />
+            {{ lesson.title }}
           </q-item-section>
         </q-item>
       </q-list>
@@ -95,7 +85,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUpdate } from 'vue'
 import { useCourseLabStore } from 'src/stores/course-lab.js'
 
 const builder = useCourseLabStore()
@@ -114,14 +104,52 @@ const unassignedLessonOptions = computed(() => {
 })
 
 const lessonsInPath = computed(() => {
-  return nextLessonPath.value.map((id) => builder.cachedLesson(id))
+  return nextLessonPath.value.map((id) => {
+    const cached = builder.cachedLesson(id)
+    return cached ? cached : { id: 'bah' }
+  })
+})
+
+const newLessonDialog = ref(false)
+const newLessonTitle = ref('')
+
+async function onCreateLessonFromDialog() {
+  try {
+    if (newLessonTitle.value && newLessonTitle.value != '') {
+      await builder.spawnLesson(newLessonTitle.value, props.courseId)
+    }
+  } catch (err) {
+    console.log(err)
+  }
+  newLessonDialog.value = false
+}
+
+const pickLessonDialog = ref(false)
+const pickedLesson = ref(null)
+
+async function onAttachLessonFromDialog() {
+  try {
+    const lessonOption = pickedLesson.value
+    if (lessonOption) {
+      await builder.handleAddLessonToCourse(props.courseId, lessonOption.value)
+      pickedLesson.value = null
+    }
+  } catch (err) {
+    console.log(err)
+  }
+  pickLessonDialog.value = false
+}
+
+onBeforeUpdate(() => {
+  nextLessonPath.value = [...props.startingLessonPath]
 })
 
 onMounted(async () => {
   // load lessons on course and lessons without a course
+  loaded.value = false
   await Promise.all([
     builder.loadLessonsForCourse(props.courseId),
-    builder.lessonsWithoutCourse(),
+    builder.loadLessonsWithoutCourse(),
   ])
   nextLessonPath.value = [...props.startingLessonPath]
   loaded.value = true

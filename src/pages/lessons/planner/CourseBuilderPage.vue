@@ -7,28 +7,26 @@
           Bundle lessons into enjoyable courses to maximize understanding.
         </div>
       </q-toolbar-title>
-      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps
-        >To Course Lab</q-btn
-      >
+      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps>To Course Lab</q-btn>
     </q-toolbar>
     <div v-if="!courseToBuild" class="q-pa-md">
       <div class="text-h4">Loading...</div>
       <div class="q-my-md">
-        If you get stuck here for more than a few seconds, it means we did not
-        find the course with the ID of
+        If you get stuck here for more than a few seconds, it means we did not find the
+        course with the ID of
         <span class="text-bold">{{ courseId }}</span
         >. Return to
         <router-link :to="{ name: 'courseLab' }">the Lab entrance</router-link>
         and choose something from the list of courses.
       </div>
       <div class="q-my-md">
-        If you just tried that and are still stuck, something else must be
-        wrong. Sorry about that.
+        If you just tried that and are still stuck, something else must be wrong. Sorry
+        about that.
       </div>
     </div>
 
     <div
-      v-if="courseToBuild && !editMode"
+      v-if="courseToBuild && !editDetailsMode"
       class="q-ma-md q-pa-md course-info shadow-3"
     >
       <div class="row q-pb-sm">
@@ -44,7 +42,7 @@
             no-caps
             label="edit course"
             color="secondary"
-            @click="onEditCourse"
+            @click="onEditCourseDetails"
           />
         </div>
       </div>
@@ -74,46 +72,33 @@
         <div class="col-2 prop-label">Notes (internal)</div>
         <div class="col">{{ courseToBuild.notes }}</div>
       </div>
-      <div class="row q-pb-sm">
+      <div v-if="editLessons">
+        <course-lesson-edit-panel
+          :courseId="courseId"
+          :starting-lesson-path="courseToBuild.lessonPath || []"
+        />
+      </div>
+      <div class="row q-pb-sm" v-else>
         <div class="col-2 prop-label">Lessons</div>
         <div class="col">
-          <q-list dense>
-            <q-item dense v-for="lesson in courseLessonList" :key="lesson.id">
+          <q-list dense bordered>
+            <q-item dense v-for="lesson in lessonsInPath" :key="lesson.id">
               <q-item-section>
-                <router-link
-                  :to="{ name: 'lessonPlanner', params: { id: lesson.id } }"
+                <router-link :to="{ name: 'lessonPlanner', params: { id: lesson.id } }"
                   >{{ lesson.title }}
                 </router-link>
-              </q-item-section>
-              <q-item-section side>
-                <q-btn
-                  icon="remove_circle_outline"
-                  color="accent"
-                  dense
-                  no-caps
-                  label="remove"
-                  @click="() => onRemoveLesson(lesson.id)"
-                />
               </q-item-section>
             </q-item>
           </q-list>
         </div>
-        <div class="col-2 q-gutter-xs">
+        <div class="col-2">
           <q-btn
-            @click="newLessonDialog = true"
-            icon="add_circle_outline"
-            label="new"
-            color="primary"
+            icon="edit"
+            color="secondary"
             dense
             no-caps
-          />
-          <q-btn
-            @click="pickLessonDialog = true"
-            icon="add_circle_outline"
-            label="attach"
-            color="primary"
-            dense
-            no-caps
+            label="edit lesson path"
+            @click="editLessons = true"
           />
         </div>
       </div>
@@ -143,9 +128,7 @@
         <div class="col">
           {{
             courseToBuild.bannerImageUrl ||
-            'https://cdn.zanzisworld.com/courses/images/cover' +
-              courseToBuild.id +
-              '.png'
+            'https://cdn.zanzisworld.com/courses/images/cover' + courseToBuild.id + '.png'
           }}
         </div>
         <div class="col-1">
@@ -198,10 +181,7 @@
               color="secondary"
             />
             <q-btn
-              v-if="
-                courseToBuild.status === 'CLOSED' ||
-                courseToBuild.status === 'OPEN'
-              "
+              v-if="courseToBuild.status === 'CLOSED' || courseToBuild.status === 'OPEN'"
               @click.stop="() => builder.archiveCourse(courseId)"
               label="Archive"
               no-caps
@@ -218,60 +198,9 @@
         </div>
       </div>
     </div>
-
-    <div v-if="courseToBuild && editMode">
-      <course-detail-edit :course="courseToBuild" @cancel="onCancelEdit" />
+    <div v-if="courseToBuild && editDetailsMode">
+      <course-detail-edit :course="courseToBuild" @cancel="onCancelEditDetails" />
     </div>
-
-    <q-dialog v-model="newLessonDialog" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Give the lesson a title</div>
-          <div class="text-subtitle1">You can change it later.</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-input
-            dense
-            v-model="newLessonTitle"
-            autofocus
-            @keyup.enter="onCreateLessonFromDialog"
-          />
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn
-            flat
-            label="Create Lesson"
-            @click="onCreateLessonFromDialog"
-            v-close-popup
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="pickLessonDialog" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Pick an available lesson</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-select v-model="pickedLesson" :options="unassignedLessonOptions" />
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn
-            flat
-            label="Include Lesson"
-            @click="onAttachLessonFromDialog"
-            v-close-popup
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -280,6 +209,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCourseLabStore } from 'src/stores/course-lab.js'
 import { displayDateTime } from 'components/displayTools'
+import CourseLessonEditPanel from './CourseLessonEditPanel.vue'
 import CourseDetailEdit from './CourseDetailEdit.vue'
 
 const route = useRoute()
@@ -289,13 +219,12 @@ const builder = useCourseLabStore()
 const courseToBuild = computed(() => {
   return builder.cachedCourse(courseId)
 })
-const courseLessonList = computed(() => {
-  // return []
-  const path = courseToBuild?.value.lessonPath || []
-  console.log('courseLessonList path', path)
-  const lessonList = path.map((lessonId) => builder.cachedLesson(lessonId))
-  console.log('lessonList', lessonList)
-  return lessonList
+const lessonsInPath = computed(() => {
+  const lessonPath = courseToBuild?.value.lessonPath || []
+  return lessonPath.map((lessonId) => {
+    const cached = builder.cachedLesson(id)
+    return cached ? cached : { id: 'bah' }
+  })
 })
 const tagListDisplay = computed(() => {
   const { tags } = courseToBuild.value
@@ -303,48 +232,14 @@ const tagListDisplay = computed(() => {
     ? courseToBuild.value.tags.reduce((accum, tag) => accum + `#${tag} `, '')
     : ''
 })
-const editMode = ref(false)
+const editDetailsMode = ref(false)
+const editLessons = ref(false)
 
-const newLessonDialog = ref(false)
-const newLessonTitle = ref('')
-async function onCreateLessonFromDialog() {
-  try {
-    if (newLessonTitle.value && newLessonTitle.value != '') {
-      await builder.spawnLesson(newLessonTitle.value, courseId)
-    }
-  } catch (err) {
-    console.log(err)
-  }
-  newLessonDialog.value = false
+function onEditCourseDetails() {
+  editDetailsMode.value = true
 }
-
-const pickLessonDialog = ref(false)
-const pickedLesson = ref(null)
-const unassignedLessonOptions = computed(() => {
-  return builder.lessonsWithoutCourse.map((lesson) => ({
-    label: lesson.title,
-    value: lesson.id,
-  }))
-})
-
-async function onAttachLessonFromDialog() {
-  try {
-    const lessonOption = pickedLesson.value
-    if (lessonOption) {
-      await builder.handleAddLessonToCourse(courseId, lessonOption.value)
-      pickedLesson.value = null
-    }
-  } catch (err) {
-    console.log(err)
-  }
-  pickLessonDialog.value = false
-}
-
-function onEditCourse() {
-  editMode.value = true
-}
-function onCancelEdit() {
-  editMode.value = false
+function onCancelEditDetails() {
+  editDetailsMode.value = false
 }
 function onEditImage() {
   alert('This will bring up a fancy image picker, someday.')
@@ -354,17 +249,14 @@ onMounted(async () => {
   console.log('CourseBuilderPage.onMounted')
   if (courseId) {
     // TODO: add loading indicator
-    await Promise.all([
-      builder.loadCourse(courseId, true),
-      builder.loadLessons(),
-    ])
+    await Promise.all([builder.loadCourse(courseId, true), builder.loadLessons()])
   } else {
     console.error('Failed to load. Course ID unknown.')
   }
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .lower-gap {
   margin-bottom: 0.5em;
 }

@@ -4,7 +4,7 @@ import { createLesson, updateLesson, deleteLesson } from '../graphql/mutations'
 import {
   listLessonMarkers,
   listLessonMarkersForCourse,
-  createLessonWithTitle,
+  listLessonMarkersWithoutCourse,
   getLessonForUpdate,
 } from './customQueries'
 
@@ -64,7 +64,7 @@ export async function fetchLessons() {
  * @returns
  */
 export async function fetchLessonsForCourse(courseId) {
-  console.log('fetchLessonsForCourse')
+  console.log('fetchLessonsForCourse', courseId)
   try {
     const results = await API.graphql({
       query: listLessonMarkersForCourse,
@@ -85,8 +85,7 @@ export async function fetchLessonsWithoutCourse() {
   console.log('fetchLessonsWithoutCourse')
   try {
     const results = await API.graphql({
-      query: listLessonMarkersForCourse,
-      variables: { courseId: null },
+      query: listLessonMarkersWithoutCourse,
     })
     const out = results.data.listLessons.items
     return out

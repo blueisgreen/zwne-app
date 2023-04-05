@@ -95,6 +95,7 @@ async function goSaveCourse(deltas) {
       query: updateCourse,
       variables: { input: deltas },
     })
+    console.log('results', results)
     return results.data.updateCourse
   } catch (err) {
     console.error(err)

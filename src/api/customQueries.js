@@ -26,13 +26,30 @@ query ListLessonMarkers {
 `
 
 export const listLessonMarkersForCourse = `
-query ListLessonMarkers($courseId) {
+query ListLessonMarkers($courseId: ID!) {
   listLessons(filter: {courseID: {eq: $courseId}}) {
     items {
       id
       title
       subtitle
       courseID
+    }
+  }
+}
+`
+
+export const listLessonMarkersWithoutCourse = `
+query MyQuery {
+  listLessons(filter: {courseID: {attributeExists: false}}) {
+    items {
+      id
+      title
+      subtitle
+      publishedAt
+      archivedAt
+      updatedAt
+      version
+      categories
     }
   }
 }
@@ -46,15 +63,6 @@ export const createCourseWithName = /* GraphQL */ `
       description
       level
       status
-    }
-  }
-`
-
-export const createLessonWithTitle = /* GraphQL */ `
-  mutation CreateCourse($title: String!, $courseId: ID!) {
-    createLesson(input: { title: $title, courseID: $courseId }) {
-      id
-      title
     }
   }
 `

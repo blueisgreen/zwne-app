@@ -55,12 +55,6 @@ export const useCourseLabStore = defineStore('courseLab', {
         return state.lessonIndex[lessonId]
       }
     },
-    cachedLessonsOnCourse: (state) => {
-      console.warn('not implemented')
-      return (courseId) => {
-        return []
-      }
-    },
     lessonsWithoutCourse: (state) => {
       return state.cachedLessonList.filter((lesson) => lesson.courseID === null)
     },
@@ -134,13 +128,13 @@ export const useCourseLabStore = defineStore('courseLab', {
       }
     },
     async putLessonInPath(courseId, lessonId) {
+      console.log('putLessonInPath', { courseId, lessonId })
       const pathNow = this.cachedCourse(courseId).lessonPath || []
       const pathNext = [...pathNow, lessonId]
-      const nextCourse = await this.handleSaveCourse(courseId, {
+      console.log('paths', { pathNow, pathNext })
+      await this.handleSaveCourse(courseId, {
         lessonPath: pathNext,
       })
-      console.log('nextCourse', nextCourse)
-      this.cacheCourse(nextCourse)
     },
     async handleDeleteCourse(id) {
       console.log('deleteCourse', id)
@@ -174,6 +168,7 @@ export const useCourseLabStore = defineStore('courseLab', {
     // ------------------
 
     async spawnLesson(title = 'a suitable title', courseId) {
+      console.log('spawnLesson', { title, courseId })
       let newborn = null
       if (!courseId) {
         newborn = await doCreateDetachedLesson(title)
@@ -203,8 +198,8 @@ export const useCourseLabStore = defineStore('courseLab', {
       }
     },
     async loadLessonsWithoutCourse() {
-      console.log('loadLessonsWithoutCourse', courseId)
-      const lessons = await fetchLessonsWithoutCourse(courseId)
+      console.log('loadLessonsWithoutCourse')
+      const lessons = await fetchLessonsWithoutCourse()
       if (lessons) {
         lessons.forEach((lesson) => this.cacheLesson(lesson))
       } else {
@@ -229,7 +224,7 @@ export const useCourseLabStore = defineStore('courseLab', {
     },
     async handleRemoveLessonFromCourse(lessonId) {
       console.log('handleRemoveLessonFromCourse', lessonId)
-      console.log('Not implemented -- issues with removing relationship')
+      console.warn('Not implemented -- issues with removing relationship')
       // const next = await removeLessonFromCourse(lessonId)
       // this.cacheLesson(next)
       // TODO: consider alternatives: clone-delete? how often does reassign happen?
