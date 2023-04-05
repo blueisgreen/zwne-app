@@ -7,7 +7,9 @@
           Create, edit, and publish lessons for the good humankind.
         </div>
       </q-toolbar-title>
-      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps>To Course Lab</q-btn>
+      <q-btn :to="{ name: 'courseLab' }" color="primary" no-caps
+        >To Course Lab</q-btn
+      >
     </q-toolbar>
 
     <div v-if="lessonToEdit">
@@ -16,9 +18,9 @@
     <div v-else class="q-pa-md">
       <div class="text-h4">Loading...</div>
       <div class="q-my-md text-body1">
-        If you see this for more than a few seconds, perhaps we cananot find the lesson
-        you are looking for. Click the button to return to the Course Lab entrance and
-        pick something that is available.
+        If you see this for more than a few seconds, perhaps we cananot find the
+        lesson you are looking for. Click the button to return to the Course Lab
+        entrance and pick something that is available.
       </div>
     </div>
   </q-page>
@@ -31,11 +33,11 @@ import { useCourseLabStore } from 'src/stores/course-lab.js'
 import LessonPlanDetails from './LessonPlanDetails.vue'
 
 const route = useRoute()
-const lessonId = route.params.id
-
 const builder = useCourseLabStore()
+
+const lessonId = route.params.id
 const lessonToEdit = computed(() => {
-  return builder.lessonPlan(lessonId)
+  return builder.cachedLesson(lessonId)
 })
 
 onMounted(async () => {
