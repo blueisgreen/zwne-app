@@ -3,13 +3,14 @@ import {
   createLessonPlan,
   updateLessonPlan,
   deleteLessonPlan,
-} from './graphql/mutations'
+} from '../graphql/mutations'
 import {
   getLessonPlan,
   getLessonContent,
   listLessonPlans,
   updateLessonContent,
-} from './graphql/custom'
+} from '../graphql/custom'
+import { LessonStatus } from '../models'
 
 export const createLesson = async (title) => {
   const newLessonPlan = await API.graphql({
@@ -27,7 +28,7 @@ export const createLesson = async (title) => {
     },
   })
   console.log('createLessonPlan', newLessonPlan)
-  return newLessonPlan
+  return newLessonPlan.data.createLessonPlan
 }
 
 export const fetchAllLessons = async () => {
@@ -35,7 +36,7 @@ export const fetchAllLessons = async () => {
     query: listLessonPlans,
   })
   console.log('listLessonPlans', allLessonPlans)
-  return allLessonPlans
+  return allLessonPlans.data.listLessonPlans.items
 }
 
 export const fetchLesson = async (id) => {
@@ -44,7 +45,7 @@ export const fetchLesson = async (id) => {
     variables: { id },
   })
   console.log('getLessonPlan', oneLessonPlan)
-  return oneLessonPlan
+  return oneLessonPlan.data.getLessonPlan
 }
 
 export const fetchLessonContent = async (id) => {
@@ -53,7 +54,7 @@ export const fetchLessonContent = async (id) => {
     variables: { id },
   })
   console.log('getLessonContent', oneLessonPlan)
-  return oneLessonPlan
+  return oneLessonPlan.data.getLessonContent
 }
 
 export const updateLesson = async (deltas) => {
@@ -64,7 +65,7 @@ export const updateLesson = async (deltas) => {
     },
   })
   console.log('updateLessonPlan', updatedLessonPlan)
-  return updatedLessonPlan
+  return updatedLessonPlan.data.updateLessonPlan
 }
 
 export const updateContent = async (id, content) => {
@@ -78,7 +79,7 @@ export const updateContent = async (id, content) => {
     },
   })
   console.log('updateLessonPlan', updatedLessonPlan)
-  return updatedLessonPlan
+  return updatedLessonPlan.data.updateLessonPlan
 }
 
 export const deleteLesson = async (id) => {
@@ -91,5 +92,5 @@ export const deleteLesson = async (id) => {
     },
   })
   console.log('deleteLessonPlan', deletedLessonPlan)
-  return deletedLessonPlan
+  return deletedLessonPlan.data.deleteLessonPlan
 }
