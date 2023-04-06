@@ -114,7 +114,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { displayDateTime } from 'components/displayTools.js'
 import { useLessonLabStore } from 'stores/lesson-lab.js'
 import { LessonStatus } from 'src/models'
@@ -129,10 +129,16 @@ const props = defineProps({
 const lab = useLessonLabStore()
 
 const canPublish = computed(() => {
-  return props.lesson.status === LessonStatus.DRAFT
+  return (
+    props.lesson.status === LessonStatus.DRAFT ||
+    props.lesson.status === LessonStatus.IN_REVIEW
+  )
 })
 const canRetract = computed(() => {
-  return props.lesson.status === LessonStatus.PUBLISHED
+  return (
+    props.lesson.status === LessonStatus.PUBLISHED ||
+    props.lesson.status === LessonStatus.IN_REVIEW
+  )
 })
 const canArchive = computed(() => {
   return props.lesson.status !== LessonStatus.ARCHIVED
@@ -141,5 +147,3 @@ const canRevive = computed(() => {
   return props.lesson.status === LessonStatus.ARCHIVED
 })
 </script>
-
-<style lang="scss" scoped></style>

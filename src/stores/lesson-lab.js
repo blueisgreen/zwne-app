@@ -96,42 +96,51 @@ export const useLessonLabStore = defineStore('lessonLab', {
       this.cacheLesson(next)
     },
     async saveContent(id, contentToSave) {
-      console.log('saveLesson', { id, contentUpdate: contentToSave })
+      console.log('saveContent', { id, contentUpdate: contentToSave })
       const next = await updateContent(id, contentToSave)
       this.cacheLessonContent(next)
     },
     async publishLesson(id) {
       console.log('publishLesson', id)
-      await saveLesson(id, {
+      const result = await updateLesson({
+        id,
         publishedAt: toAWSDateTime(new Date()),
         status: LessonStatus.PUBLISHED,
       })
+      this.cacheLesson(result)
     },
     async retractLesson(id) {
       console.log('retractLesson', id)
-      await saveLesson(id, {
+      const result = await updateLesson({
+        id,
         publishedAt: null,
         status: LessonStatus.DRAFT,
       })
+      this.cacheLesson(result)
     },
     async archiveLesson(id) {
       console.log('archiveLesson', id)
-      await saveLesson(id, {
+      const result = await updateLesson({
+        id,
         archivedAt: toAWSDateTime(new Date()),
         status: LessonStatus.ARCHIVED,
       })
+      this.cacheLesson(result)
     },
     async reviveLesson(id) {
       // TODO: think through lifecycle, and purpose and logic of in-review
       console.log('reviveLesson', id)
-      await saveLesson(id, {
+      const result = await updateLesson({
+        id,
         archivedAt: null,
         status: LessonStatus.IN_REVIEW,
       })
+      this.cacheLesson(result)
     },
     async purgeLesson(id) {
       console.log('purgeLesson', id)
       const deleted = await deleteLesson(id)
+      console.log('purged', deleted)
       this.removeLessonFromCache(id)
     },
   },

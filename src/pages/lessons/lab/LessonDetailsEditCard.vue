@@ -3,46 +3,40 @@
   <div v-else>
     <q-card bordered>
       <q-card-section>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Title</div>
+        <div class="row q-gutter-y-xs">
+          <div class="col-2 text-secondary">Title</div>
           <div class="col">
-            <q-input v-model="draftLesson.title" outlined dense />
+            <q-input v-model="draftLesson.title" standout dense autofocus />
           </div>
         </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Subtitle</div>
+        <div class="row">
+          <div class="col-2 text-secondary">Subtitle</div>
           <div class="col">
-            <q-input v-model="draftLesson.subtitle" outlined dense />
+            <q-input v-model="draftLesson.subtitle" standout dense />
           </div>
         </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Synopsis</div>
+        <div class="row">
+          <div class="col-2 text-secondary">Synopsis</div>
           <div class="col">
-            <q-input v-model="draftLesson.synopsis" autogrow outlined dense />
+            <q-input v-model="draftLesson.synopsis" autogrow standout dense />
           </div>
         </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Objective</div>
+        <div class="row">
+          <div class="col-2 text-secondary">Objective</div>
           <div class="col">
-            <q-input v-model="draftLesson.objective" autogrow outlined dense />
+            <q-input v-model="draftLesson.objective" autogrow standout dense />
           </div>
         </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Cover Art</div>
+        <div class="row">
+          <div class="col-2 text-secondary">Cover Art</div>
           <div class="col">
-            <q-input v-model="draftLesson.cover" outlined dense />
+            <q-input v-model="draftLesson.cover" standout dense />
           </div>
         </div>
       </q-card-section>
       <q-card-actions align="center">
         <q-btn label="Save" color="primary" @click="save" />
-        <q-btn
-          label="Cancel"
-          @click="cancel"
-          color="primary"
-          flat
-          class="q-ml-sm"
-        />
+        <q-btn label="Cancel" @click="cancel" color="accent" flat class="q-ml-sm" />
       </q-card-actions>
     </q-card>
   </div>
@@ -50,7 +44,6 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useLessonLabStore } from 'stores/lesson-lab.js'
 
 const props = defineProps({
   lesson: {
@@ -59,7 +52,7 @@ const props = defineProps({
   },
 })
 const emit = defineEmits(['save', 'cancel'])
-const lab = useLessonLabStore()
+
 const draftLesson = ref(null)
 
 onMounted(() => {
@@ -78,5 +71,3 @@ function cancel() {
   emit('cancel')
 }
 </script>
-
-<style lang="scss" scoped></style>

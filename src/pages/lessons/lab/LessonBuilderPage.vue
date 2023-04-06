@@ -7,19 +7,14 @@
           {{ lessonId }}
         </div>
       </q-toolbar-title>
-      <q-btn
-        :to="{ name: 'lessonLab' }"
-        color="primary"
-        no-caps
-        label="To Lab Lobby"
-      />
+      <q-btn :to="{ name: 'lessonLab' }" color="primary" no-caps label="To Lab Lobby" />
     </q-toolbar>
     <lesson-details-panel v-if="lessonToBuild" :lesson="lessonToBuild" />
   </q-page>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useLessonLabStore } from 'src/stores/lesson-lab'
 import LessonDetailsPanel from './LessonDetailsPanel.vue'
@@ -27,11 +22,12 @@ import LessonDetailsPanel from './LessonDetailsPanel.vue'
 const route = useRoute()
 const lab = useLessonLabStore()
 const lessonId = route.params.id
-const lessonToBuild = ref(null)
+const lessonToBuild = computed(() => {
+  return lab.lesson(lessonId)
+})
 
 onMounted(async () => {
   await lab.loadLesson(lessonId)
-  lessonToBuild.value = lab.lesson(lessonId)
 })
 </script>
 
