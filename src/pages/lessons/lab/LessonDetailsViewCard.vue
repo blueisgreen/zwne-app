@@ -11,7 +11,7 @@
       </div>
       <div class="row q-pt-sm">
         <div class="col-3 text-secondary">Synopsis</div>
-        <div class="col">{{ lesson.synposis }}</div>
+        <div class="col">{{ lesson.synopsis }}</div>
       </div>
       <div class="row q-pt-sm">
         <div class="col-3 text-secondary">Objective</div>

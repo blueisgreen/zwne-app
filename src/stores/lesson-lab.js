@@ -92,27 +92,7 @@ export const useLessonLabStore = defineStore('lessonLab', {
     },
     async saveLesson(deltas) {
       console.log('saveLesson', deltas)
-      const propsAllowedForUpdate = [
-        'id',
-        'title',
-        'subtitle',
-        'synopsis',
-        'objective',
-        'cover',
-        'status',
-        'publishedAt',
-        'archivedAt',
-      ]
-      const update = {}
-      const deltaProps = Object.keys(deltas)
-      deltaProps.forEach((prop) => {
-        if (propsAllowedForUpdate.includes(prop)) {
-          console.log('what the...?', { prop, value: deltas[prop] })
-          update[prop] = deltas[prop]
-        }
-      })
-      console.log('saveLesson update', update)
-      const next = await updateLesson(update)
+      const next = await updateLesson(deltas)
       this.cacheLesson(next)
     },
     async saveContent(id, contentToSave) {

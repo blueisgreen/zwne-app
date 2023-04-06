@@ -20,4 +20,21 @@ const difference = (first, second) => {
   return arrays.reduce((a, b) => a.filter((c) => !b.includes(c)))
 }
 
-export { generateRandomKey, toAWSDateTime, difference }
+/**
+ * Returns an object with only allowed properties.
+ * @param {Object} itemToMask
+ * @param {[String]} allowed names of props that are allowed
+ * @returns
+ */
+const maskProps = (itemToMask, allowed = []) => {
+  const masked = {}
+  const deltaProps = Object.keys(itemToMask)
+  deltaProps.forEach((prop) => {
+    if (allowed.includes(prop)) {
+      masked[prop] = itemToMask[prop]
+    }
+  })
+  return masked
+}
+
+export { generateRandomKey, toAWSDateTime, difference, maskProps }

@@ -11,6 +11,19 @@ import {
   updateLessonContent,
 } from '../graphql/custom'
 import { LessonStatus } from '../models'
+import { maskProps } from '../components/modelTools'
+
+const lessonPropsForUpdate = [
+  'id',
+  'title',
+  'subtitle',
+  'synopsis',
+  'objective',
+  'cover',
+  'status',
+  'publishedAt',
+  'archivedAt',
+]
 
 export const createLesson = async (title) => {
   const newLessonPlan = await API.graphql({
@@ -58,10 +71,11 @@ export const fetchLessonContent = async (id) => {
 }
 
 export const updateLesson = async (deltas) => {
+  const deltasForUpdate = maskProps(deltas, lessonPropsForUpdate)
   const updatedLessonPlan = await API.graphql({
     query: updateLessonPlan,
     variables: {
-      input: deltas,
+      input: deltasForUpdate,
     },
   })
   console.log('updateLessonPlan', updatedLessonPlan)
