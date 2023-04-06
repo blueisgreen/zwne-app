@@ -2,13 +2,19 @@
   <q-page padding>
     <q-toolbar>
       <q-toolbar-title>
-        <div class="text-h4">Build Lesson</div>
+        <div class="text-h4">Build a Lesson</div>
         <div class="text-caption text-secondary">
           {{ lessonId }}
         </div>
       </q-toolbar-title>
-      <q-btn :to="{ name: 'lessonLab' }" color="primary" no-caps label="To Lab Lobby" />
+      <q-btn
+        :to="{ name: 'lessonLab' }"
+        color="primary"
+        no-caps
+        label="To Lab Lobby"
+      />
     </q-toolbar>
+    <lesson-details-panel v-if="lessonToBuild" :lesson="lessonToBuild" />
   </q-page>
 </template>
 
@@ -16,13 +22,16 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useLessonLabStore } from 'src/stores/lesson-lab'
+import LessonDetailsPanel from './LessonDetailsPanel.vue'
 
 const route = useRoute()
 const lab = useLessonLabStore()
 const lessonId = route.params.id
+const lessonToBuild = ref(null)
 
 onMounted(async () => {
   await lab.loadLesson(lessonId)
+  lessonToBuild.value = lab.lesson(lessonId)
 })
 </script>
 
