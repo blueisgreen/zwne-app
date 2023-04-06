@@ -1,57 +1,77 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getLesson = /* GraphQL */ `
-  query GetLesson($id: ID!) {
-    getLesson(id: $id) {
+export const getLessonStep = /* GraphQL */ `
+  query GetLessonStep($id: ID!) {
+    getLessonStep(id: $id) {
       id
-      title
-      subtitle
-      version
-      categories
-      content
-      archivedAt
-      publishedAt
-      courseID
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listLessons = /* GraphQL */ `
-  query ListLessons(
-    $filter: ModelLessonFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listLessons(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
+      FromLesson {
         id
         title
         subtitle
-        version
-        categories
+        synopsis
+        objective
+        status
         content
-        archivedAt
+        cover
         publishedAt
-        courseID
+        archivedAt
         createdAt
         updatedAt
+      }
+      ToLesson {
+        id
+        title
+        subtitle
+        synopsis
+        objective
+        status
+        content
+        cover
+        publishedAt
+        archivedAt
+        createdAt
+        updatedAt
+      }
+      transitionPrompt
+      lessonpathID
+      createdAt
+      updatedAt
+      lessonStepFromLessonId
+      lessonStepToLessonId
+    }
+  }
+`;
+export const listLessonSteps = /* GraphQL */ `
+  query ListLessonSteps(
+    $filter: ModelLessonStepFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listLessonSteps(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        transitionPrompt
+        lessonpathID
+        createdAt
+        updatedAt
+        lessonStepFromLessonId
+        lessonStepToLessonId
       }
       nextToken
     }
   }
 `;
-export const lessonsByCourseID = /* GraphQL */ `
-  query LessonsByCourseID(
-    $courseID: ID!
+export const lessonStepsByLessonpathID = /* GraphQL */ `
+  query LessonStepsByLessonpathID(
+    $lessonpathID: ID!
     $sortDirection: ModelSortDirection
-    $filter: ModelLessonFilterInput
+    $filter: ModelLessonStepFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    lessonsByCourseID(
-      courseID: $courseID
+    lessonStepsByLessonpathID(
+      lessonpathID: $lessonpathID
       sortDirection: $sortDirection
       filter: $filter
       limit: $limit
@@ -59,60 +79,108 @@ export const lessonsByCourseID = /* GraphQL */ `
     ) {
       items {
         id
-        title
-        subtitle
-        version
-        categories
-        content
-        archivedAt
-        publishedAt
-        courseID
+        transitionPrompt
+        lessonpathID
         createdAt
         updatedAt
+        lessonStepFromLessonId
+        lessonStepToLessonId
       }
       nextToken
     }
   }
 `;
-export const getCourse = /* GraphQL */ `
-  query GetCourse($id: ID!) {
-    getCourse(id: $id) {
+export const getLessonPath = /* GraphQL */ `
+  query GetLessonPath($id: ID!) {
+    getLessonPath(id: $id) {
       id
-      name
-      description
-      objectives
-      level
-      lessonPath
-      status
-      statusChangedAt
-      tags
-      lessons {
+      LessonPlan {
+        id
+        title
+        subtitle
+        synopsis
+        objective
+        status
+        content
+        cover
+        publishedAt
+        archivedAt
+        createdAt
+        updatedAt
+      }
+      FirstStep {
+        id
+        transitionPrompt
+        lessonpathID
+        createdAt
+        updatedAt
+        lessonStepFromLessonId
+        lessonStepToLessonId
+      }
+      LessonSteps {
         nextToken
       }
-      notes
+      createdAt
+      updatedAt
+      lessonPathLessonPlanId
+      lessonPathFirstStepId
+    }
+  }
+`;
+export const listLessonPaths = /* GraphQL */ `
+  query ListLessonPaths(
+    $filter: ModelLessonPathFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listLessonPaths(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        createdAt
+        updatedAt
+        lessonPathLessonPlanId
+        lessonPathFirstStepId
+      }
+      nextToken
+    }
+  }
+`;
+export const getLessonPlan = /* GraphQL */ `
+  query GetLessonPlan($id: ID!) {
+    getLessonPlan(id: $id) {
+      id
+      title
+      subtitle
+      synopsis
+      objective
+      status
+      content
+      cover
+      publishedAt
+      archivedAt
       createdAt
       updatedAt
     }
   }
 `;
-export const listCourses = /* GraphQL */ `
-  query ListCourses(
-    $filter: ModelCourseFilterInput
+export const listLessonPlans = /* GraphQL */ `
+  query ListLessonPlans(
+    $filter: ModelLessonPlanFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listCourses(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listLessonPlans(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
-        description
-        objectives
-        level
-        lessonPath
+        title
+        subtitle
+        synopsis
+        objective
         status
-        statusChangedAt
-        tags
-        notes
+        content
+        cover
+        publishedAt
+        archivedAt
         createdAt
         updatedAt
       }

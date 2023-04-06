@@ -1,40 +1,35 @@
-type Lesson @model @auth(rules: [{ allow: public }]) {
+type LessonStep @model @auth(rules: [{allow: public}]) {
   id: ID!
-  title: String
-  subtitle: String
-  version: Int
-  categories: [String]
-  content: String
-  archivedAt: AWSDateTime
-  publishedAt: AWSDateTime
-  courseID: ID @index(name: "byCourse")
+  FromLesson: LessonPlan @hasOne
+  ToLesson: LessonPlan @hasOne
+  transitionPrompt: String
+  lessonpathID: ID! @index(name: "byLessonPath")
 }
 
-enum CourseStatusOptions {
+type LessonPath @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  LessonPlan: LessonPlan @hasOne
+  FirstStep: LessonStep @hasOne
+  LessonSteps: [LessonStep] @hasMany(indexName: "byLessonPath", fields: ["id"])
+}
+
+enum LessonStatus {
   DRAFT
-  OPEN
-  CLOSED
+  IN_REVIEW
+  PUBLISHED
   ARCHIVED
 }
 
-enum CourseLevel {
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
-  EXPERT
-  ALL
-}
-
-type Course @model @auth(rules: [{ allow: public }]) {
+type LessonPlan @model @auth(rules: [{allow: public}]) {
   id: ID!
-  name: String
-  description: String
-  objectives: String
-  level: CourseLevel
-  lessonPath: [ID]
-  status: CourseStatusOptions
-  statusChangedAt: AWSDateTime
-  tags: [String]
-  lessons: [Lesson] @hasMany(indexName: "byCourse", fields: ["id"])
-  notes: String
+  title: String!
+  subtitle: String
+  synopsis: String
+  objective: String
+  status: LessonStatus
+  content: String
+  cover: String
+  publishedAt: AWSDateTime
+  archivedAt: AWSDateTime
 }
+ 

@@ -34,34 +34,19 @@ const routes = [
         component: () => import('pages/lessons/LessonScratchPage.vue'),
       },
       {
-        path: 'course-lab',
-        name: 'courseLab',
-        component: () => import('pages/lessons/planner/CourseLabPage.vue'),
+        path: 'lesson-lab',
+        name: 'lessonLab',
+        component: () => import('pages/lessons/lab/LessonLabPage.vue'),
       },
       {
-        path: 'course-builder',
-        name: 'newCourseBuilder',
-        component: () => import('pages/lessons/planner/CourseBuilderPage.vue'),
-      },
-      {
-        path: 'course-builder/:id',
-        name: 'courseBuilder',
-        component: () => import('pages/lessons/planner/CourseBuilderPage.vue'),
-      },
-      {
-        path: 'lesson-builder',
+        path: 'lesson-lab/:id',
         name: 'lessonBuilder',
-        component: () => import('pages/lessons/planner/LessonBuilderPage.vue'),
+        component: () => import('pages/lessons/lab/LessonBuilderPage.vue'),
       },
       {
-        path: 'lesson-planner/:id',
-        name: 'lessonPlanner',
-        component: () => import('pages/lessons/planner/LessonPlannerPage.vue'),
-      },
-      {
-        path: 'lesson-planner/editor/:id',
-        name: 'lessonEditor',
-        component: () => import('pages/lessons/planner/EditLessonPage.vue'),
+        path: 'lesson-lab/media',
+        name: 'lessonMedia',
+        component: () => import('pages/lessons/lab/LessonMediaPage.vue'),
       },
       {
         path: 'toys',

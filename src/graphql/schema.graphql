@@ -4,85 +4,98 @@
   subscription: Subscription
 }
 
-type Course @aws_api_key @aws_iam {
+type LessonPath @aws_api_key @aws_iam {
+  FirstStep: LessonStep
+  LessonPlan: LessonPlan
+  LessonSteps(filter: ModelLessonStepFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonStepConnection
   createdAt: AWSDateTime!
-  description: String
   id: ID!
-  lessonPath: [ID]
-  lessons(filter: ModelLessonFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonConnection
-  level: CourseLevel
-  name: String
-  notes: String
-  objectives: String
-  status: CourseStatusOptions
-  statusChangedAt: AWSDateTime
-  tags: [String]
+  lessonPathFirstStepId: ID
+  lessonPathLessonPlanId: ID
   updatedAt: AWSDateTime!
 }
 
-type Lesson @aws_api_key @aws_iam {
+type LessonPlan @aws_api_key @aws_iam {
   archivedAt: AWSDateTime
-  categories: [String]
   content: String
-  courseID: ID!
+  cover: String
   createdAt: AWSDateTime!
   id: ID!
+  objective: String
   publishedAt: AWSDateTime
+  status: LessonStatus
   subtitle: String
-  title: String
+  synopsis: String
+  title: String!
   updatedAt: AWSDateTime!
-  version: Int
 }
 
-type ModelCourseConnection @aws_api_key @aws_iam {
-  items: [Course]!
+type LessonStep @aws_api_key @aws_iam {
+  FromLesson: LessonPlan
+  ToLesson: LessonPlan
+  createdAt: AWSDateTime!
+  id: ID!
+  lessonStepFromLessonId: ID
+  lessonStepToLessonId: ID
+  lessonpathID: ID!
+  transitionPrompt: String
+  updatedAt: AWSDateTime!
+}
+
+type ModelLessonPathConnection @aws_api_key @aws_iam {
+  items: [LessonPath]!
   nextToken: String
 }
 
-type ModelLessonConnection @aws_api_key @aws_iam {
-  items: [Lesson]!
+type ModelLessonPlanConnection @aws_api_key @aws_iam {
+  items: [LessonPlan]!
+  nextToken: String
+}
+
+type ModelLessonStepConnection @aws_api_key @aws_iam {
+  items: [LessonStep]!
   nextToken: String
 }
 
 type Mutation {
-  createCourse(condition: ModelCourseConditionInput, input: CreateCourseInput!): Course @aws_api_key @aws_iam
-  createLesson(condition: ModelLessonConditionInput, input: CreateLessonInput!): Lesson @aws_api_key @aws_iam
-  deleteCourse(condition: ModelCourseConditionInput, input: DeleteCourseInput!): Course @aws_api_key @aws_iam
-  deleteLesson(condition: ModelLessonConditionInput, input: DeleteLessonInput!): Lesson @aws_api_key @aws_iam
-  updateCourse(condition: ModelCourseConditionInput, input: UpdateCourseInput!): Course @aws_api_key @aws_iam
-  updateLesson(condition: ModelLessonConditionInput, input: UpdateLessonInput!): Lesson @aws_api_key @aws_iam
+  createLessonPath(condition: ModelLessonPathConditionInput, input: CreateLessonPathInput!): LessonPath @aws_api_key @aws_iam
+  createLessonPlan(condition: ModelLessonPlanConditionInput, input: CreateLessonPlanInput!): LessonPlan @aws_api_key @aws_iam
+  createLessonStep(condition: ModelLessonStepConditionInput, input: CreateLessonStepInput!): LessonStep @aws_api_key @aws_iam
+  deleteLessonPath(condition: ModelLessonPathConditionInput, input: DeleteLessonPathInput!): LessonPath @aws_api_key @aws_iam
+  deleteLessonPlan(condition: ModelLessonPlanConditionInput, input: DeleteLessonPlanInput!): LessonPlan @aws_api_key @aws_iam
+  deleteLessonStep(condition: ModelLessonStepConditionInput, input: DeleteLessonStepInput!): LessonStep @aws_api_key @aws_iam
+  updateLessonPath(condition: ModelLessonPathConditionInput, input: UpdateLessonPathInput!): LessonPath @aws_api_key @aws_iam
+  updateLessonPlan(condition: ModelLessonPlanConditionInput, input: UpdateLessonPlanInput!): LessonPlan @aws_api_key @aws_iam
+  updateLessonStep(condition: ModelLessonStepConditionInput, input: UpdateLessonStepInput!): LessonStep @aws_api_key @aws_iam
 }
 
 type Query {
-  getCourse(id: ID!): Course @aws_api_key @aws_iam
-  getLesson(id: ID!): Lesson @aws_api_key @aws_iam
-  lessonsByCourseID(courseID: ID!, filter: ModelLessonFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonConnection @aws_api_key @aws_iam
-  listCourses(filter: ModelCourseFilterInput, limit: Int, nextToken: String): ModelCourseConnection @aws_api_key @aws_iam
-  listLessons(filter: ModelLessonFilterInput, limit: Int, nextToken: String): ModelLessonConnection @aws_api_key @aws_iam
+  getLessonPath(id: ID!): LessonPath @aws_api_key @aws_iam
+  getLessonPlan(id: ID!): LessonPlan @aws_api_key @aws_iam
+  getLessonStep(id: ID!): LessonStep @aws_api_key @aws_iam
+  lessonStepsByLessonpathID(filter: ModelLessonStepFilterInput, lessonpathID: ID!, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelLessonStepConnection @aws_api_key @aws_iam
+  listLessonPaths(filter: ModelLessonPathFilterInput, limit: Int, nextToken: String): ModelLessonPathConnection @aws_api_key @aws_iam
+  listLessonPlans(filter: ModelLessonPlanFilterInput, limit: Int, nextToken: String): ModelLessonPlanConnection @aws_api_key @aws_iam
+  listLessonSteps(filter: ModelLessonStepFilterInput, limit: Int, nextToken: String): ModelLessonStepConnection @aws_api_key @aws_iam
 }
 
 type Subscription {
-  onCreateCourse(filter: ModelSubscriptionCourseFilterInput): Course @aws_api_key @aws_iam @aws_subscribe(mutations : ["createCourse"])
-  onCreateLesson(filter: ModelSubscriptionLessonFilterInput): Lesson @aws_api_key @aws_iam @aws_subscribe(mutations : ["createLesson"])
-  onDeleteCourse(filter: ModelSubscriptionCourseFilterInput): Course @aws_api_key @aws_iam @aws_subscribe(mutations : ["deleteCourse"])
-  onDeleteLesson(filter: ModelSubscriptionLessonFilterInput): Lesson @aws_api_key @aws_iam @aws_subscribe(mutations : ["deleteLesson"])
-  onUpdateCourse(filter: ModelSubscriptionCourseFilterInput): Course @aws_api_key @aws_iam @aws_subscribe(mutations : ["updateCourse"])
-  onUpdateLesson(filter: ModelSubscriptionLessonFilterInput): Lesson @aws_api_key @aws_iam @aws_subscribe(mutations : ["updateLesson"])
+  onCreateLessonPath(filter: ModelSubscriptionLessonPathFilterInput): LessonPath @aws_api_key @aws_iam @aws_subscribe(mutations : ["createLessonPath"])
+  onCreateLessonPlan(filter: ModelSubscriptionLessonPlanFilterInput): LessonPlan @aws_api_key @aws_iam @aws_subscribe(mutations : ["createLessonPlan"])
+  onCreateLessonStep(filter: ModelSubscriptionLessonStepFilterInput): LessonStep @aws_api_key @aws_iam @aws_subscribe(mutations : ["createLessonStep"])
+  onDeleteLessonPath(filter: ModelSubscriptionLessonPathFilterInput): LessonPath @aws_api_key @aws_iam @aws_subscribe(mutations : ["deleteLessonPath"])
+  onDeleteLessonPlan(filter: ModelSubscriptionLessonPlanFilterInput): LessonPlan @aws_api_key @aws_iam @aws_subscribe(mutations : ["deleteLessonPlan"])
+  onDeleteLessonStep(filter: ModelSubscriptionLessonStepFilterInput): LessonStep @aws_api_key @aws_iam @aws_subscribe(mutations : ["deleteLessonStep"])
+  onUpdateLessonPath(filter: ModelSubscriptionLessonPathFilterInput): LessonPath @aws_api_key @aws_iam @aws_subscribe(mutations : ["updateLessonPath"])
+  onUpdateLessonPlan(filter: ModelSubscriptionLessonPlanFilterInput): LessonPlan @aws_api_key @aws_iam @aws_subscribe(mutations : ["updateLessonPlan"])
+  onUpdateLessonStep(filter: ModelSubscriptionLessonStepFilterInput): LessonStep @aws_api_key @aws_iam @aws_subscribe(mutations : ["updateLessonStep"])
 }
 
-enum CourseLevel {
-  ADVANCED
-  ALL
-  BEGINNER
-  EXPERT
-  INTERMEDIATE
-}
-
-enum CourseStatusOptions {
+enum LessonStatus {
   ARCHIVED
-  CLOSED
   DRAFT
-  OPEN
+  IN_REVIEW
+  PUBLISHED
 }
 
 enum ModelAttributeTypes {
@@ -103,36 +116,42 @@ enum ModelSortDirection {
   DESC
 }
 
-input CreateCourseInput {
-  description: String
+input CreateLessonPathInput {
   id: ID
-  lessonPath: [ID]
-  level: CourseLevel
-  name: String
-  notes: String
-  objectives: String
-  status: CourseStatusOptions
-  statusChangedAt: AWSDateTime
-  tags: [String]
+  lessonPathFirstStepId: ID
+  lessonPathLessonPlanId: ID
 }
 
-input CreateLessonInput {
+input CreateLessonPlanInput {
   archivedAt: AWSDateTime
-  categories: [String]
   content: String
-  courseID: ID!
+  cover: String
   id: ID
+  objective: String
   publishedAt: AWSDateTime
+  status: LessonStatus
   subtitle: String
-  title: String
-  version: Int
+  synopsis: String
+  title: String!
 }
 
-input DeleteCourseInput {
+input CreateLessonStepInput {
+  id: ID
+  lessonStepFromLessonId: ID
+  lessonStepToLessonId: ID
+  lessonpathID: ID!
+  transitionPrompt: String
+}
+
+input DeleteLessonPathInput {
   id: ID!
 }
 
-input DeleteLessonInput {
+input DeleteLessonPlanInput {
+  id: ID!
+}
+
+input DeleteLessonStepInput {
   id: ID!
 }
 
@@ -141,47 +160,6 @@ input ModelBooleanInput {
   attributeType: ModelAttributeTypes
   eq: Boolean
   ne: Boolean
-}
-
-input ModelCourseConditionInput {
-  and: [ModelCourseConditionInput]
-  description: ModelStringInput
-  lessonPath: ModelIDInput
-  level: ModelCourseLevelInput
-  name: ModelStringInput
-  not: ModelCourseConditionInput
-  notes: ModelStringInput
-  objectives: ModelStringInput
-  or: [ModelCourseConditionInput]
-  status: ModelCourseStatusOptionsInput
-  statusChangedAt: ModelStringInput
-  tags: ModelStringInput
-}
-
-input ModelCourseFilterInput {
-  and: [ModelCourseFilterInput]
-  description: ModelStringInput
-  id: ModelIDInput
-  lessonPath: ModelIDInput
-  level: ModelCourseLevelInput
-  name: ModelStringInput
-  not: ModelCourseFilterInput
-  notes: ModelStringInput
-  objectives: ModelStringInput
-  or: [ModelCourseFilterInput]
-  status: ModelCourseStatusOptionsInput
-  statusChangedAt: ModelStringInput
-  tags: ModelStringInput
-}
-
-input ModelCourseLevelInput {
-  eq: CourseLevel
-  ne: CourseLevel
-}
-
-input ModelCourseStatusOptionsInput {
-  eq: CourseStatusOptions
-  ne: CourseStatusOptions
 }
 
 input ModelFloatInput {
@@ -224,33 +202,78 @@ input ModelIntInput {
   ne: Int
 }
 
-input ModelLessonConditionInput {
-  and: [ModelLessonConditionInput]
-  archivedAt: ModelStringInput
-  categories: ModelStringInput
-  content: ModelStringInput
-  courseID: ModelIDInput
-  not: ModelLessonConditionInput
-  or: [ModelLessonConditionInput]
-  publishedAt: ModelStringInput
-  subtitle: ModelStringInput
-  title: ModelStringInput
-  version: ModelIntInput
+input ModelLessonPathConditionInput {
+  and: [ModelLessonPathConditionInput]
+  lessonPathFirstStepId: ModelIDInput
+  lessonPathLessonPlanId: ModelIDInput
+  not: ModelLessonPathConditionInput
+  or: [ModelLessonPathConditionInput]
 }
 
-input ModelLessonFilterInput {
-  and: [ModelLessonFilterInput]
-  archivedAt: ModelStringInput
-  categories: ModelStringInput
-  content: ModelStringInput
-  courseID: ModelIDInput
+input ModelLessonPathFilterInput {
+  and: [ModelLessonPathFilterInput]
   id: ModelIDInput
-  not: ModelLessonFilterInput
-  or: [ModelLessonFilterInput]
+  lessonPathFirstStepId: ModelIDInput
+  lessonPathLessonPlanId: ModelIDInput
+  not: ModelLessonPathFilterInput
+  or: [ModelLessonPathFilterInput]
+}
+
+input ModelLessonPlanConditionInput {
+  and: [ModelLessonPlanConditionInput]
+  archivedAt: ModelStringInput
+  content: ModelStringInput
+  cover: ModelStringInput
+  not: ModelLessonPlanConditionInput
+  objective: ModelStringInput
+  or: [ModelLessonPlanConditionInput]
   publishedAt: ModelStringInput
+  status: ModelLessonStatusInput
   subtitle: ModelStringInput
+  synopsis: ModelStringInput
   title: ModelStringInput
-  version: ModelIntInput
+}
+
+input ModelLessonPlanFilterInput {
+  and: [ModelLessonPlanFilterInput]
+  archivedAt: ModelStringInput
+  content: ModelStringInput
+  cover: ModelStringInput
+  id: ModelIDInput
+  not: ModelLessonPlanFilterInput
+  objective: ModelStringInput
+  or: [ModelLessonPlanFilterInput]
+  publishedAt: ModelStringInput
+  status: ModelLessonStatusInput
+  subtitle: ModelStringInput
+  synopsis: ModelStringInput
+  title: ModelStringInput
+}
+
+input ModelLessonStatusInput {
+  eq: LessonStatus
+  ne: LessonStatus
+}
+
+input ModelLessonStepConditionInput {
+  and: [ModelLessonStepConditionInput]
+  lessonStepFromLessonId: ModelIDInput
+  lessonStepToLessonId: ModelIDInput
+  lessonpathID: ModelIDInput
+  not: ModelLessonStepConditionInput
+  or: [ModelLessonStepConditionInput]
+  transitionPrompt: ModelStringInput
+}
+
+input ModelLessonStepFilterInput {
+  and: [ModelLessonStepFilterInput]
+  id: ModelIDInput
+  lessonStepFromLessonId: ModelIDInput
+  lessonStepToLessonId: ModelIDInput
+  lessonpathID: ModelIDInput
+  not: ModelLessonStepFilterInput
+  or: [ModelLessonStepFilterInput]
+  transitionPrompt: ModelStringInput
 }
 
 input ModelSizeInput {
@@ -282,21 +305,6 @@ input ModelStringInput {
 input ModelSubscriptionBooleanInput {
   eq: Boolean
   ne: Boolean
-}
-
-input ModelSubscriptionCourseFilterInput {
-  and: [ModelSubscriptionCourseFilterInput]
-  description: ModelSubscriptionStringInput
-  id: ModelSubscriptionIDInput
-  lessonPath: ModelSubscriptionIDInput
-  level: ModelSubscriptionStringInput
-  name: ModelSubscriptionStringInput
-  notes: ModelSubscriptionStringInput
-  objectives: ModelSubscriptionStringInput
-  or: [ModelSubscriptionCourseFilterInput]
-  status: ModelSubscriptionStringInput
-  statusChangedAt: ModelSubscriptionStringInput
-  tags: ModelSubscriptionStringInput
 }
 
 input ModelSubscriptionFloatInput {
@@ -338,18 +346,33 @@ input ModelSubscriptionIntInput {
   notIn: [Int]
 }
 
-input ModelSubscriptionLessonFilterInput {
-  and: [ModelSubscriptionLessonFilterInput]
-  archivedAt: ModelSubscriptionStringInput
-  categories: ModelSubscriptionStringInput
-  content: ModelSubscriptionStringInput
-  courseID: ModelSubscriptionIDInput
+input ModelSubscriptionLessonPathFilterInput {
+  and: [ModelSubscriptionLessonPathFilterInput]
   id: ModelSubscriptionIDInput
-  or: [ModelSubscriptionLessonFilterInput]
+  or: [ModelSubscriptionLessonPathFilterInput]
+}
+
+input ModelSubscriptionLessonPlanFilterInput {
+  and: [ModelSubscriptionLessonPlanFilterInput]
+  archivedAt: ModelSubscriptionStringInput
+  content: ModelSubscriptionStringInput
+  cover: ModelSubscriptionStringInput
+  id: ModelSubscriptionIDInput
+  objective: ModelSubscriptionStringInput
+  or: [ModelSubscriptionLessonPlanFilterInput]
   publishedAt: ModelSubscriptionStringInput
+  status: ModelSubscriptionStringInput
   subtitle: ModelSubscriptionStringInput
+  synopsis: ModelSubscriptionStringInput
   title: ModelSubscriptionStringInput
-  version: ModelSubscriptionIntInput
+}
+
+input ModelSubscriptionLessonStepFilterInput {
+  and: [ModelSubscriptionLessonStepFilterInput]
+  id: ModelSubscriptionIDInput
+  lessonpathID: ModelSubscriptionIDInput
+  or: [ModelSubscriptionLessonStepFilterInput]
+  transitionPrompt: ModelSubscriptionStringInput
 }
 
 input ModelSubscriptionStringInput {
@@ -367,27 +390,29 @@ input ModelSubscriptionStringInput {
   notIn: [String]
 }
 
-input UpdateCourseInput {
-  description: String
+input UpdateLessonPathInput {
   id: ID!
-  lessonPath: [ID]
-  level: CourseLevel
-  name: String
-  notes: String
-  objectives: String
-  status: CourseStatusOptions
-  statusChangedAt: AWSDateTime
-  tags: [String]
+  lessonPathFirstStepId: ID
+  lessonPathLessonPlanId: ID
 }
 
-input UpdateLessonInput {
+input UpdateLessonPlanInput {
   archivedAt: AWSDateTime
-  categories: [String]
   content: String
-  courseID: ID
+  cover: String
   id: ID!
+  objective: String
   publishedAt: AWSDateTime
+  status: LessonStatus
   subtitle: String
+  synopsis: String
   title: String
-  version: Int
+}
+
+input UpdateLessonStepInput {
+  id: ID!
+  lessonStepFromLessonId: ID
+  lessonStepToLessonId: ID
+  lessonpathID: ID
+  transitionPrompt: String
 }
