@@ -9,7 +9,7 @@
           <q-toolbar-title>Lesson Information</q-toolbar-title>
           <span v-if="!editMode"
             ><q-btn
-              @click="onEdit"
+              @click="editDraft"
               label="Edit"
               dense
               no-caps
@@ -17,10 +17,10 @@
               color="secondary"
           /></span>
           <span v-if="editMode">
-            <q-btn label="Save" color="primary" @click="onSave" />
+            <q-btn label="Save" color="primary" @click="saveDraft" />
             <q-btn
               label="Cancel"
-              @click="onCancelEdit"
+              @click="cancelEdit"
               color="primary"
               flat
               class="q-ml-sm"
@@ -37,8 +37,16 @@
           <div class="col">{{ lesson.subtitle }}</div>
         </div>
         <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Category</div>
-          <div class="col">{{ displayCategories }}</div>
+          <div class="col-3 text-secondary">Synopsis</div>
+          <div class="col">{{ lesson.synposis }}</div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Objective</div>
+          <div class="col">{{ lesson.objective }}</div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Cover Art</div>
+          <div class="col">{{ lesson.cover }}</div>
         </div>
       </q-card-section>
       <q-card-section v-if="editMode">
@@ -55,18 +63,21 @@
           </div>
         </div>
         <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Categories</div>
+          <div class="col-3 text-secondary">Synopsis</div>
           <div class="col">
-            <q-select
-              v-model="draftLesson.categories"
-              :options="availableCats"
-              multiple
-              emit-value
-              clearable
-              outlined
-              options-dense
-              dense
-            />
+            <q-input v-model="draftLesson.synposis" outlined dense />
+          </div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Objective</div>
+          <div class="col">
+            <q-input v-model="draftLesson.objective" outlined dense />
+          </div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Cover Art</div>
+          <div class="col">
+            <q-input v-model="draftLesson.cover" outlined dense />
           </div>
         </div>
       </q-card-section>
@@ -93,19 +104,19 @@
           <div class="col">{{ lesson.id }}</div>
         </div>
         <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Version</div>
-          <div class="col">{{ lesson.version }}</div>
-        </div>
-        <div class="row q-pt-sm">
-          <div class="col-3 text-secondary">Created</div>
-          <div class="col">
-            {{ displayDateTime(lesson.createdAt, 'unsaved') }}
-          </div>
+          <div class="col-3 text-secondary">Status</div>
+          <div class="col">{{ lesson.status }}</div>
         </div>
         <div class="row q-pt-sm">
           <div class="col-3 text-secondary">Last updated</div>
           <div class="col">
             {{ displayDateTime(lesson.updatedAt, 'unsaved') }}
+          </div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-3 text-secondary">Created</div>
+          <div class="col">
+            {{ displayDateTime(lesson.createdAt, 'unsaved') }}
           </div>
         </div>
         <div class="row q-pt-sm">
@@ -127,44 +138,36 @@
       <q-card-actions v-if="!editMode" align="center">
         <q-btn
           :disable="!canPublish"
-          @click="() => builder.publishLesson(lesson.id)"
+          @click="() => lab.publishLesson(lesson.id)"
           color="primary"
           dense
           no-caps
-          >Publish</q-btn
-        >
-        <q-btn
-          :disable="!canRevise"
-          @click="() => builder.reviseLesson(lesson.id)"
-          color="primary"
-          dense
-          no-caps
-          >Revise</q-btn
-        >
+          label="Publish"
+        />
         <q-btn
           :disable="!canRetract"
-          @click="() => builder.retractLesson(lesson.id)"
+          @click="() => lab.retractLesson(lesson.id)"
           color="accent"
           dense
           no-caps
-          >Retract</q-btn
-        >
+          label="Retract"
+        />
         <q-btn
           :disable="!canArchive"
-          @click="() => builder.archiveLesson(lesson.id)"
+          @click="() => lab.archiveLesson(lesson.id)"
           color="accent"
           dense
           no-caps
-          >Archive</q-btn
-        >
+          label="Archive"
+        />
         <q-btn
           :disable="!canRevive"
-          @click="() => builder.reviveLesson(lesson.id)"
+          @click="() => lab.reviveLesson(lesson.id)"
           color="primary"
           dense
           no-caps
-          >Revive</q-btn
-        >
+          label="Revive"
+        />
       </q-card-actions>
     </q-card>
   </div>
@@ -173,7 +176,8 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { displayDateTime } from 'components/displayTools.js'
-import { useCourseLabStore } from 'src/stores/course-lab.js'
+import { useLessonLabStore } from 'stores/lesson-lab.js'
+import { LessonStatus } from 'src/models'
 
 const props = defineProps({
   lesson: {
@@ -182,58 +186,38 @@ const props = defineProps({
   },
 })
 
-const builder = useCourseLabStore()
+const lab = useLessonLabStore()
 const draftLesson = ref(null)
 const editMode = ref(false)
-const displayCategories = computed(() => {
-  return props.lesson.categories ? props.lesson.categories.join(', ') : ''
-})
-
-const availableCats = [
-  { label: 'engineering', value: 'engineering' },
-  { label: 'fun', value: 'fun' },
-  { label: 'nuclear power plants', value: 'nuclear_power_plants' },
-  { label: 'perspective', value: 'perspective' },
-  { label: 'safety', value: 'safety' },
-  { label: 'science', value: 'science' },
-]
 
 // lesson state - probably belongs in store
 const canPublish = computed(() => {
-  return !props.lesson.publishedAt && !props.lesson.archivedAt
+  return props.lesson.status === LessonStatus.DRAFT
 })
 const canRetract = computed(() => {
-  return !canPublish.value && !props.lesson.archivedAt
-})
-const canRevise = computed(() => {
-  return !canPublish.value && !props.lesson.archivedAt
+  return props.lesson.status === LessonStatus.PUBLISHED
 })
 const canArchive = computed(() => {
-  return !props.lesson.archivedAt
+  return props.lesson.status !== LessonStatus.ARCHIVED
 })
 const canRevive = computed(() => {
-  return props.lesson.archivedAt
+  return props.lesson.status === LessonStatus.ARCHIVED
 })
 
-function onEdit() {
-  console.log('LessonPlanDetails.onEdit')
+function editDraft() {
   draftLesson.value = { ...props.lesson }
-  draftLesson.value.categories = props.lesson.categories
-    ? [...props.lesson.categories]
-    : []
   editMode.value = true
 }
-async function onSave() {
-  console.log('LessonPlanDetails.onSave')
-  console.log('draft lesson => ' + JSON.stringify(draftLesson.value))
+async function saveDraft() {
+  console.log('draft lesson', draftLesson.value)
   if (!draftLesson.value) {
-    console.error('tried to save before loading')
+    console.warn('cannot save without a draft')
     return
   }
-  await builder.updateLesson(draftLesson.value)
+  await lab.saveLesson(draftLesson.value)
   editMode.value = false
 }
-function onCancelEdit() {
+function cancelEdit() {
   editMode.value = false
 }
 </script>
