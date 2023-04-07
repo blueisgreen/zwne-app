@@ -87,8 +87,8 @@ export const useLessonLabStore = defineStore('lessonLab', {
     },
     async loadLessonContent(id) {
       console.log('loadLessonContent', id)
-      const lesson = await fetchLessonContent(id)
-      this.cacheLessonContent(lesson)
+      const results = await fetchLessonContent(id)
+      this.cacheLessonContent(id, results.content || '')
     },
     async saveLesson(deltas) {
       console.log('saveLesson', deltas)
@@ -98,7 +98,7 @@ export const useLessonLabStore = defineStore('lessonLab', {
     async saveContent(id, contentToSave) {
       console.log('saveContent', { id, contentUpdate: contentToSave })
       const next = await updateContent(id, contentToSave)
-      this.cacheLessonContent(next)
+      this.cacheLessonContent(id, next.content)
     },
     async publishLesson(id) {
       console.log('publishLesson', id)

@@ -26,20 +26,6 @@
     <q-separator />
 
     <q-card-section>
-      <div class="text-center">
-        <q-btn
-          :to="{ name: 'lessonEditor', params: { id: lesson.id } }"
-          label="Edit Lesson Content"
-          icon="edit"
-          color="secondary"
-          no-caps
-        />
-      </div>
-    </q-card-section>
-
-    <q-separator />
-
-    <q-card-section>
       <div class="row q-pt-sm">
         <div class="col-3 text-secondary">Lesson ID</div>
         <div class="col">{{ lesson.id }}</div>

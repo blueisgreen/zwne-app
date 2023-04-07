@@ -67,7 +67,7 @@ export const fetchLessonContent = async (id) => {
     variables: { id },
   })
   console.log('getLessonContent', oneLessonPlan)
-  return oneLessonPlan.data.getLessonContent
+  return oneLessonPlan.data.getLessonPlan
 }
 
 export const updateLesson = async (deltas) => {
