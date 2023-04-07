@@ -19,19 +19,9 @@ const routes = [
         component: () => import('pages/lessons/LearningCenterPage.vue'),
       },
       {
-        path: 'lessons/abcd',
-        name: 'lesson-sample',
-        component: () => import('pages/lessons/LessonPage.vue'),
-      },
-      {
-        path: 'lessons/prototype',
-        name: 'lesson-prototype',
-        component: () => import('pages/lessons/LessonPage-proto1.vue'),
-      },
-      {
-        path: 'lessons/scratch',
-        name: 'lesson-scratch',
-        component: () => import('pages/lessons/LessonScratchPage.vue'),
+        path: 'lessons/:id',
+        name: 'lessonViewer',
+        component: () => import('pages/lessons/LessonViewerPage.vue'),
       },
       {
         path: 'lesson-lab',

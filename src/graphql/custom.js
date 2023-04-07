@@ -15,6 +15,24 @@ export const getLessonPlan = /* GraphQL */ `
     }
   }
 `
+export const getLessonFull = /* GraphQL */ `
+  query GetLessonPlan($id: ID!) {
+    getLessonPlan(id: $id) {
+      id
+      title
+      subtitle
+      synopsis
+      objective
+      status
+      cover
+      content
+      publishedAt
+      archivedAt
+      createdAt
+      updatedAt
+    }
+  }
+`
 export const getLessonContent = /* GraphQL */ `
   query GetLessonPlan($id: ID!) {
     getLessonPlan(id: $id) {
@@ -55,6 +73,26 @@ export const listLessonPlans = /* GraphQL */ `
         archivedAt
         createdAt
         updatedAt
+      }
+      nextToken
+    }
+  }
+`
+export const listPublishedLessons = /* GraphQL */ `
+  query ListLessonPlans(
+    $filter: ModelLessonPlanFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listLessonPlans(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        title
+        subtitle
+        synopsis
+        status
+        cover
+        publishedAt
       }
       nextToken
     }
