@@ -9,11 +9,6 @@ const routes = [
         component: () => import('pages/PrimaryLandingPage.vue'),
       },
       {
-        path: 'scratch',
-        name: 'scratch',
-        component: () => import('pages/ScratchPage.vue'),
-      },
-      {
         path: 'lessons',
         name: 'lessons',
         component: () => import('pages/lessons/LearningCenterPage.vue'),
