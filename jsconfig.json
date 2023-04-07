@@ -4,11 +4,12 @@
     "paths": {
       "src/*": ["src/*"],
       "app/*": ["*"],
-      "components/*": ["src/components/*"],
-      "layouts/*": ["src/layouts/*"],
-      "pages/*": ["src/pages/*"],
       "assets/*": ["src/assets/*"],
       "boot/*": ["src/boot/*"],
+      "components/*": ["src/components/*"],
+      "layouts/*": ["src/layouts/*"],
+      "models/*": ["src/models/*"],
+      "pages/*": ["src/pages/*"],
       "stores/*": ["src/stores/*"],
       "vue$": ["node_modules/vue/dist/vue.runtime.esm-bundler.js"]
     }

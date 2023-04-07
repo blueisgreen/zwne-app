@@ -1,0 +1,35 @@
+type LessonStep @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  FromLesson: LessonPlan @hasOne
+  ToLesson: LessonPlan @hasOne
+  transitionPrompt: String
+  lessonpathID: ID! @index(name: "byLessonPath")
+}
+
+type LessonPath @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  LessonPlan: LessonPlan @hasOne
+  FirstStep: LessonStep @hasOne
+  LessonSteps: [LessonStep] @hasMany(indexName: "byLessonPath", fields: ["id"])
+}
+
+enum LessonStatus {
+  DRAFT
+  IN_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+type LessonPlan @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  subtitle: String
+  synopsis: String
+  objective: String
+  status: LessonStatus
+  content: String
+  cover: String
+  publishedAt: AWSDateTime
+  archivedAt: AWSDateTime
+}
+ 
