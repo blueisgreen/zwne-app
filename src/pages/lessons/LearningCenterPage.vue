@@ -2,21 +2,10 @@
   <q-page padding>
     <div class="text-h1 q-pt-lg q-pb-md text-primary">Learning Center</div>
     <div class="text-subtitle1 q-pb-lg text-blue-10">
-      Where you can find everything you want to know in bite-sized chunks.
+      Where everything you want to know is served in bite-sized chunks.
     </div>
 
-    <lesson-catalog :item-limit="6" />
-
-    <q-list>
-      <q-item
-        v-for="lesson in viewing.published"
-        :key="lesson.id"
-        clickable
-        :to="{ name: 'lessonViewer', params: { id: lesson.id } }"
-      >
-        {{ lesson.title }}
-      </q-item>
-    </q-list>
+    <lesson-catalog :lessons="viewing.published" />
   </q-page>
 </template>
 

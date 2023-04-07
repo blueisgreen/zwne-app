@@ -1,30 +1,34 @@
 <template>
   <div class="q-pa-md row items-start q-gutter-md">
-    <q-card class="lesson-card" v-for="n in itemLimit" :key="n">
-      <q-img src="https://cdn.zanzisworld.com/images/atomic-structure-1280x720.png" />
+    <q-card class="lesson-card" v-for="lesson in lessons" :key="lesson.id">
+      <q-img
+        :src="`https://cdn.zanzisworld.com/images/${
+          lesson.cover || 'power-plant-sunrise-1280x720.png'
+        }`"
+      />
       <q-card-section>
-        <div class="text-h6">Atomic Habits</div>
-        <div class="text-subtitle2">The things you do everyday to save the planet</div>
+        <div class="text-h6">{{ lesson.title }}</div>
+        <div class="text-subtitle2">{{ lesson.subtitle }}</div>
       </q-card-section>
       <q-card-section class="q-pt-none">
-        This is the synopsis of the lesson you are being offered. By the time you read
-        this, you might be ready to spend 10 minutes to learn more.
+        {{ lesson.synopsis }}
       </q-card-section>
     </q-card>
   </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
 const props = defineProps({
   itemLimit: {
     type: Number,
     default: 4,
   },
-  // lessons: {
-  //   type: Array,
-  //   required: true,
-  // },
+  lessons: {
+    type: Array,
+    default: () => {
+      return []
+    },
+  },
 })
 </script>
 
