@@ -3,7 +3,7 @@
     <q-card class="lesson-card" v-for="lesson in lessons" :key="lesson.id">
       <q-img
         :src="`https://cdn.zanzisworld.com/images/${
-          lesson.cover || 'power-plant-sunrise-1280x720.png'
+          lesson.cover || 'cherenkov-radiation-1280x720.png'
         }`"
       />
       <q-card-section>
