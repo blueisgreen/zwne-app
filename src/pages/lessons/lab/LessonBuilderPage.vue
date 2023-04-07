@@ -3,9 +3,7 @@
     <q-toolbar>
       <q-toolbar-title>
         <div class="text-h4">Build a Lesson</div>
-        <div class="text-caption text-secondary">
-          {{ lessonId }}
-        </div>
+        <div class="text-caption text-secondary">Inspired by imagination.</div>
       </q-toolbar-title>
       <div class="q-gutter-sm">
         <q-btn
