@@ -55,20 +55,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { Auth } from 'aws-amplify'
 import FullNavigation from 'layouts/FullNavigation.vue'
 import CommonFooter from 'layouts/CommonFooter.vue'
 import Zanzibar from 'assets/Zanzibar.svg'
 import AuthWidget from 'components/AmplifyAuthWidget.vue'
+import { useUserStore } from 'stores/user-store'
 
+// left nav
 const leftDrawerOpen = ref(false)
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
-const authDialog = ref(false)
-const isSignedIn = ref(false) // FIXME: determine programmatically
 
+// join / sign in / sign out
+const userStore = useUserStore()
+const isSignedIn = computed(() => {
+  return userStore.isSignedIn
+})
+const authDialog = ref(false)
 const signUpOrJoin = () => {
   authDialog.value = true
   isSignedIn.value = true

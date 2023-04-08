@@ -1,8 +1,8 @@
 <template>
   <authenticator>
-    <template v-slot="{ user, signOut }">
+    <template v-slot="{ user }">
       <h1>Hello {{ user.username }}!</h1>
-      <button @click="signOut">Sign Out</button>
+      <div class="text-subtitle1">You are so logged in. Use it to the max.</div>
     </template>
   </authenticator>
 </template>

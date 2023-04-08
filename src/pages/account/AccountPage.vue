@@ -6,8 +6,8 @@
     </div>
     <hr />
     <div class="q-pa-md text-center">
-      <div class="text-h2">Who Are You?</div>
-      <amplify-auth-widget />
+      <div class="text-h2">Auth Widget</div>
+      <auth-widget />
     </div>
     <hr />
     <div class="text-h2">Your Profile</div>
@@ -19,7 +19,21 @@
 </template>
 
 <script setup>
-import AmplifyAuthWidget from 'src/pages/account/AmplifyAuthWidget.vue'
+import { onMounted } from 'vue'
+import { useUserStore } from 'stores/user-store'
+import { Auth } from 'aws-amplify'
+import AuthWidget from 'components/AmplifyAuthWidget.vue'
+
+const userStore = useUserStore()
+
+onMounted(() => {
+  Auth.currentAuthenticatedUser()
+    .then((user) => userStore.cacheUser(user))
+    .catch((err) => console.log(err))
+  Auth.currentSession()
+    .then((data) => userStore.cacheSession(data))
+    .catch((err) => console.log(err))
+})
 </script>
 
 <style lang="scss" scoped></style>

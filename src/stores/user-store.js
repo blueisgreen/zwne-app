@@ -2,31 +2,34 @@ import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    trackingId: null, // someday set a cookie and track, even anonymously
     username: null,
-    alias: null,
     email: null,
-    email_verified: false,
+    emailVerified: false,
     accountId: null,
-    accessToken: null,
+    signInUserSession: null,
+    awsUser: null,
+    awsSession: null,
   }),
   getters: {
-    signedIn: (state) => !!state.accessToken,
+    accessToken: (state) => state.signInUserSession?.accessToken,
+    refreshToken: (state) => state.signInUserSession?.refreshToken,
+    isSignedIn: (state) => !!state.accessToken,
   },
   actions: {
-    onUserSignIn(user) {
-      this.username = user.username
-      this.alias = user.attributes.nickname
-      this.email = user.attributes.email
-      this.email_verified = user.attributes.email_verified
-      this.accountId = user.attributes.sub
-      this.accessToken = user.signInUserSession.accessToken
+    cacheUser(awsUser) {
+      this.awsUser = awsUser
+      const { username, attributes, signInUserSession } = awsUser
+      this.username = username
+      this.email = attributes.email
+      this.email_verified = attributes.email_verified
+      this.accountId = attributes.sub
+      this.signInUserSession = signInUserSession
     },
-    onUserSignOut() {
+    cacheSession(session) {
+      this.awsSession = session
+    },
+    signOut() {
       this.$reset()
     },
-    trackUser(trackingId) {
-      this.trackingId = trackingId
-    }
   },
 })
