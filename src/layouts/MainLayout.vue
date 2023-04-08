@@ -77,12 +77,11 @@ const isSignedIn = computed(() => {
 const authDialog = ref(false)
 const signUpOrJoin = () => {
   authDialog.value = true
-  isSignedIn.value = true
 }
 const signOut = async () => {
   try {
     await Auth.signOut()
-    isSignedIn.value = false
+    userStore.signOut()
   } catch (error) {
     console.log('error signing out: ', error)
   }

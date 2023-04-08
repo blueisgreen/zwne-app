@@ -17,6 +17,9 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     cacheUser(awsUser) {
+      // get rid of any residue from previous sign in
+      this.$reset()
+
       this.awsUser = awsUser
       const { username, attributes, signInUserSession } = awsUser
       this.username = username
