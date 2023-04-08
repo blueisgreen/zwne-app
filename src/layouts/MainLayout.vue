@@ -21,10 +21,8 @@
         </div>
         <q-separator vertical spaced />
         <div>
-          <q-btn
-            :label="signedIn ? 'Sign Out' : 'Sign In'"
-            @click="toggleSignedIn"
-          />
+          <q-btn v-if="isSignedIn" label="Sign Out" @click="signOut" />
+          <q-btn v-else label="Sign In / Join" @click="signUpOrJoin" />
         </div>
       </q-toolbar>
     </q-header>
@@ -39,7 +37,7 @@
 
     <common-footer />
   </q-layout>
-  <q-dialog v-model="aboutAuth">
+  <q-dialog v-model="authDialog">
     <q-card>
       <q-card-section>
         <div class="text-h6">Sign Up / Sign In</div>
@@ -58,20 +56,30 @@
 
 <script setup>
 import { ref } from 'vue'
+import { Auth } from 'aws-amplify'
 import FullNavigation from 'layouts/FullNavigation.vue'
 import CommonFooter from 'layouts/CommonFooter.vue'
 import Zanzibar from 'assets/Zanzibar.svg'
 import AuthWidget from 'components/AmplifyAuthWidget.vue'
 
-const aboutAuth = ref(false)
-const signedIn = ref(false)
-const toggleSignedIn = () => {
-  aboutAuth.value = true
-  signedIn.value = !signedIn.value
-}
 const leftDrawerOpen = ref(false)
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
+}
+const authDialog = ref(false)
+const isSignedIn = ref(false) // FIXME: determine programmatically
+
+const signUpOrJoin = () => {
+  authDialog.value = true
+  isSignedIn.value = true
+}
+const signOut = async () => {
+  try {
+    await Auth.signOut()
+    isSignedIn.value = false
+  } catch (error) {
+    console.log('error signing out: ', error)
+  }
 }
 </script>
 
