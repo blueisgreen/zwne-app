@@ -46,17 +46,7 @@
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <p>
-          Thanks for trying to sign up. Although this feature is not yet
-          available, the day will come when you can join Zanzi's World and enjoy
-          life to the fullest.
-        </p>
-        <p>
-          While you wait, check out
-          <a href="https://zanzisworld.substack.com/" target="_blank">
-            The Making of... blog on Substack </a
-          >.
-        </p>
+        <auth-widget />
       </q-card-section>
 
       <q-card-actions align="right">
@@ -71,6 +61,7 @@ import { ref } from 'vue'
 import FullNavigation from 'layouts/FullNavigation.vue'
 import CommonFooter from 'layouts/CommonFooter.vue'
 import Zanzibar from 'assets/Zanzibar.svg'
+import AuthWidget from 'components/AmplifyAuthWidget.vue'
 
 const aboutAuth = ref(false)
 const signedIn = ref(false)
