@@ -22,19 +22,19 @@ const routes = [
         path: 'lesson-lab',
         name: 'lessonLab',
         component: () => import('pages/lessons/lab/LessonLabPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, inGroup: 'Editors' },
       },
       {
         path: 'lesson-lab/:id',
         name: 'lessonBuilder',
         component: () => import('pages/lessons/lab/LessonBuilderPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, inGroup: 'Editors' },
       },
       {
         path: 'lesson-lab/media',
         name: 'lessonMedia',
         component: () => import('pages/lessons/lab/LessonMediaPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, inGroup: 'Editors' },
       },
       {
         path: 'toys',
@@ -45,6 +45,7 @@ const routes = [
         path: 'feedback',
         name: 'feedback',
         component: () => import('pages/support/FeedbackPage.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: 'account',

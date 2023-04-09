@@ -40,12 +40,22 @@ export default route(function (/* { store, ssrContext } */) {
     const userStore = useUserStore()
 
     // see if auth is required and redirect as needed
-    if (to.meta.requiresAuth && !userStore.isSignedIn) {
+    if ((to.meta.requiresAuth || to.meta.inGroup) && !userStore.isSignedIn) {
+      console.log('sign in required - redirecting')
       return {
         name: 'account',
         query: { redirect: to.fullPath },
       }
+    } else if (to.meta.inGroup && userStore.isSignedIn) {
+      const ok = userStore.isInGroup(to.meta.inGroup)
+      console.log('user is in required group?', { group: to.meta.inGroup, ok })
+      if (!ok) {
+        return {
+          name: from.name,
+        }
+      }
     }
+
     return true
   })
 

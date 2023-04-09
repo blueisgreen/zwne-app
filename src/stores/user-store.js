@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import jwt_decode from 'jwt-decode'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -6,6 +7,7 @@ export const useUserStore = defineStore('user', {
     email: null,
     emailVerified: false,
     accountId: null,
+    groups: [],
     signInUserSession: null,
     awsUser: null,
     awsSession: null,
@@ -14,6 +16,14 @@ export const useUserStore = defineStore('user', {
     accessToken: (state) => state.signInUserSession?.accessToken,
     refreshToken: (state) => state.signInUserSession?.refreshToken,
     isSignedIn: (state) => !!state.accessToken,
+    isMember: (state) => state.groups.includes('Members'),
+    isEditor: (state) => state.groups.includes('Editors'),
+    isAdmin: (state) => state.groups.includes('Admins'),
+    isInGroup: (state) => {
+      return (groupName) => {
+        return state.groups.includes(groupName)
+      }
+    },
   },
   actions: {
     cacheUser(awsUser) {
@@ -27,6 +37,13 @@ export const useUserStore = defineStore('user', {
       this.emailVerified = attributes.email_verified
       this.accountId = attributes.sub
       this.signInUserSession = signInUserSession
+
+      const { jwtToken } = this.signInUserSession?.idToken
+      if (jwtToken) {
+        const decoded = jwt_decode(jwtToken)
+        console.log('jwt', decoded)
+        this.groups = decoded['cognito:groups']
+      }
     },
     cacheSession(session) {
       this.awsSession = session

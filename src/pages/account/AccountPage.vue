@@ -13,7 +13,7 @@
         <auth-widget />
       </div>
       <div v-if="redirect && isSignedIn" class="text-h4 text-weight-medium">
-        <q-btn color="primary" :to="{ name: redirect }"
+        <q-btn color="primary" :to="{ path: redirect }"
           >Go back to where you were.</q-btn
         >
       </div>
