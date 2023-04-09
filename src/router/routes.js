@@ -22,16 +22,19 @@ const routes = [
         path: 'lesson-lab',
         name: 'lessonLab',
         component: () => import('pages/lessons/lab/LessonLabPage.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: 'lesson-lab/:id',
         name: 'lessonBuilder',
         component: () => import('pages/lessons/lab/LessonBuilderPage.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: 'lesson-lab/media',
         name: 'lessonMedia',
         component: () => import('pages/lessons/lab/LessonMediaPage.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: 'toys',
