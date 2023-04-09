@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue'
+import { onMounted, onUpdated, computed } from 'vue'
 import { useUserStore } from 'stores/user-store'
 import { Auth } from 'aws-amplify'
 import AuthWidget from 'components/AmplifyAuthWidget.vue'
@@ -65,6 +65,11 @@ const isEmailVerified = computed(() => {
   return userStore.emailVerified
 })
 
+onUpdated(() => {
+  Auth.currentAuthenticatedUser()
+    .then((user) => userStore.cacheUser(user))
+    .catch((err) => console.log(err))
+})
 onMounted(() => {
   Auth.currentAuthenticatedUser()
     .then((user) => userStore.cacheUser(user))
