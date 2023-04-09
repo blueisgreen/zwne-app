@@ -70,6 +70,7 @@ const routes = [
         path: 'admin',
         name: 'admin',
         component: () => import('pages/admin/SiteAdminPage.vue'),
+        meta: { requiresAuth: true },
       },
     ],
   },

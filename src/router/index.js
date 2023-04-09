@@ -42,7 +42,7 @@ export default route(function (/* { store, ssrContext } */) {
     // see if auth is required and redirect as needed
     if (to.meta.requiresAuth && !userStore.isSignedIn) {
       return {
-        path: '/account',
+        name: 'account',
         query: { redirect: to.fullPath },
       }
     }

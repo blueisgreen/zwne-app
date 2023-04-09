@@ -13,9 +13,9 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { Hub } from 'aws-amplify'
 import { Auth } from 'aws-amplify'
+import { useUserStore } from 'stores/user-store'
 import { Authenticator } from '@aws-amplify/ui-vue'
 import '@aws-amplify/ui-vue/styles.css'
-import { useUserStore } from 'stores/user-store'
 
 const userStore = useUserStore()
 const hubListenerCancelToken = ref(null)

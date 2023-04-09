@@ -12,6 +12,11 @@
       <div class="q-mt-lg">
         <auth-widget />
       </div>
+      <div v-if="redirect && isSignedIn" class="text-h4 text-weight-medium">
+        <q-btn color="primary" :to="{ name: redirect }"
+          >Go back to where you were.</q-btn
+        >
+      </div>
     </div>
     <div v-if="isSignedIn">
       <q-separator spaced inset />
@@ -54,10 +59,17 @@
 </template>
 
 <script setup>
-import { onMounted, onUpdated, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useUserStore } from 'stores/user-store'
-import { Auth } from 'aws-amplify'
 import AuthWidget from 'components/AmplifyAuthWidget.vue'
+
+const route = useRoute()
+const redirect = ref(route.query.redirect)
+
+onMounted(() => {
+  console.log('AccountPage mounted. redirect=', redirect.value)
+})
 
 const userStore = useUserStore()
 const isSignedIn = computed(() => {
@@ -65,17 +77,6 @@ const isSignedIn = computed(() => {
 })
 const isEmailVerified = computed(() => {
   return userStore.emailVerified
-})
-
-onUpdated(() => {
-  Auth.currentAuthenticatedUser()
-    .then((user) => userStore.cacheUser(user))
-    .catch((err) => console.log(err))
-})
-onMounted(() => {
-  Auth.currentAuthenticatedUser()
-    .then((user) => userStore.cacheUser(user))
-    .catch((err) => console.log(err))
 })
 </script>
 
