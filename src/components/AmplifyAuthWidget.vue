@@ -1,8 +1,10 @@
 <template>
   <authenticator>
     <template v-slot="{ user }">
-      <h1>Hello {{ user.username }}!</h1>
-      <div class="text-subtitle1">You are so logged in. Use it to the max.</div>
+      <div class="text-h2">Hello {{ user.username }}!</div>
+      <div class="q-pt-md q-pl-xs text-subtitle1">
+        Thanks for being a member. Let's learn about nuclear energy.
+      </div>
     </template>
   </authenticator>
 </template>

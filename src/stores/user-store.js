@@ -24,7 +24,7 @@ export const useUserStore = defineStore('user', {
       const { username, attributes, signInUserSession } = awsUser
       this.username = username
       this.email = attributes.email
-      this.email_verified = attributes.email_verified
+      this.emailVerified = attributes.email_verified
       this.accountId = attributes.sub
       this.signInUserSession = signInUserSession
     },

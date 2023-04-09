@@ -39,11 +39,7 @@
   </q-layout>
   <q-dialog v-model="authDialog">
     <q-card>
-      <q-card-section>
-        <div class="text-h6">Sign Up / Sign In</div>
-      </q-card-section>
-
-      <q-card-section class="q-pt-none">
+      <q-card-section class="q-mt-lg">
         <auth-widget />
       </q-card-section>
 
@@ -55,7 +51,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Auth } from 'aws-amplify'
 import FullNavigation from 'layouts/FullNavigation.vue'
 import CommonFooter from 'layouts/CommonFooter.vue'
@@ -86,6 +82,12 @@ const signOut = async () => {
     console.log('error signing out: ', error)
   }
 }
+
+onMounted(() => {
+  Auth.currentAuthenticatedUser()
+    .then((user) => userStore.cacheUser(user))
+    .catch((err) => console.log(err))
+})
 </script>
 
 <style lang="scss" scoped></style>
