@@ -9,7 +9,9 @@
       <div v-if="!isSignedIn" class="text-h4 text-weight-medium">
         Who are you?
       </div>
-      <auth-widget class="q-mt-lg" />
+      <div class="q-mt-lg">
+        <auth-widget />
+      </div>
     </div>
     <div v-if="isSignedIn">
       <q-separator spaced inset />
