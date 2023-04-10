@@ -1,4 +1,4 @@
-type LessonStep @model @auth(rules: [{allow: public, operations: [read]}, {allow: groups, groups: ["Editors"], operations: [read, create, update, delete]}]) {
+type LessonStep @model @auth(rules: [{allow: public}]) {
   id: ID!
   FromLesson: LessonPlan @hasOne
   ToLesson: LessonPlan @hasOne
@@ -6,7 +6,7 @@ type LessonStep @model @auth(rules: [{allow: public, operations: [read]}, {allow
   lessonpathID: ID! @index(name: "byLessonPath")
 }
 
-type LessonPath @model @auth(rules: [{allow: public, operations: [read]}, {allow: groups, groups: ["Editors"], operations: [read, create, update, delete]}]) {
+type LessonPath @model @auth(rules: [{allow: public}]) {
   id: ID!
   LessonPlan: LessonPlan @hasOne
   FirstStep: LessonStep @hasOne
@@ -20,7 +20,7 @@ enum LessonStatus {
   ARCHIVED
 }
 
-type LessonPlan @model @auth(rules: [{allow: public, operations: [read]}, {allow: groups, groups: ["Editors"], operations: [read, create, update, delete]}]) {
+type LessonPlan @model @auth(rules: [{allow: public}]) {
   id: ID!
   title: String!
   subtitle: String
