@@ -21,10 +21,8 @@
         </div>
         <q-separator vertical spaced />
         <div>
-          <q-btn
-            :label="signedIn ? 'Sign Out' : 'Sign In'"
-            @click="toggleSignedIn"
-          />
+          <q-btn v-if="isSignedIn" label="Sign Out" @click="signOut" />
+          <q-btn v-else label="Sign In / Join" @click="signUpOrJoin" />
         </div>
       </q-toolbar>
     </q-header>
@@ -39,24 +37,10 @@
 
     <common-footer />
   </q-layout>
-  <q-dialog v-model="aboutAuth">
+  <q-dialog v-model="authDialog">
     <q-card>
-      <q-card-section>
-        <div class="text-h6">Sign Up / Sign In</div>
-      </q-card-section>
-
-      <q-card-section class="q-pt-none">
-        <p>
-          Thanks for trying to sign up. Although this feature is not yet
-          available, the day will come when you can join Zanzi's World and enjoy
-          life to the fullest.
-        </p>
-        <p>
-          While you wait, check out
-          <a href="https://zanzisworld.substack.com/" target="_blank">
-            The Making of... blog on Substack </a
-          >.
-        </p>
+      <q-card-section class="q-mt-lg">
+        <auth-widget />
       </q-card-section>
 
       <q-card-actions align="right">
@@ -67,21 +51,43 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { Auth } from 'aws-amplify'
 import FullNavigation from 'layouts/FullNavigation.vue'
 import CommonFooter from 'layouts/CommonFooter.vue'
 import Zanzibar from 'assets/Zanzibar.svg'
+import AuthWidget from 'components/AmplifyAuthWidget.vue'
+import { useUserStore } from 'stores/user-store'
 
-const aboutAuth = ref(false)
-const signedIn = ref(false)
-const toggleSignedIn = () => {
-  aboutAuth.value = true
-  signedIn.value = !signedIn.value
-}
+// left nav
 const leftDrawerOpen = ref(false)
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
+
+// join / sign in / sign out
+const userStore = useUserStore()
+const isSignedIn = computed(() => {
+  return userStore.isSignedIn
+})
+const authDialog = ref(false)
+const signUpOrJoin = () => {
+  authDialog.value = true
+}
+const signOut = async () => {
+  try {
+    await Auth.signOut()
+    userStore.signOut()
+  } catch (error) {
+    console.log('error signing out: ', error)
+  }
+}
+
+onMounted(() => {
+  Auth.currentAuthenticatedUser()
+    .then((user) => userStore.cacheUser(user))
+    .catch((err) => console.log(err))
+})
 </script>
 
 <style lang="scss" scoped></style>

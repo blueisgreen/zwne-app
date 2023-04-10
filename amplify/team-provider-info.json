@@ -14,6 +14,13 @@
     "categories": {
       "api": {
         "zwapp": {}
+      },
+      "auth": {
+        "zwapp7e908767": {},
+        "userPoolGroups": {}
+      },
+      "storage": {
+        "zwappContent": {}
       }
     }
   }

@@ -6,6 +6,7 @@ const insideLinks = [
     caption: 'Get started here',
     icon: 'fa-solid fa-home',
     route: 'home',
+    exact: true,
   },
   {
     title: 'Nuclear Learning',
