@@ -33,7 +33,11 @@
     "resourceName": "zwapp7e908767",
     "authSelections": "identityPoolAndUserPool",
     "useDefault": "manual",
-    "userPoolGroupList": [],
+    "userPoolGroupList": [
+      "Admins",
+      "Editors",
+      "Members"
+    ],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
     "useEnabledMfas": true,

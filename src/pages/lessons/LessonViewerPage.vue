@@ -7,6 +7,13 @@
       <q-separator spaced="md" />
       <div v-html="lesson.content" />
     </div>
+    <div>
+      <q-btn
+        :to="{ name: 'lessons' }"
+        color="primary"
+        label="Return to Lesson Catalog"
+      />
+    </div>
   </q-page>
 </template>
 

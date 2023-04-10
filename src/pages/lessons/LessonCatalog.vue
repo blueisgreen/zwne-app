@@ -13,6 +13,14 @@
       <q-card-section class="q-pt-none">
         {{ lesson.synopsis }}
       </q-card-section>
+      <q-card-actions align="center">
+        <q-btn
+          :to="{ name: 'lessonViewer', params: { id: lesson.id } }"
+          flat
+          color="primary"
+          >Start</q-btn
+        >
+      </q-card-actions>
     </q-card>
   </div>
 </template>
