@@ -21,6 +21,9 @@ export const useUserStore = defineStore('user', {
     isAdmin: (state) => state.groups.includes('Admins'),
     isInGroup: (state) => {
       return (groupName) => {
+        if (!state.groups) {
+          return false
+        }
         return state.groups.includes(groupName)
       }
     },
