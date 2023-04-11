@@ -6,6 +6,7 @@ const insideLinks = [
     caption: 'Get started here',
     icon: 'fa-solid fa-home',
     route: 'home',
+    exact: true,
   },
   {
     title: 'Nuclear Learning',
@@ -40,10 +41,10 @@ const insideLinks = [
 ]
 const priviledgedLinks = [
   {
-    title: 'Course Lab',
+    title: 'Lesson Lab',
     caption: 'Where knowledge is mixed and bottled',
     icon: 'school',
-    route: 'courseLab',
+    route: 'lessonLab',
   },
   {
     title: 'User Support',

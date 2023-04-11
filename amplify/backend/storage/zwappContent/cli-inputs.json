@@ -1,0 +1,28 @@
+{
+  "resourceName": "zwappContent",
+  "policyUUID": "0c9809d5",
+  "bucketName": "zwapp-content-staging1",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {
+    "Admins": [
+      "CREATE_AND_UPDATE",
+      "READ",
+      "DELETE"
+    ],
+    "Editors": [
+      "CREATE_AND_UPDATE",
+      "READ"
+    ],
+    "Members": [
+      "READ"
+    ]
+  }
+}

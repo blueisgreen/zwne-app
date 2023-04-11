@@ -1,32 +1,55 @@
 import { defineStore } from 'pinia'
+import jwt_decode from 'jwt-decode'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    trackingId: null, // someday set a cookie and track, even anonymously
     username: null,
-    alias: null,
     email: null,
-    email_verified: false,
+    emailVerified: false,
     accountId: null,
-    accessToken: null,
+    groups: [],
+    signInUserSession: null,
+    awsUser: null,
+    awsSession: null,
   }),
   getters: {
-    signedIn: (state) => !!state.accessToken,
+    accessToken: (state) => state.signInUserSession?.accessToken,
+    refreshToken: (state) => state.signInUserSession?.refreshToken,
+    isSignedIn: (state) => !!state.accessToken,
+    isMember: (state) => state.groups.includes('Members'),
+    isEditor: (state) => state.groups.includes('Editors'),
+    isAdmin: (state) => state.groups.includes('Admins'),
+    isInGroup: (state) => {
+      return (groupName) => {
+        return state.groups.includes(groupName)
+      }
+    },
   },
   actions: {
-    onUserSignIn(user) {
-      this.username = user.username
-      this.alias = user.attributes.nickname
-      this.email = user.attributes.email
-      this.email_verified = user.attributes.email_verified
-      this.accountId = user.attributes.sub
-      this.accessToken = user.signInUserSession.accessToken
+    cacheUser(awsUser) {
+      // get rid of any residue from previous sign in
+      this.$reset()
+
+      this.awsUser = awsUser
+      const { username, attributes, signInUserSession } = awsUser
+      this.username = username
+      this.email = attributes.email
+      this.emailVerified = attributes.email_verified
+      this.accountId = attributes.sub
+      this.signInUserSession = signInUserSession
+
+      const { jwtToken } = this.signInUserSession?.idToken
+      if (jwtToken) {
+        const decoded = jwt_decode(jwtToken)
+        console.log('jwt', decoded)
+        this.groups = decoded['cognito:groups']
+      }
     },
-    onUserSignOut() {
+    cacheSession(session) {
+      this.awsSession = session
+    },
+    signOut() {
       this.$reset()
     },
-    trackUser(trackingId) {
-      this.trackingId = trackingId
-    }
   },
 })
