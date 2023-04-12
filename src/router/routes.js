@@ -9,6 +9,11 @@ const routes = [
         component: () => import('pages/PrimaryLandingPage.vue'),
       },
       {
+        path: 'font-test',
+        name: 'fontTest',
+        component: () => import('pages/FontTestPage.vue'),
+      },
+      {
         path: 'lessons',
         name: 'lessons',
         component: () => import('pages/lessons/LearningCenterPage.vue'),
