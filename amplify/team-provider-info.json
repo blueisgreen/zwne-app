@@ -26,20 +26,23 @@
   },
   "prod": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-zwapp-prod-90921-authRole",
-      "UnauthRoleArn": "arn:aws:iam::686693387580:role/amplify-zwapp-prod-90921-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::686693387580:role/amplify-zwapp-prod-90921-authRole",
+      "AuthRoleName": "amplify-zwapp-prod-195343-authRole",
+      "UnauthRoleArn": "arn:aws:iam::686693387580:role/amplify-zwapp-prod-195343-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::686693387580:role/amplify-zwapp-prod-195343-authRole",
       "Region": "us-west-2",
-      "DeploymentBucketName": "amplify-zwapp-prod-90921-deployment",
-      "UnauthRoleName": "amplify-zwapp-prod-90921-unauthRole",
-      "StackName": "amplify-zwapp-prod-90921",
-      "StackId": "arn:aws:cloudformation:us-west-2:686693387580:stack/amplify-zwapp-prod-90921/38bb2e60-d883-11ed-a700-0a18a9214a19",
+      "DeploymentBucketName": "amplify-zwapp-prod-195343-deployment",
+      "UnauthRoleName": "amplify-zwapp-prod-195343-unauthRole",
+      "StackName": "amplify-zwapp-prod-195343",
+      "StackId": "arn:aws:cloudformation:us-west-2:686693387580:stack/amplify-zwapp-prod-195343/909db6b0-d8a2-11ed-ad69-0a9d1c0b43af",
       "AmplifyAppId": "d7jlxtl7mre58"
     },
     "categories": {
       "auth": {
         "zwapp7e908767": {},
         "userPoolGroups": {}
+      },
+      "storage": {
+        "zwappContent": {}
       }
     }
   }
