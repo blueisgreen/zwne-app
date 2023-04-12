@@ -1,1 +1,9 @@
 // app global css in SCSS form
+@font-face {
+  font-family: RubikPixels;
+  src: url(./fonts/RubikPixels-Regular.ttf);
+}
+
+.mega-title {
+  font-family: 'RubikPixels';
+}
