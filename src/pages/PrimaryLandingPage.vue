@@ -1,7 +1,7 @@
 <template>
   <q-page flex flex-center>
     <div class="text-center">
-      <div class="text-h1 mega-title q-pt-lg q-pb-md">Welcome to Zanzibar's World</div>
+      <div class="text-h1 eb-garamond q-pt-lg q-pb-md">Welcome to Zanzibar's World</div>
       <div class="text-subtitle1 q-pb-lg text-blue-10">
         Explore the world of nuclear power, the most effective source of energy to help us
         thrive.
@@ -19,4 +19,8 @@
 import Zanzibar from 'assets/Zanzibar.svg'
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.mega-title {
+  font-family: 'RubikPixels';
+}
+</style>
