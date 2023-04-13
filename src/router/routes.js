@@ -9,6 +9,11 @@ const routes = [
         component: () => import('pages/PrimaryLandingPage.vue'),
       },
       {
+        path: 'font-test',
+        name: 'fontTest',
+        component: () => import('pages/FontTestPage.vue'),
+      },
+      {
         path: 'lessons',
         name: 'lessons',
         component: () => import('pages/lessons/LearningCenterPage.vue'),
@@ -66,12 +71,13 @@ const routes = [
         path: 'support',
         name: 'support',
         component: () => import('pages/support/SupportCenterPage.vue'),
+        meta: { requiresAuth: true, inGroup: 'Members' },
       },
       {
         path: 'admin',
         name: 'admin',
         component: () => import('pages/admin/SiteAdminPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, inGroup: 'Admins' },
       },
     ],
   },

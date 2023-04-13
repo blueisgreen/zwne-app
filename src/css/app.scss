@@ -1,1 +1,22 @@
 // app global css in SCSS form
+@font-face {
+  font-family: 'Rubik Pixels';
+  src: url('./fonts/RubikPixels-Regular.ttf');
+}
+@font-face {
+  font-family: 'BerkshireSwash';
+  src: url(./fonts/BerkshireSwash-Regular.ttf);
+}
+
+.rubik-pixels {
+  font-family: 'Rubik Pixels';
+}
+.berkshire-swash {
+  font-family: 'BerkshireSwash';
+}
+.tilt-prism {
+  font-family: 'Tilt Prism';
+}
+.eb-garamond {
+  font-family: 'EB Garamond';
+}

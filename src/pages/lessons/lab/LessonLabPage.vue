@@ -2,8 +2,8 @@
   <q-page padding>
     <q-toolbar>
       <q-toolbar-title>
-        <div class="text-h2 text-primary">Lesson Lab</div>
-        <div class="text-caption text-secondary q-pl-xs">
+        <div class="text-h2 text-primary berkshire-swash">Lesson Lab</div>
+        <div class="text-caption text-secondary berkshire-swash q-pl-xs">
           Where idealized knowledge sharing is discovered
         </div>
       </q-toolbar-title>
@@ -31,9 +31,7 @@
             >
               <q-item-section>
                 <q-item-label>{{ lesson.title }}</q-item-label>
-                <q-item-label caption lines="2">{{
-                  lesson.subtitle
-                }}</q-item-label>
+                <q-item-label caption lines="2">{{ lesson.subtitle }}</q-item-label>
               </q-item-section>
               <q-item-section side top>
                 <q-item-label>{{ lesson.status }}</q-item-label>
@@ -55,12 +53,8 @@
           <q-list>
             <q-item v-for="lesson in lab.lessonList" :key="lesson.id">
               <q-item-section>
-                <q-item-label class="text-bold">{{
-                  lesson.title
-                }}</q-item-label>
-                <q-item-label caption lines="2">{{
-                  lesson.subtitle
-                }}</q-item-label>
+                <q-item-label class="text-bold">{{ lesson.title }}</q-item-label>
+                <q-item-label caption lines="2">{{ lesson.subtitle }}</q-item-label>
               </q-item-section>
               <q-item-section side>
                 <q-btn
@@ -94,12 +88,7 @@
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Cancel" v-close-popup />
-        <q-btn
-          flat
-          label="Create Lesson"
-          @click="createLessonFromDialog"
-          v-close-popup
-        />
+        <q-btn flat label="Create Lesson" @click="createLessonFromDialog" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
