@@ -24,13 +24,6 @@
           dense
           @click="toggleMode"
         />
-        <q-btn
-          :to="{ name: 'lessonLab' }"
-          color="primary"
-          no-caps
-          dense
-          label="To Lab Lobby"
-        />
       </div>
     </q-toolbar>
     <div v-if="lessonToBuild">
