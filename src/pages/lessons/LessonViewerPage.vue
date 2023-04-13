@@ -8,11 +8,7 @@
       <div v-html="lesson.content" />
     </div>
     <div>
-      <q-btn
-        :to="{ name: 'lessons' }"
-        color="primary"
-        label="Return to Lesson Catalog"
-      />
+      <q-btn :to="{ name: 'lessons' }" color="primary" label="Return to Lesson Catalog" />
     </div>
   </q-page>
 </template>
@@ -21,7 +17,6 @@
 import { onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useViewingStore } from 'stores/viewing'
-import LessonFrame from './LessonFrame.vue'
 
 const viewing = useViewingStore()
 const route = useRoute()
@@ -34,4 +29,15 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.1rem;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+</style>
