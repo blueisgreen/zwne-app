@@ -6,8 +6,16 @@
       <div class="text-center text-subtitle1 q-pt-lg q-px-md">
         {{ subtitle }}
       </div>
-      <div class="q-pa-md">{{ content }}</div>
+      <div class="q-pa-md regular">{{ content }}</div>
+      <div class="q-pa-md light">{{ content }}</div>
+      <div class="q-pa-md heavy">{{ content }}</div>
       <q-separator spaced />
+    </div>
+
+    <div>Heading Fonts</div>
+    <div v-for="fontFamily in headingFonts" :key="fontFamily" :class="fontFamily">
+      <div class="text-subtitle2">{{ fontFamily }}</div>
+      <div class="text-center text-h1">{{ title }}</div>
     </div>
   </q-page>
 </template>
@@ -21,11 +29,28 @@ const content =
 
 const fontFamilies = [
   'BlargyPants (default)',
-  'rubik-pixels',
+  'roboto-slab',
+  'poppins',
+  'verdana',
+  'courier-prime',
+]
+const headingFonts = [
   'berkshire-swash',
+  'righteous',
+  'handlee',
+  'kaushan-script',
   'tilt-prism',
-  'eb-garamond',
 ]
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.regular {
+  font-weight: 400;
+}
+.light {
+  font-weight: 100;
+}
+.heavy {
+  font-weight: 800;
+}
+</style>
