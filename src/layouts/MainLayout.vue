@@ -2,14 +2,7 @@
   <q-layout view="hHh Lpr fFf">
     <q-header reveal elevated>
       <q-toolbar class="glossy">
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <q-btn :to="{ name: 'home' }" dense flat>
           <q-avatar size="lg">
             <img :src="Zanzibar" alt="Zanzibar, Nuclear Hero" />
@@ -21,7 +14,7 @@
         </div>
         <q-separator vertical spaced />
         <div>
-          <q-btn v-if="isSignedIn" label="Sign Out" @click="signOut" />
+          <quick-account-view v-if="isSignedIn" />
           <q-btn v-else label="Sign In / Join" @click="signUpOrJoin" />
         </div>
       </q-toolbar>
@@ -53,11 +46,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { Auth } from 'aws-amplify'
+import { useUserStore } from 'stores/user-store'
 import FullNavigation from 'layouts/FullNavigation.vue'
 import CommonFooter from 'layouts/CommonFooter.vue'
 import Zanzibar from 'assets/Zanzibar.svg'
 import AuthWidget from 'components/AmplifyAuthWidget.vue'
-import { useUserStore } from 'stores/user-store'
+import QuickAccountView from 'components/QuickAccountView.vue'
 
 // left nav
 const leftDrawerOpen = ref(false)
@@ -73,14 +67,6 @@ const isSignedIn = computed(() => {
 const authDialog = ref(false)
 const signUpOrJoin = () => {
   authDialog.value = true
-}
-const signOut = async () => {
-  try {
-    await Auth.signOut()
-    userStore.signOut()
-  } catch (error) {
-    console.log('error signing out: ', error)
-  }
 }
 
 onMounted(() => {
