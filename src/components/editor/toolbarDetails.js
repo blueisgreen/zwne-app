@@ -1,24 +1,3 @@
-// FIXME: figure out a way to do this
-// const init = (editor) => {
-//   return {
-//     getButtonStyle: (name, options) => {
-//       const isActive = editor.isActive(name, options)
-//       return {
-//         color: isActive ? color.hilite : color.base,
-//         textColor: isActive ? color.txtHilite : color.txtBase,
-//         size: 'sm',
-//         dense: true,
-//       }
-//     },
-//   }
-// }
-
-// const color = {
-//   base: 'primary',
-//   txtBase: 'white',
-//   hilite: 'blue-2',
-//   txtHilite: 'black',
-// }
 const color = {
   base: 'blue-2',
   txtBase: 'black',
@@ -42,33 +21,53 @@ const fonts = [
     label: 'Georgia',
     value: 'Georgia, serif',
   },
+  {
+    label: 'Roboto Slab',
+    value: 'Roboto Slab, Georgia, serif',
+  },
   // {
   //   label: 'sans-serif',
   //   value: 'sans-serif',
   // },
   {
-    label: 'Optima',
-    value: 'Optima, sans-serif',
+    label: 'Poppins',
+    value: 'Poppins, Verdana, sans-serif',
   },
   {
     label: 'Verdana',
-    value: 'Verdana, sans-serif',
+    value: 'Verdana, Geneva, Tahoma, sans-serif',
   },
   // {
   //   label: 'monospace',
   //   value: 'monospace',
   // },
   {
-    label: 'Courier New',
-    value: 'Courier New, monospace',
+    label: 'Courier Prime',
+    value: 'Courier Prime, Courier New, monospace',
   },
   // {
   //   label: 'cursive',
   //   value: 'cursive',
   // },
   {
-    label: 'Bradley Hand',
-    value: 'Bradley Hand, cursive',
+    label: 'Berkshire Swash',
+    value: 'Berkshire Swash, cursive',
+  },
+  {
+    label: 'Righteous',
+    value: 'Righteous, cursive',
+  },
+  {
+    label: 'Handlee',
+    value: 'Handlee, cursive',
+  },
+  {
+    label: 'Kaushan Script',
+    value: 'Kaushan Script, cursive',
+  },
+  {
+    label: 'Tilt Prism',
+    value: 'Tilt Prism, cursive',
   },
   // {
   //   label: 'fantasy',

@@ -24,22 +24,26 @@ const routes = [
         component: () => import('pages/lessons/LessonViewerPage.vue'),
       },
       {
-        path: 'lesson-lab',
-        name: 'lessonLab',
+        path: 'lesson-lab/',
         component: () => import('pages/lessons/lab/LessonLabPage.vue'),
         meta: { requiresAuth: true, inGroup: 'Editors' },
-      },
-      {
-        path: 'lesson-lab/:id',
-        name: 'lessonBuilder',
-        component: () => import('pages/lessons/lab/LessonBuilderPage.vue'),
-        meta: { requiresAuth: true, inGroup: 'Editors' },
-      },
-      {
-        path: 'lesson-lab/media',
-        name: 'lessonMedia',
-        component: () => import('pages/lessons/lab/LessonMediaPage.vue'),
-        meta: { requiresAuth: true, inGroup: 'Editors' },
+        children: [
+          {
+            path: '',
+            name: 'lessonLab',
+            component: () => import('pages/lessons/lab/LessonManager.vue'),
+          },
+          {
+            path: ':id',
+            name: 'lessonBuilder',
+            component: () => import('src/pages/lessons/lab/LessonBuilder.vue'),
+          },
+          {
+            path: 'media',
+            name: 'lessonMedia',
+            component: () => import('src/pages/lessons/lab/MediaManager.vue'),
+          },
+        ],
       },
       {
         path: 'toys',
