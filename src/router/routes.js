@@ -54,7 +54,7 @@ const routes = [
         path: 'feedback',
         name: 'feedback',
         component: () => import('pages/support/FeedbackPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, inGroup: 'Members' },
       },
       {
         path: 'account',
