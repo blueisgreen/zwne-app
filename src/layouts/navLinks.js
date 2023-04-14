@@ -1,4 +1,4 @@
-export { insideLinks, priviledgedLinks, outsideLinks }
+export { insideLinks, outsideLinks }
 
 const insideLinks = [
   {
@@ -25,6 +25,7 @@ const insideLinks = [
     caption: 'Offer Zanzibar feedback and suggestions',
     icon: 'rate_review',
     route: 'feedback',
+    groupWithAccess: 'Members',
   },
   {
     title: 'Your Account',
@@ -38,25 +39,26 @@ const insideLinks = [
     icon: 'info',
     route: 'about',
   },
-]
-const priviledgedLinks = [
   {
     title: 'Lesson Lab',
     caption: 'Where knowledge is mixed and bottled',
     icon: 'science',
     route: 'lessonLab',
+    groupWithAccess: 'Editors',
   },
   {
     title: 'User Support',
     caption: 'How can we help you?',
     icon: 'help_outline',
     route: 'support',
+    groupWithAccess: 'Members',
   },
   {
     title: 'Administration',
     caption: 'Controls for site admins',
     icon: 'admin_panel_settings',
     route: 'admin',
+    groupWithAccess: 'Admins',
   },
 ]
 const outsideLinks = [
