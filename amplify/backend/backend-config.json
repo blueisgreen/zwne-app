@@ -1,4 +1,10 @@
 {
+  "analytics": {
+    "zwapp": {
+      "providerPlugin": "awscloudformation",
+      "service": "Pinpoint"
+    }
+  },
   "api": {
     "zwapp": {
       "dependsOn": [],
