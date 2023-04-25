@@ -2,7 +2,7 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "zwapp7e908767_identitypool_7e908767",
-    "allowUnauthenticatedIdentities": true,
+    "allowUnauthenticatedIdentities": false,
     "resourceNameTruncated": "zwapp7e908767",
     "userPoolName": "zwapp7e908767_userpool_7e908767",
     "autoVerifiedAttributes": [
@@ -14,8 +14,8 @@
     ],
     "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
-    "emailVerificationSubject": "Your verification code",
-    "emailVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Your verification code for Zanzibar's World",
+    "emailVerificationMessage": "Thanks for joining Zanzibar's World of Nuclear Energy. We hope you love it.<br/>\n<br/>\nVerify your account using this code: {####}<br/>\n<br/>\nIf you did not sign up for Zanzibar's World, please disregard this message.<br/>\n<br/>\n- Zanzibar<br/>\nhttps://www.zanzisworld.com\n",
     "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
@@ -33,11 +33,7 @@
     "resourceName": "zwapp7e908767",
     "authSelections": "identityPoolAndUserPool",
     "useDefault": "manual",
-    "userPoolGroupList": [
-      "Admins",
-      "Editors",
-      "Members"
-    ],
+    "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
     "useEnabledMfas": true,
@@ -60,11 +56,11 @@
     "thirdPartyAuth": false,
     "authProviders": [],
     "hostedUI": true,
-    "hostedUIDomainName": "y98pdw1oczca",
+    "hostedUIDomainName": "9r0wdxczp9vm",
     "authProvidersUserPool": [
       "Google"
     ],
     "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:9000\",\"https://lessons.d7jlxtl7mre58.amplifyapp.com/\"],\"LogoutURLs\":[\"http://localhost:9000\",\"https://lessons.d7jlxtl7mre58.amplifyapp.com/\"]}"
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://localhost:9000\",\"https://www.zanzisworld.com\"],\"LogoutURLs\":[\"https://localhost:9000\",\"https://www.zanzisworld.com\"]}"
   }
 }
