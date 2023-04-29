@@ -1,4 +1,4 @@
-# Zanzibar World of Elemental Power App (zwapp!!)
+# Zanzibar World of Nuclear Energy - the App (zwapp!!)
 
 Welcome to the codeline for Zanzi's World of Nuclear Power. This app is build using:
 
